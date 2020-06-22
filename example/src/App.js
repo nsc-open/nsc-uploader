@@ -55,6 +55,7 @@ const defaultFiles =[{
   uri:'http://47.92.150.213:7040/api/workReports/93770d30-af0d-11ea-a637-236812180fd0'
 }
 ]
+
 class App extends Component {
   constructor (props) {
     super(props)
@@ -71,9 +72,9 @@ class App extends Component {
     const ossParams={
       region:OSS_ENDPOINT,
       bucket:OSS_BUCKET,
-      accessKeyId: "STS.NTovQgZ312VMqDB3ozDgt6Fo1",
-      accessKeySecret: "oLtyoUqKcRquLfWTecsFJ7q44Z1ENUeecC3cvHgsh9S",
-      stsToken: "CAISjgJ1q6Ft5B2yfSjIr5faPevTt+wQhZSmc2Lz128vSOhY2YPE0zz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHdkD7nq1qMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAF+NhDj+tccoq8GGtWxF8hI7XVVbORfKWsdrhhRWX71tOPtq7tLUKcgwvbZGagRES3t6wsWr5aqbJG6w8wZDnRXyE0NG7xufeFr7mzKNyqVUMCMNNK/c6GMdtKaPEzmfDrx7kf9fGMM8K2iog8nJwWxln0FaU0OI8Db5a8tJqLPVw=="
+      accessKeyId: "STS.NUg9iA2RgWs6YgYD9i9kzwCZ1",
+      accessKeySecret: "48eMVnDEsRJ7jweCErxAj4pR8BgSgGDepFrqU449GPgx",
+      stsToken: "CAISjgJ1q6Ft5B2yfSjIr5bSctP1341G4LHdW0HooDk8NeRWmIbx0zz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHe9fyHi1qMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAF/eIObqsxWW80mht6hb8vzaoitmGI6ZX4pPlV62uE2J4go/Pbpol/P3TEbr0LbKbzYTRl5e9+W/QOmkYMM5DpCLmi/1WMkebzqhsFOo4XKxBAR02TH6j9cJi8wZYxx8eiA/vJCBGJeb2ikDqCwnvFNnkPaW9FKmuiZoLQp7qJ6RA=="
     }
     resolve(ossParams)
   })

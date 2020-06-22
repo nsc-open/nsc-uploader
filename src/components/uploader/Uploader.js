@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import co from 'co'
 import { Icon, Button, message ,Radio } from 'antd'
 import Upload from './Upload'
 import Dragger from './Dragger'
-import { getUploadClient, encodeFileName, arrayMove } from './utils'
+import { getUploadClient, encodeFileName, arrayMove ,co } from './utils'
 import { isEqual, maxBy } from 'loadsh'
 
 import './style/index.css'
