@@ -64,17 +64,17 @@ class Uploader extends Component {
     
       handlePreview = (file) => {
         const { onPreview } = this.props
-        onPreview && onPreview(file)
+        onPreview && onPreview(toAttachment(file))
       }
     
       handleChange = (file,fileList) => {
         const { onFileChange } = this.props
-        onFileChange && onFileChange(file,fileList)
+        onFileChange && onFileChange(toAttachment(file),fileList.map(toAttachment))
       }
 
       handleDownload = (file) => {
         const { onDownload } = this.props
-        onDownload && onDownload(file)
+        onDownload && onDownload(toAttachment(file))
       }
     
       handleRemove = (file) => {
@@ -86,7 +86,7 @@ class Uploader extends Component {
         this.handleChange(file,newFileList)
     
         if (autoSave && onRemove) {
-          onRemove(file)
+          onRemove(toAttachment(file))
         }
       }
 
@@ -179,7 +179,7 @@ class Uploader extends Component {
         if (result) {
           const newFileList = arrayMove(this.state.fileList, result.source.index, result.destination.index)
           this.setState({ fileList: newFileList });
-          onSortEnd && onSortEnd(this.state.fileList,newFileList)
+          onSortEnd && onSortEnd(this.state.fileList.map(toAttachment),newFileList.map(toAttachment))
         }
 
       }

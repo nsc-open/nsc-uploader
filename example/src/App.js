@@ -81,7 +81,7 @@ class App extends Component {
 
 	onFileChange = (file,fileList) => {
 		console.log(file)
-		this.setState({fileList:fileList.map(toAttachment)})
+		this.setState({fileList:fileList})
   }
   handleCancel=()=>{
 		this.setState({ previewVisible: false })
@@ -91,15 +91,16 @@ class App extends Component {
 	}
 	  
 	onPreview = (file) => {
-		const fileType = file.type
+    const fileType = file.fileType
+    console.log(file)
 		if(fileType){
 			if (fileType.indexOf('image') !== -1) {
-			  this.setState({ previewVisible: true, previewImage:file.url })
+			  this.setState({ previewVisible: true, previewImage:file.uri })
 			} else if (fileType.indexOf('pdf') !== -1) {
-			   this.setState({ previewFileVisible: true, previewFile:file.url })
+			   this.setState({ previewFileVisible: true, previewFile:file.uri })
 			  //window.open(file.uri)
 			} else if (fileType.indexOf('word') !== -1) {
-				this.setState({ previewFileVisible: true, previewFile:`https://view.officeapps.live.com/op/view.aspx?src=${file.url}`})
+				this.setState({ previewFileVisible: true, previewFile:`https://view.officeapps.live.com/op/view.aspx?src=${file.uri}`})
 			} else {
 			  message.info('该文件类型不支持预览')
 			}
@@ -107,7 +108,9 @@ class App extends Component {
 			message.info('该文件不支持预览')
 		}
 	}
-
+  onSortEnd = (oldList,newList)=>{
+    console.log(oldList,newList)
+  }
 
   render() {
     const { previewVisible ,previewImage,previewFileVisible,previewFile,fileList } = this.state
@@ -121,10 +124,10 @@ class App extends Component {
 		  onFileChange:this.onFileChange,
 		  maxFileSize:2,
 		  accept,
-		  onPreview:this.onPreview,
+      onPreview:this.onPreview,
+      onSortEnd:this.onSortEnd,
       onDownload:this.onDownload,
       defaultFiles:fileList,
-      showUploadButton:false,
       showRadioButton:{
         showRadioTitle:false , 
         radioItems:[ 
@@ -133,6 +136,8 @@ class App extends Component {
         ]
       }
     }
+
+    
     
     return (
       <div style={{margin:'50px',width:'50%'}}>
