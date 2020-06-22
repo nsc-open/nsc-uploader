@@ -128,6 +128,8 @@ class App extends Component {
       onSortEnd:this.onSortEnd,
       onDownload:this.onDownload,
       defaultFiles:fileList,
+      showUploadButton:false,
+      type:'dragger',
       showRadioButton:{
         showRadioTitle:false , 
         radioItems:[ 

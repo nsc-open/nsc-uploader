@@ -237,7 +237,7 @@ class Uploader extends Component {
           dragSortable:dragSortable,
           disabled:disabled,
           onSortEnd:this.onSortEnd,
-          className:className,
+          className:showUploadButton ? `${className} nsc-uploader-dragger-show` : `${className} nsc-uploader-dragger-hide` ,
         }
         //文件列表按上传顺序排序
         fileList.sort(sorter)
@@ -267,12 +267,13 @@ class Uploader extends Component {
             <p className="ant-upload-text">点击获取拖动 图片或文档 到这块区域完成文件上传</p>
           </div>
         ) 
+        console.log('showUploadButton',showUploadButton)
 
         return (
           <div className='nsc-upload-container'>
             { customRadioButton ? customRadioButton : showRadioButton ? this.renderRadio(showRadioButton) : null }
             {type ==='dragger' ? 
-              <Dragger className={showUploadButton ? 'nsc-uploader-dragger-show' : 'nsc-uploader-dragger-hide'} {...props} >
+              <Dragger {...props} >
                 { showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum  ? null : draggerBtn :null }
               </Dragger>
             : <Upload {...props}>
