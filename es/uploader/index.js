@@ -1,20 +1,9 @@
-import 'antd/es/button/style';
-import _Button from 'antd/es/button';
-import 'antd/es/icon/style';
-import _Icon from 'antd/es/icon';
-import 'antd/es/radio/style';
-import _Radio from 'antd/es/radio';
-import 'antd/es/message/style';
-import _message from 'antd/es/message';
 import React__default, { createElement, Component } from 'react';
+import { Icon, Progress, Tooltip, message, Radio, Button } from 'antd';
 import RcUpload from 'rc-upload';
 import classNames from 'classnames';
 import { uniqBy, maxBy, isEqual } from 'lodash';
 import { createHash } from 'crypto';
-import 'antd/es/tooltip/style';
-import _Tooltip from 'antd/es/tooltip';
-import 'antd/es/progress/style';
-import _Progress from 'antd/es/progress';
 import Animate from 'rc-animate';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
@@ -1555,7 +1544,7 @@ var UploadList = /*#__PURE__*/function (_React$Component) {
           showDownloadIcon = _this$props.showDownloadIcon,
           progressAttr = _this$props.progressAttr;
       var progress;
-      var icon = /*#__PURE__*/createElement(_Icon, {
+      var icon = /*#__PURE__*/createElement(Icon, {
         type: file.status === 'uploading' ? 'loading' : 'paper-clip'
       });
 
@@ -1565,7 +1554,7 @@ var UploadList = /*#__PURE__*/function (_React$Component) {
             className: "".concat(prefixCls, "-list-item-uploading-text")
           }, locale.uploading);
         } else if (!file.thumbUrl && !file.url) {
-          icon = /*#__PURE__*/createElement(_Icon, {
+          icon = /*#__PURE__*/createElement(Icon, {
             className: "".concat(prefixCls, "-list-item-thumbnail"),
             type: "picture",
             theme: "twoTone"
@@ -1575,7 +1564,7 @@ var UploadList = /*#__PURE__*/function (_React$Component) {
             src: getFileTypeImg(file),
             alt: file.name,
             className: "".concat(prefixCls, "-list-item-image")
-          }) : /*#__PURE__*/createElement(_Icon, {
+          }) : /*#__PURE__*/createElement(Icon, {
             type: "file",
             className: "".concat(prefixCls, "-list-item-icon"),
             theme: "twoTone"
@@ -1594,7 +1583,7 @@ var UploadList = /*#__PURE__*/function (_React$Component) {
 
       if (file.status === 'uploading') {
         // show loading icon if upload progress listener is disabled
-        var loadingProgress = 'percent' in file ? /*#__PURE__*/createElement(_Progress, _extends({
+        var loadingProgress = 'percent' in file ? /*#__PURE__*/createElement(Progress, _extends({
           type: "line"
         }, progressAttr, {
           percent: file.percent
@@ -1607,14 +1596,14 @@ var UploadList = /*#__PURE__*/function (_React$Component) {
 
       var infoUploadingClass = classNames((_classNames = {}, _defineProperty(_classNames, "".concat(prefixCls, "-list-item"), true), _defineProperty(_classNames, "".concat(prefixCls, "-list-item-").concat(file.status), true), _defineProperty(_classNames, "".concat(prefixCls, "-list-item-list-type-").concat(listType), true), _classNames));
       var linkProps = typeof file.linkProps === 'string' ? JSON.parse(file.linkProps) : file.linkProps;
-      var removeIcon = showRemoveIcon ? /*#__PURE__*/createElement(_Icon, {
+      var removeIcon = showRemoveIcon ? /*#__PURE__*/createElement(Icon, {
         type: "delete",
         title: locale.removeFile,
         onClick: function onClick() {
           return _this.handleClose(file);
         }
       }) : null;
-      var downloadIcon = showDownloadIcon && file.status === 'done' ? /*#__PURE__*/createElement(_Icon, {
+      var downloadIcon = showDownloadIcon && file.status === 'done' ? /*#__PURE__*/createElement(Icon, {
         type: "download",
         title: locale.downloadFile,
         onClick: function onClick() {
@@ -1664,7 +1653,7 @@ var UploadList = /*#__PURE__*/function (_React$Component) {
           return _this.handlePreview(file, e);
         },
         title: locale.previewFile
-      }, /*#__PURE__*/createElement(_Icon, {
+      }, /*#__PURE__*/createElement(Icon, {
         type: "eye-o"
       })) : null;
       var actions = listType === 'picture-card' && file.status !== 'uploading' && /*#__PURE__*/createElement("span", {
@@ -1681,7 +1670,7 @@ var UploadList = /*#__PURE__*/function (_React$Component) {
       var iconAndPreview = /*#__PURE__*/createElement("span", null, icon, preview);
       var dom = /*#__PURE__*/createElement("div", {
         className: infoUploadingClass
-      }, file.status !== 'error' && listType === 'picture-card' ? /*#__PURE__*/createElement(_Tooltip, {
+      }, file.status !== 'error' && listType === 'picture-card' ? /*#__PURE__*/createElement(Tooltip, {
         title: file.name,
         placement: "top"
       }, /*#__PURE__*/createElement("div", {
@@ -1696,7 +1685,7 @@ var UploadList = /*#__PURE__*/function (_React$Component) {
       return /*#__PURE__*/createElement("div", {
         key: file.uid,
         className: listContainerNameClass
-      }, file.status === 'error' ? /*#__PURE__*/createElement(_Tooltip, {
+      }, file.status === 'error' ? /*#__PURE__*/createElement(Tooltip, {
         title: message
       }, dom) : /*#__PURE__*/createElement("span", null, dom));
     });
@@ -2564,22 +2553,19 @@ var Uploader = /*#__PURE__*/function (_Component) {
       var fileList = _this.state.fileList; //Check for file extension
 
       if (fileExtension && !_this.hasExtension(file.name)) {
-        _message.error(fileErrorMsg && fileErrorMsg.fileExtensionErrorMsg ? fileErrorMsg.fileExtensionErrorMsg : "\u4E0D\u652F\u6301\u7684\u6587\u4EF6\u683C\u5F0F\uFF0C\u8BF7\u4E0A\u4F20\u683C\u5F0F\u4E3A".concat(fileExtension.join(','), "\u7684\u6587\u4EF6"));
-
+        message.error(fileErrorMsg && fileErrorMsg.fileExtensionErrorMsg ? fileErrorMsg.fileExtensionErrorMsg : "\u4E0D\u652F\u6301\u7684\u6587\u4EF6\u683C\u5F0F\uFF0C\u8BF7\u4E0A\u4F20\u683C\u5F0F\u4E3A".concat(fileExtension.join(','), "\u7684\u6587\u4EF6"));
         return false;
       } // Check for file size
 
 
       if (file.size / 1024 / 1024 > maxFileSize) {
-        _message.error(fileErrorMsg && fileErrorMsg.fileSizeErrorMsg ? fileErrorMsg.fileSizeErrorMsg : "\u6587\u4EF6\u8FC7\u5927\uFF0C\u6700\u5927\u53EF\u4E0A\u4F20".concat(maxFileNum));
-
+        message.error(fileErrorMsg && fileErrorMsg.fileSizeErrorMsg ? fileErrorMsg.fileSizeErrorMsg : "\u6587\u4EF6\u8FC7\u5927\uFF0C\u6700\u5927\u53EF\u4E0A\u4F20".concat(maxFileNum));
         return false;
       } // Check for file number
 
 
       if (files.length + fileList.length > maxFileNum) {
-        _message.error(fileErrorMsg && fileErrorMsg.fileNumerErrorMsg ? fileErrorMsg.fileNumerErrorMsg : "\u6587\u4EF6\u6570\u91CF\u8FC7\u591A\uFF0C\u6700\u591A\u53EF\u4E0A\u4F20".concat(maxFileNum, "\u4EFD"));
-
+        message.error(fileErrorMsg && fileErrorMsg.fileNumerErrorMsg ? fileErrorMsg.fileNumerErrorMsg : "\u6587\u4EF6\u6570\u91CF\u8FC7\u591A\uFF0C\u6700\u591A\u53EF\u4E0A\u4F20".concat(maxFileNum, "\u4EFD"));
         return false;
       }
 
@@ -2587,9 +2573,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
         return i.sortNo;
       });
       var maxSortNo = maxItem ? maxItem.sortNo : 0;
-
-      var hideLoading = _message.loading('文件正在预处理', 0);
-
+      var hideLoading = message.loading('文件正在预处理', 0);
       var encodedFileName = encodeFileName(file.name);
 
       if (getOssParams) {
@@ -2649,9 +2633,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
           hideLoading();
         })["catch"](function (e) {
           console.error('Uploader error', e);
-
-          _message.error("".concat(file.name, " \u9884\u5904\u7406\u5931\u8D25"));
-
+          message.error("".concat(file.name, " \u9884\u5904\u7406\u5931\u8D25"));
           hideLoading();
         }); // not do the upload after image added
 
@@ -2698,11 +2680,11 @@ var Uploader = /*#__PURE__*/function (_Component) {
           radioItems = _showRadioButton$radi === void 0 ? defaultRadioItems : _showRadioButton$radi;
       return /*#__PURE__*/React__default.createElement("div", {
         className: "nsc-uploader-radio nsc-uploader-radio-".concat(placement)
-      }, showRadioTitle && /*#__PURE__*/React__default.createElement("span", null, "\u6587\u4EF6\u5C55\u793A\u6837\u5F0F\uFF1A"), /*#__PURE__*/React__default.createElement(_Radio.Group, {
+      }, showRadioTitle && /*#__PURE__*/React__default.createElement("span", null, "\u6587\u4EF6\u5C55\u793A\u6837\u5F0F\uFF1A"), /*#__PURE__*/React__default.createElement(Radio.Group, {
         onChange: _this.onListTypeChange,
         value: _this.state.listType
       }, radioItems && radioItems.map(function (item) {
-        return /*#__PURE__*/React__default.createElement(_Radio, {
+        return /*#__PURE__*/React__default.createElement(Radio, {
           key: item.key,
           value: item.key
         }, item.value);
@@ -2741,13 +2723,11 @@ var Uploader = /*#__PURE__*/function (_Component) {
     value: function save(file) {
       var onSave = this.props.onSave;
       return onSave(file).then(function (r) {
-        _message.success('上传成功');
-
+        message.success('上传成功');
         return toFile(r);
       })["catch"](function (e) {
         console.error(e);
-
-        _message.error('上传失败');
+        message.error('上传失败');
       });
     }
   }, {
@@ -2789,19 +2769,19 @@ var Uploader = /*#__PURE__*/function (_Component) {
 
       fileList.sort(sorter); //listType === "picture-card"时 默认上传按钮
 
-      var cardButton = /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement(_Icon, {
+      var cardButton = /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement(Icon, {
         type: "plus"
       }), /*#__PURE__*/React__default.createElement("div", {
         className: "uploadText"
       }, "\u4E0A\u4F20\u6587\u4EF6")); //listType === "text' 或 'picture"时默认上传按钮
 
-      var textButton = /*#__PURE__*/React__default.createElement(_Button, null, /*#__PURE__*/React__default.createElement(_Icon, {
+      var textButton = /*#__PURE__*/React__default.createElement(Button, null, /*#__PURE__*/React__default.createElement(Icon, {
         type: "upload"
       }), " \u4E0A\u4F20\u6587\u4EF6"); //拖动上传时默认上传按钮
 
       var draggerBtn = /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement("p", {
         className: "ant-upload-drag-icon"
-      }, /*#__PURE__*/React__default.createElement(_Icon, {
+      }, /*#__PURE__*/React__default.createElement(Icon, {
         type: "inbox",
         style: {
           color: '#3db389'
