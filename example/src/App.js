@@ -71,9 +71,9 @@ class App extends Component {
     const ossParams={
       region:OSS_ENDPOINT,
       bucket:OSS_BUCKET,
-      accessKeyId: "STS.NUmxYzugX7UKmmUhGDJ6NtqzR",
-      accessKeySecret: "57UtphQ5rGUDnbgVhP5YbKNkFmzPSYNeEctEvgTuTBoz",
-      stsToken: "CAISjgJ1q6Ft5B2yfSjIr5bYM+POmLh5gJegb0vkjEcRRrlim7TRsDz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHdtFsHmzqMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAFYyiOKtyfIdzgwciNR47g/+kXfdPpW7eicNEa+CQmvWEdyZFQMw3wlAI7+eZ+9VoT6YiPPN1y+kNxMbVwHh0k9adNfJrNQJoIiTAC3NmDOeyyUjW6u1kfz4E+JINsIfgb3BRpM94aZt6crhIvbcZ68GfljDYaTILUJbUwRL8zyog=="
+      accessKeyId: "STS.NTovQgZ312VMqDB3ozDgt6Fo1",
+      accessKeySecret: "oLtyoUqKcRquLfWTecsFJ7q44Z1ENUeecC3cvHgsh9S",
+      stsToken: "CAISjgJ1q6Ft5B2yfSjIr5faPevTt+wQhZSmc2Lz128vSOhY2YPE0zz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHdkD7nq1qMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAF+NhDj+tccoq8GGtWxF8hI7XVVbORfKWsdrhhRWX71tOPtq7tLUKcgwvbZGagRES3t6wsWr5aqbJG6w8wZDnRXyE0NG7xufeFr7mzKNyqVUMCMNNK/c6GMdtKaPEzmfDrx7kf9fGMM8K2iog8nJwWxln0FaU0OI8Db5a8tJqLPVw=="
     }
     resolve(ossParams)
   })
@@ -128,6 +128,14 @@ class App extends Component {
       onSortEnd:this.onSortEnd,
       onDownload:this.onDownload,
       defaultFiles:fileList,
+      type:'dragger',
+      showRadioButton:  {
+        placement:'left' , 
+        radioItems:[ 
+          {key:'picture-card',value:'网格'},
+          {key:'text',value:'列表'}
+        ]
+        }
     }
 
     

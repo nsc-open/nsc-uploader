@@ -5,7 +5,7 @@ import { Icon, Button, message ,Radio } from 'antd'
 import Upload from './Upload'
 import Dragger from './Dragger'
 import { getUploadClient, encodeFileName, arrayMove } from './utils'
-import _ from 'lodash'
+import { isEqual, maxBy } from 'loadsh'
 
 import './style/index.css'
 
@@ -55,7 +55,7 @@ class Uploader extends Component {
       }
     
       componentWillReceiveProps (nextProps) {
-        if (!_.isEqual(nextProps.defaultFiles, this.props.defaultFiles)) {
+        if (!isEqual(nextProps.defaultFiles, this.props.defaultFiles)) {
           this.setState({ fileList: nextProps.defaultFiles.map(toFile).sort(sorter) })
         }
       }
@@ -128,7 +128,7 @@ class Uploader extends Component {
           return false
         }
 
-        const maxItem = _.maxBy(fileList,i=>i.sortNo)
+        const maxItem = maxBy(fileList,i=>i.sortNo)
         const maxSortNo = maxItem ? maxItem.sortNo : 0
 
         const hideLoading = message.loading('文件正在预处理', 0)
@@ -251,7 +251,6 @@ class Uploader extends Component {
         );
 
         //listType === "text' 或 'picture"时默认上传按钮
-
         const textButton =  (
           <Button>
             <Icon type="upload" /> 上传文件

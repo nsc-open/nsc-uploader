@@ -1,6 +1,4 @@
-import moment from 'moment'
 import { createHash } from 'crypto'
-import * as React from 'react'
 
 const OSS = require('ali-oss')
 
@@ -9,9 +7,9 @@ export const getUploadClient = (params) => {
 }
 
 export const encodeFileName = (filename) => {
-  const timeStr = moment().format('YYYYMMDDHHmmss')
   const timeStamp = new Date().valueOf()
-  const hash = createHash('md5').update(filename + timeStr).digest('hex')
+  const hash = createHash('md5').update(filename + timeStamp).digest('hex')
+  console.log('hash',hash)
   return hash+'_'+timeStamp
 }
 
