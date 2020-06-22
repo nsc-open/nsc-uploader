@@ -28,7 +28,7 @@ const createModuleConfig = (external, isDev) => ({
   ...(isDev ? {watch: {
     include: 'src/**',
     clearScreen: true
-  }} : {})
+  }} : {}),
 });
 
 export default createModuleConfig;

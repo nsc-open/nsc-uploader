@@ -3,8 +3,9 @@ import PropTypes from 'prop-types'
 import { Icon, Button, message ,Radio } from 'antd'
 import Upload from './Upload'
 import Dragger from './Dragger'
-import { getUploadClient, encodeFileName, arrayMove ,co } from './utils'
-import { isEqual, maxBy } from 'loadsh'
+import { getUploadClient, encodeFileName, arrayMove  } from './utils'
+import co from './Co'
+import { isEqual, maxBy } from 'lodash'
 
 import './style/index.css'
 
