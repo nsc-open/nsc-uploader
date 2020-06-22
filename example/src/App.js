@@ -128,15 +128,6 @@ class App extends Component {
       onSortEnd:this.onSortEnd,
       onDownload:this.onDownload,
       defaultFiles:fileList,
-      showUploadButton:false,
-      type:'dragger',
-      showRadioButton:{
-        showRadioTitle:false , 
-        radioItems:[ 
-          {key:'picture-card',value:'网格'},
-          {key:'text',value:'列表'}
-        ]
-      }
     }
 
     

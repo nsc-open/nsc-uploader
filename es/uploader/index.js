@@ -19389,7 +19389,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
         dragSortable: dragSortable,
         disabled: disabled,
         onSortEnd: this.onSortEnd,
-        className: showUploadButton ? "".concat(className, " nsc-uploader-dragger-show") : "".concat(className, " nsc-uploader-dragger-hide")
+        className: showUploadButton ? "".concat(className) : "".concat(className, " nsc-uploader-dragger-hide")
       }; //文件列表按上传顺序排序
 
       fileList.sort(sorter); //listType === "picture-card"时 默认上传按钮

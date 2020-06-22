@@ -237,7 +237,7 @@ class Uploader extends Component {
           dragSortable:dragSortable,
           disabled:disabled,
           onSortEnd:this.onSortEnd,
-          className:showUploadButton ? `${className} nsc-uploader-dragger-show` : `${className} nsc-uploader-dragger-hide` ,
+          className:showUploadButton ? `${className}` : `${className} nsc-uploader-dragger-hide` ,
         }
         //文件列表按上传顺序排序
         fileList.sort(sorter)

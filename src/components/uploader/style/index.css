@@ -13,7 +13,7 @@
 }
 
 .nsc-uploader-dragger-show{
-    display: block;
+    display: flex;
 }
 
 .nsc-uploader-radio{

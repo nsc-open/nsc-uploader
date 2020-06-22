@@ -19091,7 +19091,7 @@ function styleInject(css, ref) {
   }
 }
 
-var css_248z = ".nsc-upload-picture-card-wrapper{\r\n    display: flex;\r\n    width: 100%;\r\n    z-index: 1;\r\n}\r\n\r\n.nsc-upload-container .ant-upload.ant-upload-drag{\r\n    margin-bottom: 10px;\r\n}\r\n\r\n.nsc-uploader-dragger-hide{\r\n    display: none;\r\n}\r\n\r\n.nsc-uploader-dragger-show{\r\n    display: block;\r\n}\r\n\r\n.nsc-uploader-radio{\r\n    margin: 15px 0px;\r\n}\r\n.nsc-uploader-radio-right{\r\n    text-align: right;\r\n    margin: 15px 0px;\r\n}\r\n.nsc-uploader-radio-left{\r\n    text-align: left;\r\n    margin: 15px 0px;\r\n}\r\n.nsc-uploader-radio-center{\r\n    text-align: center;\r\n    margin: 15px 0px;\r\n}";
+var css_248z = ".nsc-upload-picture-card-wrapper{\r\n    display: flex;\r\n    width: 100%;\r\n    z-index: 1;\r\n}\r\n\r\n.nsc-upload-container .ant-upload.ant-upload-drag{\r\n    margin-bottom: 10px;\r\n}\r\n\r\n.nsc-uploader-dragger-hide{\r\n    display: none;\r\n}\r\n\r\n.nsc-uploader-dragger-show{\r\n    display: flex;\r\n}\r\n\r\n.nsc-uploader-radio{\r\n    margin: 15px 0px;\r\n}\r\n.nsc-uploader-radio-right{\r\n    text-align: right;\r\n    margin: 15px 0px;\r\n}\r\n.nsc-uploader-radio-left{\r\n    text-align: left;\r\n    margin: 15px 0px;\r\n}\r\n.nsc-uploader-radio-center{\r\n    text-align: center;\r\n    margin: 15px 0px;\r\n}";
 styleInject(css_248z);
 
 var toFile = function toFile(attachment) {
@@ -19419,7 +19419,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
         dragSortable: dragSortable,
         disabled: disabled,
         onSortEnd: this.onSortEnd,
-        className: showUploadButton ? "".concat(className, " nsc-uploader-dragger-show") : "".concat(className, " nsc-uploader-dragger-hide")
+        className: showUploadButton ? "".concat(className) : "".concat(className, " nsc-uploader-dragger-hide")
       }; //文件列表按上传顺序排序
 
       fileList.sort(sorter); //listType === "picture-card"时 默认上传按钮
