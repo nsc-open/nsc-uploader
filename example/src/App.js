@@ -72,9 +72,9 @@ class App extends Component {
     const ossParams={
       region:OSS_ENDPOINT,
       bucket:OSS_BUCKET,
-      accessKeyId: "STS.NV5bYx9KLU4a8piHL9wsXMH1a",
-      accessKeySecret: "wWiMK1VEF44UYPHsWyV7x5bGJ88DMcqQsVFkxJf8Lad",
-      stsToken: "CAISjgJ1q6Ft5B2yfSjIr5WAKePM1JRt4vaKOlbYrExse/x0oo2agzz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHelXtn61qMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAGGWwHLM8LL6KeXqOhfWNdzL2E5ZbwLDEKumzeoMrilOY9P3Jc5CFGGylkBOT1vwh3Vg/HNgQilEtZymBzuXhzjcZTzCpmuvbBRYGpvwQ5ev6dESO9GPC4hV5dvP90Tj03FW4uc+GHDdS+nz33JN6hNmc+JuX9q+0gHYvbjY7aUtQ=="
+      accessKeyId: "STS.NTpS43PDRjrdWy2QscQRVUv5h",
+      accessKeySecret: "6f4dF5nBHm7sYsPbcTGDKbvvxFPEjBMpcCtcJexuhiKE",
+      stsToken:"CAISjgJ1q6Ft5B2yfSjIr5fFGI6HvZtz3bCPVV+DtXM2Xd16urOeijz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHeAVhlu1qMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAGhxoKh34q7iuIyRFxe0JULOBMIG0dF+SObp3EgCdhWknXfHDL7rsYJOD9xdymVNGOjrQowEAKpj9j7pGwQ0cTPx/wvbMSJS+3iGIAIq+Wd6ZwuIPUpysdDPQRduXsUZQEGOw/5qn2aRcf+5NK3vDNunwal46PDFlirow31tmBFfg=="
     }
     resolve(ossParams)
   })
@@ -129,7 +129,6 @@ class App extends Component {
       onSortEnd:this.onSortEnd,
       onDownload:this.onDownload,
       defaultFiles:fileList,
-      type:'dragger',
       showRadioButton:  {
         placement:'left' , 
         radioItems:[ 
