@@ -2767,7 +2767,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
         dragSortable: dragSortable,
         disabled: disabled,
         onSortEnd: this.onSortEnd,
-        className: showUploadButton ? "".concat(className) : "".concat(className, " nsc-uploader-dragger-hide")
+        className: showUploadButton ? "".concat(className) : type === 'dragger' ? "".concat(className, " nsc-uploader-dragger-hide") : "".concat(className)
       }; //文件列表按上传顺序排序
 
       fileList.sort(sorter); //listType === "picture-card"时 默认上传按钮
@@ -2792,7 +2792,6 @@ var Uploader = /*#__PURE__*/function (_Component) {
       })), /*#__PURE__*/React__default.createElement("p", {
         className: "ant-upload-text"
       }, "\u70B9\u51FB\u83B7\u53D6\u62D6\u52A8 \u56FE\u7247\u6216\u6587\u6863 \u5230\u8FD9\u5757\u533A\u57DF\u5B8C\u6210\u6587\u4EF6\u4E0A\u4F20"));
-      console.log('showUploadButton', showUploadButton);
       return /*#__PURE__*/React__default.createElement("div", {
         className: "nsc-upload-container"
       }, customRadioButton ? customRadioButton : showRadioButton ? this.renderRadio(showRadioButton) : null, type === 'dragger' ? /*#__PURE__*/React__default.createElement(Dragger, props, showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : draggerBtn : null) : /*#__PURE__*/React__default.createElement(Upload, props, showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : listType === 'picture-card' ? cardButton : textButton : null));
