@@ -2722,7 +2722,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
     key: "save",
     value: function save(file) {
       var onSave = this.props.onSave;
-      return onSave(file).then(function (r) {
+      return onSave(toAttachment(file)).then(function (r) {
         message.success('上传成功');
         return toFile(r);
       })["catch"](function (e) {
