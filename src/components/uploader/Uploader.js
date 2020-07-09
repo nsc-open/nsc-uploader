@@ -92,7 +92,7 @@ class Uploader extends Component {
 
       save (file) {
         const { onSave } = this.props
-        return onSave(file).then(r => {
+        return onSave(toAttachment(file)).then(r => {
           message.success('上传成功')
           return toFile(r)
         }).catch(e => {
