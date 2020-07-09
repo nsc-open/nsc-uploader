@@ -2778,10 +2778,13 @@ var Uploader = /*#__PURE__*/function (_Component) {
           showRadioButton = _this$props3.showRadioButton,
           _this$props3$classNam = _this$props3.className,
           className = _this$props3$classNam === void 0 ? '' : _this$props3$classNam,
-          customRadioButton = _this$props3.customRadioButton;
+          customRadioButton = _this$props3.customRadioButton,
+          _this$props3$accept = _this$props3.accept,
+          accept = _this$props3$accept === void 0 ? '' : _this$props3$accept;
       var listType = showRadioButton ? this.state.listType : this.props.listType;
       var props = {
         action: '',
+        accept: accept,
         fileList: fileList,
         listType: listType,
         beforeUpload: beforeUpload ? beforeUpload : this.beforeUpload,

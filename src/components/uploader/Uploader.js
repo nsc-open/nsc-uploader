@@ -218,13 +218,15 @@ class Uploader extends Component {
           showUploadButton,
           showRadioButton,
           className='',
-          customRadioButton
+          customRadioButton,
+          accept='',
         }= this.props
 
         const listType = showRadioButton ?  this.state.listType : this.props.listType
 
         const props = {
           action:'',
+          accept,
           fileList:fileList,
           listType:listType,
           beforeUpload: beforeUpload ? beforeUpload : this.beforeUpload,
