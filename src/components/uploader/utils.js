@@ -9,7 +9,6 @@ export const getUploadClient = (params) => {
 export const encodeFileName = (filename) => {
   const timeStamp = new Date().valueOf()
   const hash = createHash('md5').update(filename + timeStamp).digest('hex')
-  console.log('hash',hash)
   return hash+'_'+timeStamp
 }
 

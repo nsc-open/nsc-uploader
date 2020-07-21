@@ -2,7 +2,7 @@ import React__default, { createElement, Component } from 'react';
 import { Icon, Progress, Tooltip, message, Radio, Button } from 'antd';
 import RcUpload from 'rc-upload';
 import classNames from 'classnames';
-import { uniqBy, maxBy, isEqual } from 'lodash';
+import { findIndex, uniqBy, maxBy, isEqual } from 'lodash';
 import { createHash } from 'crypto';
 import Animate from 'rc-animate';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -1324,7 +1324,6 @@ var getUploadClient = function getUploadClient(params) {
 var encodeFileName = function encodeFileName(filename) {
   var timeStamp = new Date().valueOf();
   var hash = createHash('md5').update(filename + timeStamp).digest('hex');
-  console.log('hash', hash);
   return hash + '_' + timeStamp;
 };
 
@@ -2489,8 +2488,7 @@ var toFile = function toFile(attachment) {
     size: attachment.fileSize,
     ext: attachment.fileExt,
     type: attachment.fileType,
-    sortNo: attachment.sortNo,
-    status: 'done'
+    sortNo: attachment.sortNo
   };
 };
 
@@ -2503,8 +2501,7 @@ var toAttachment = function toAttachment(file) {
     fileType: file.type,
     fileExt: file.ext,
     uri: file.url,
-    sortNo: file.sortNo,
-    status: 'done'
+    sortNo: file.sortNo
   };
 };
 
@@ -2764,41 +2761,36 @@ var Uploader = /*#__PURE__*/function (_Component) {
     key: "render",
     value: function render() {
       var fileList = this.state.fileList;
+
       var _this$props3 = this.props,
-          multiple = _this$props3.multiple,
           dragSortable = _this$props3.dragSortable,
           beforeUpload = _this$props3.beforeUpload,
           type = _this$props3.type,
           maxFileNum = _this$props3.maxFileNum,
-          showUploadList = _this$props3.showUploadList,
           disabled = _this$props3.disabled,
-          previewFile = _this$props3.previewFile,
           children = _this$props3.children,
           showUploadButton = _this$props3.showUploadButton,
           showRadioButton = _this$props3.showRadioButton,
           _this$props3$classNam = _this$props3.className,
           className = _this$props3$classNam === void 0 ? '' : _this$props3$classNam,
           customRadioButton = _this$props3.customRadioButton,
-          _this$props3$accept = _this$props3.accept,
-          accept = _this$props3$accept === void 0 ? '' : _this$props3$accept;
+          restProps = _objectWithoutProperties(_this$props3, ["dragSortable", "beforeUpload", "type", "maxFileNum", "disabled", "children", "showUploadButton", "showRadioButton", "className", "customRadioButton"]);
+
       var listType = showRadioButton ? this.state.listType : this.props.listType;
-      var props = {
-        action: '',
-        accept: accept,
+
+      var props = _objectSpread2(_objectSpread2({}, restProps), {}, {
         fileList: fileList,
         listType: listType,
         beforeUpload: beforeUpload ? beforeUpload : this.beforeUpload,
-        onPreview: this.handlePreview,
-        onRemove: this.handleRemove,
-        onDownload: this.handleDownload,
-        previewFile: previewFile,
-        showUploadList: showUploadList,
-        multiple: multiple,
         dragSortable: dragSortable,
         disabled: disabled,
         onSortEnd: this.onSortEnd,
-        className: showUploadButton ? "".concat(className) : type === 'dragger' ? "".concat(className, " nsc-uploader-dragger-hide") : "".concat(className)
-      }; //文件列表按上传顺序排序
+        className: showUploadButton ? "".concat(className) : type === 'dragger' ? "".concat(className, " nsc-uploader-dragger-hide") : "".concat(className),
+        onPreview: this.handlePreview,
+        onRemove: this.handleRemove,
+        onDownload: this.handleDownload
+      }); //文件列表按上传顺序排序
+
 
       fileList.sort(sorter); //listType === "picture-card"时 默认上传按钮
 

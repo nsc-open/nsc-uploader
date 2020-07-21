@@ -19,7 +19,6 @@ const toFile = attachment => ({
     ext: attachment.fileExt,
     type: attachment.fileType,
     sortNo: attachment.sortNo,
-    status:'done',
   })
   const toAttachment = file => ({
     id: file.id || file.uid,
@@ -30,7 +29,6 @@ const toFile = attachment => ({
     fileExt: file.ext,
     uri: file.url,
     sortNo: file.sortNo,
-    status:'done',
   })
   
   const sorter = (a,b)=>a.sortNo - b.sortNo
@@ -205,41 +203,34 @@ class Uploader extends Component {
 
       render() {
         const { fileList  } = this.state
-        const { 
-          multiple,
+        const {
           dragSortable,
           beforeUpload,
           type,
           maxFileNum,
-          showUploadList,
           disabled,
-          previewFile,
           children,
           showUploadButton,
           showRadioButton,
           className='',
           customRadioButton,
-          accept='',
+          ...restProps
         }= this.props
 
         const listType = showRadioButton ?  this.state.listType : this.props.listType
 
         const props = {
-          action:'',
-          accept,
+          ...restProps,
           fileList:fileList,
           listType:listType,
           beforeUpload: beforeUpload ? beforeUpload : this.beforeUpload,
-          onPreview:this.handlePreview,
-          onRemove :this.handleRemove,
-          onDownload :this.handleDownload,
-          previewFile :previewFile,
-          showUploadList :showUploadList,
-          multiple:multiple,
           dragSortable:dragSortable,
           disabled:disabled,
           onSortEnd:this.onSortEnd,
           className:showUploadButton ? `${className}` : type ==='dragger' ? `${className} nsc-uploader-dragger-hide` : `${className}` ,
+          onPreview:this.handlePreview,
+          onRemove :this.handleRemove,
+          onDownload :this.handleDownload,
         }
         //文件列表按上传顺序排序
         fileList.sort(sorter)

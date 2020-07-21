@@ -72,16 +72,16 @@ class App extends Component {
     const ossParams={
       region:OSS_ENDPOINT,
       bucket:OSS_BUCKET,
-      accessKeyId: "STS.NTpS43PDRjrdWy2QscQRVUv5h",
-      accessKeySecret: "6f4dF5nBHm7sYsPbcTGDKbvvxFPEjBMpcCtcJexuhiKE",
-      stsToken:"CAISjgJ1q6Ft5B2yfSjIr5fFGI6HvZtz3bCPVV+DtXM2Xd16urOeijz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHeAVhlu1qMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAGhxoKh34q7iuIyRFxe0JULOBMIG0dF+SObp3EgCdhWknXfHDL7rsYJOD9xdymVNGOjrQowEAKpj9j7pGwQ0cTPx/wvbMSJS+3iGIAIq+Wd6ZwuIPUpysdDPQRduXsUZQEGOw/5qn2aRcf+5NK3vDNunwal46PDFlirow31tmBFfg=="
+      accessKeyId: "STS.NU5zZ7KBBjpGAgB3aPzNYAqrR",
+      accessKeySecret: "7aRJa1xRCHCamaWZsE8RNYMMuj1JJz4kTT6eCLdJdiZH",
+      stsToken: "CAISjgJ1q6Ft5B2yfSjIr5aAMeCDpp1j3bKsQ0Hz12EFdsF1rrTZsDz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHaE93yGvqMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAFdEtePuT7vKbLXKz/TGX0+AF/xt7jgnARfwywRY+RORMzAOX1Y2mZSXqkv3oNNgIYvVBgFbEmGPKqXchu1h0p6BH0CVYpvI2yKMoficGmmv8Yp22KKmJH4rGTUGzfjC2rn9/WdQqSGZ4w5R3AlKa/uyWNeza8wopMo5jGncwqaJg=="
+
     }
     resolve(ossParams)
   })
 
 
 	onFileChange = (file,fileList) => {
-		console.log(file)
 		this.setState({fileList:fileList})
   }
   handleCancel=()=>{
@@ -113,9 +113,17 @@ class App extends Component {
     console.log(oldList,newList)
   }
 
+  onChange=({file})=>{
+    console.log(file)
+  }
+
+  beforeUpload=({file})=>{
+    console.log(file)
+  }
+  
   render() {
     const { previewVisible ,previewImage,previewFileVisible,previewFile,fileList } = this.state
-		let accept = "image/*, .pdf, .doc, .docx, .xlsx, .xls, .csv"
+		let accept = ".xlsx"
 
 		const uploadProps = {
 		  getOssParams:this.getOssParams,
@@ -124,7 +132,7 @@ class App extends Component {
       listType:'picture-card',
 		  onFileChange:this.onFileChange,
 		  maxFileSize:2,
-		  accept,
+      accept,
       onPreview:this.onPreview,
       onSortEnd:this.onSortEnd,
       onDownload:this.onDownload,
