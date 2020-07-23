@@ -2458,7 +2458,8 @@ var toFile = function toFile(attachment) {
     size: attachment.fileSize,
     ext: attachment.fileExt,
     type: attachment.fileType,
-    sortNo: attachment.sortNo
+    sortNo: attachment.sortNo,
+    status: 'done'
   };
 };
 
@@ -2471,7 +2472,8 @@ var toAttachment = function toAttachment(file) {
     fileType: file.type,
     fileExt: file.ext,
     uri: file.url,
-    sortNo: file.sortNo
+    sortNo: file.sortNo,
+    status: file.status
   };
 };
 

@@ -72,9 +72,10 @@ class App extends Component {
     const ossParams={
       region:OSS_ENDPOINT,
       bucket:OSS_BUCKET,
-      accessKeyId: "STS.NU5zZ7KBBjpGAgB3aPzNYAqrR",
-      accessKeySecret: "7aRJa1xRCHCamaWZsE8RNYMMuj1JJz4kTT6eCLdJdiZH",
-      stsToken: "CAISjgJ1q6Ft5B2yfSjIr5aAMeCDpp1j3bKsQ0Hz12EFdsF1rrTZsDz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHaE93yGvqMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAFdEtePuT7vKbLXKz/TGX0+AF/xt7jgnARfwywRY+RORMzAOX1Y2mZSXqkv3oNNgIYvVBgFbEmGPKqXchu1h0p6BH0CVYpvI2yKMoficGmmv8Yp22KKmJH4rGTUGzfjC2rn9/WdQqSGZ4w5R3AlKa/uyWNeza8wopMo5jGncwqaJg=="
+      accessKeyId: "STS.NTWAULcK5xkBQavX2Mo8vCguM",
+      accessKeySecret: "7BJVTkygEoP5jvUx3dMT6ExojPr9GAyBkcsdf6WLr8Es",
+      stsToken: "CAISjgJ1q6Ft5B2yfSjIr5fiCu/4jpQUz6mpU0fHvDIYY7darKLerzz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHcpOpG+vqMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAEO4T83FdyQqRJ/LZbhHwas7+oMf6h/Ly3jrPYfgL/Nq4ccKCsbH1yWxEKFKFX6Hnt5u6iNWMYxBlwAR8ATTj42RiwCVGzjV6EHpWNDNB4acy1If/BIPxVQX1rFHey3CaGJzXezXNS6FTohJ/yR7pcTN4UvSNjgzV7L2jFWeVTg8g=="
+
 
     }
     resolve(ossParams)

@@ -19,6 +19,7 @@ const toFile = attachment => ({
     ext: attachment.fileExt,
     type: attachment.fileType,
     sortNo: attachment.sortNo,
+    status: 'done',
   })
   const toAttachment = file => ({
     id: file.id || file.uid,
@@ -29,6 +30,7 @@ const toFile = attachment => ({
     fileExt: file.ext,
     uri: file.url,
     sortNo: file.sortNo,
+    status: file.status,
   })
   
   const sorter = (a,b)=>a.sortNo - b.sortNo
