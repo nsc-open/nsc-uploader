@@ -212,8 +212,8 @@ class Uploader extends Component {
           maxFileNum,
           disabled,
           children,
-          showRadioButton,
           className='',
+          showUploadButton,
           customRadioButton,
           ...restProps
         }= this.props
@@ -221,7 +221,6 @@ class Uploader extends Component {
         const listType = this.props.listType ? this.props.listType : this.state.listType 
 
         const showRadioButton = this.props.listType ? false : this.props.showRadioButton
-        
         const props = {/*  */
           ...restProps,
           fileList:fileList,
@@ -230,7 +229,7 @@ class Uploader extends Component {
           dragSortable:dragSortable,
           disabled:disabled,
           onSortEnd:this.onSortEnd,
-          className:showUploadButton ? `${className}` : type ==='dragger' ? `${className} nsc-uploader-dragger-hide` : `${className}` ,
+          className: showUploadButton ? `${className}` : type ==='dragger' ? `${className} nsc-uploader-dragger-hide` : `${className}` ,
           onPreview:this.handlePreview,
           onRemove :this.handleRemove,
           onDownload :this.handleDownload,

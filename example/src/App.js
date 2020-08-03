@@ -128,7 +128,6 @@ class App extends Component {
 		  getOssParams:this.getOssParams,
       multiple: true,
       dragSortable:true,
-      listType:'picture-card',
 		  onFileChange:this.onFileChange,
 		  maxFileSize:2,
       accept,
@@ -142,7 +141,7 @@ class App extends Component {
           {key:'picture-card',value:'网格'},
           {key:'text',value:'列表'}
         ]
-        }
+      }
     }
 
     

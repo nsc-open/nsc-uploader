@@ -2771,14 +2771,14 @@ var Uploader = /*#__PURE__*/function (_Component) {
           maxFileNum = _this$props3.maxFileNum,
           disabled = _this$props3.disabled,
           children = _this$props3.children,
-          showUploadButton = _this$props3.showUploadButton,
-          showRadioButton = _this$props3.showRadioButton,
           _this$props3$classNam = _this$props3.className,
           className = _this$props3$classNam === void 0 ? '' : _this$props3$classNam,
+          showUploadButton = _this$props3.showUploadButton,
           customRadioButton = _this$props3.customRadioButton,
-          restProps = _objectWithoutProperties(_this$props3, ["dragSortable", "beforeUpload", "type", "maxFileNum", "disabled", "children", "showUploadButton", "showRadioButton", "className", "customRadioButton"]);
+          restProps = _objectWithoutProperties(_this$props3, ["dragSortable", "beforeUpload", "type", "maxFileNum", "disabled", "children", "className", "showUploadButton", "customRadioButton"]);
 
-      var listType = showRadioButton ? this.state.listType : this.props.listType;
+      var listType = this.props.listType ? this.props.listType : this.state.listType;
+      var showRadioButton = this.props.listType ? false : this.props.showRadioButton;
 
       var props = _objectSpread2(_objectSpread2({}, restProps), {}, {
         fileList: fileList,
@@ -2833,7 +2833,6 @@ Uploader.propTypes = {
 Uploader.defaultProps = {
   dragSortable: false,
   defaultFiles: [],
-  listType: "picture-card",
   multiple: false,
   type: 'select',
   showUploadButton: true,
