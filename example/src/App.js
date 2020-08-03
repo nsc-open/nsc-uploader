@@ -75,8 +75,6 @@ class App extends Component {
       accessKeyId: "STS.NTWAULcK5xkBQavX2Mo8vCguM",
       accessKeySecret: "7BJVTkygEoP5jvUx3dMT6ExojPr9GAyBkcsdf6WLr8Es",
       stsToken: "CAISjgJ1q6Ft5B2yfSjIr5fiCu/4jpQUz6mpU0fHvDIYY7darKLerzz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHcpOpG+vqMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAEO4T83FdyQqRJ/LZbhHwas7+oMf6h/Ly3jrPYfgL/Nq4ccKCsbH1yWxEKFKFX6Hnt5u6iNWMYxBlwAR8ATTj42RiwCVGzjV6EHpWNDNB4acy1If/BIPxVQX1rFHey3CaGJzXezXNS6FTohJ/yR7pcTN4UvSNjgzV7L2jFWeVTg8g=="
-
-
     }
     resolve(ossParams)
   })

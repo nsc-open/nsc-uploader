@@ -212,16 +212,17 @@ class Uploader extends Component {
           maxFileNum,
           disabled,
           children,
-          showUploadButton,
           showRadioButton,
           className='',
           customRadioButton,
           ...restProps
         }= this.props
 
-        const listType = showRadioButton ?  this.state.listType : this.props.listType
+        const listType = this.props.listType ? this.props.listType : this.state.listType 
 
-        const props = {
+        const showRadioButton = this.props.listType ? false : this.props.showRadioButton
+        
+        const props = {/*  */
           ...restProps,
           fileList:fileList,
           listType:listType,
@@ -284,7 +285,6 @@ Uploader.propTypes = {
 Uploader.defaultProps = {
     dragSortable:false,
     defaultFiles:[],
-    listType:"picture-card",
     multiple:false,
     type: 'select',
     showUploadButton:true,
