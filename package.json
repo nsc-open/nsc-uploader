@@ -4,7 +4,7 @@
   "description": "upload based on antd + React",
   "author": "aaxuyun",
   "license": "ISC",
-  "repository": "https://github.com/nsc-open/nsc-uploader.git",
+  "repository": " https://github.com/nsc-open/nsc-uploader.git",
   "main": "es/index.js",
   "jsnext:main": "es/index.modren.js",
   "engines": {

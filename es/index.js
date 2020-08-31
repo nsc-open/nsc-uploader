@@ -2509,6 +2509,12 @@ var toAttachment = function toAttachment(file) {
 
 var sorter = function sorter(a, b) {
   return a.sortNo - b.sortNo;
+}; //私有后的oss，获取url签名
+
+
+var signatureUrl = function signatureUrl(url, client) {
+  var index = url.lastIndexOf('/') + 1;
+  return client.signatureUrl(url.substring(index));
 };
 
 var Uploader = /*#__PURE__*/function (_Component) {
@@ -2604,11 +2610,11 @@ var Uploader = /*#__PURE__*/function (_Component) {
       var maxSortNo = maxItem ? maxItem.sortNo : 0;
       var hideLoading = message.loading('文件正在预处理', 0);
       var encodedFileName = encodeFileName(file.name);
+      var uploadClient;
 
       if (getOssParams) {
         getOssParams().then(function (ossParams) {
           return Co( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-            var uploadClient;
             return regeneratorRuntime.wrap(function _callee$(_context) {
               while (1) {
                 switch (_context.prev = _context.next) {
@@ -2631,12 +2637,13 @@ var Uploader = /*#__PURE__*/function (_Component) {
           var indexNo = files.findIndex(function (i) {
             return i.uid === file.uid;
           });
+          console.log(signatureUrl(aliRes.url, uploadClient));
           var newFile = {
             uid: file.uid,
             id: file.uid,
             encodedFileName: encodedFileName,
             name: file.name,
-            url: aliRes.url,
+            url: signatureUrl(aliRes.url, uploadClient),
             status: 'done',
             size: file.size,
             ext: file.name.split('.').pop(),
@@ -2818,7 +2825,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
       }, "\u70B9\u51FB\u83B7\u53D6\u62D6\u52A8 \u56FE\u7247\u6216\u6587\u6863 \u5230\u8FD9\u5757\u533A\u57DF\u5B8C\u6210\u6587\u4EF6\u4E0A\u4F20"));
       return /*#__PURE__*/React__default.createElement("div", {
         className: "nsc-upload-container"
-      }, customRadioButton ? customRadioButton : showRadioButton ? this.renderRadio(showRadioButton) : null, type === 'dragger' ? /*#__PURE__*/React__default.createElement(Dragger, props, showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : draggerBtn : null) : /*#__PURE__*/React__default.createElement(Upload, props, showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : listType === 'picture-card' ? cardButton : textButton : null));
+      }, customRadioButton ? customRadioButton : showRadioButton ? this.renderRadio(showRadioButton) : null, type === 'dragger' ? /*#__PURE__*/React__default.createElement(Dragger, props, showUploadButton ? children ? children : 'maxFileNum' in this.props && fileList.length >= maxFileNum ? null : draggerBtn : null) : /*#__PURE__*/React__default.createElement(Upload, props, showUploadButton ? children ? children : 'maxFileNum' in this.props && fileList.length >= maxFileNum ? null : listType === 'picture-card' ? cardButton : textButton : null));
     }
   }]);
 

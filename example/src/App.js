@@ -72,9 +72,10 @@ class App extends Component {
     const ossParams={
       region:OSS_ENDPOINT,
       bucket:OSS_BUCKET,
-      accessKeyId: "STS.NTWAULcK5xkBQavX2Mo8vCguM",
-      accessKeySecret: "7BJVTkygEoP5jvUx3dMT6ExojPr9GAyBkcsdf6WLr8Es",
-      stsToken: "CAISjgJ1q6Ft5B2yfSjIr5fiCu/4jpQUz6mpU0fHvDIYY7darKLerzz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHcpOpG+vqMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAEO4T83FdyQqRJ/LZbhHwas7+oMf6h/Ly3jrPYfgL/Nq4ccKCsbH1yWxEKFKFX6Hnt5u6iNWMYxBlwAR8ATTj42RiwCVGzjV6EHpWNDNB4acy1If/BIPxVQX1rFHey3CaGJzXezXNS6FTohJ/yR7pcTN4UvSNjgzV7L2jFWeVTg8g=="
+      accessKeyId: "STS.NUAMYETwYo3yHTLFcRbQ8N5Hd",
+      accessKeySecret: "2NxUvM11ju6GLZxbnPM9YRdQdSvMVDZcy9kKqwZAYQeM",
+      stsToken: "CAISjgJ1q6Ft5B2yfSjIr5b0BuPxuah42PGSSnL9omMHbt4UofDjhjz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHYdr2zDcqMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAFs57d/74mVfTPrhuNUG2P7mLOA0Oc7D5a8MmQCHL+lAwNnpYrbTGzTVquqTeaOyuf/I7qBfcNfGGK0bIiZxFSh5H3raOF7NHSR595g7laH+9n16QlnjBuNSPmZ7nBTqM4xd0viwC4x2uyZ4yxZ+b7oUmGs75ecOGsAtlJ/rvFrcw=="
+
     }
     resolve(ossParams)
   })
@@ -127,7 +128,7 @@ class App extends Component {
 		const uploadProps = {
 		  getOssParams:this.getOssParams,
       multiple: true,
-      dragSortable:true,
+      dragSortable:false,
 		  onFileChange:this.onFileChange,
 		  maxFileSize:2,
       accept,
@@ -135,17 +136,16 @@ class App extends Component {
       onSortEnd:this.onSortEnd,
       onDownload:this.onDownload,
       defaultFiles:fileList,
-      showRadioButton:  {
-        placement:'left' , 
-        radioItems:[ 
-          {key:'picture-card',value:'网格'},
-          {key:'text',value:'列表'}
-        ]
-      }
+			showUploadList: 'showUploadList' in this.props ? this.props.showUploadList: { showDownloadIcon: true },
+			showRadioButton: 'showRadioButton' in this.props ? this.props.showRadioButton : {
+				placement: 'left',
+				radioItems: [
+					{ key: 'picture-card', value: '网格' },
+					{ key: 'text', value: '列表' }
+				]
+			}
     }
 
-    
-    
     return (
       <div style={{margin:'50px',width:'50%'}}>
         <Uploader 
