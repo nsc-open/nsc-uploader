@@ -1322,9 +1322,9 @@ var getUploadClient = function getUploadClient(params) {
   return new OSS(params);
 };
 var encodeFileName = function encodeFileName(filename) {
-  var timeStamp = new Date().valueOf();
-  var hash = createHash('md5').update(filename + timeStamp).digest('hex');
-  return hash + '_' + timeStamp;
+  var timeStr = moment().format('YYYYMMDDHHmmss');
+  var hash = createHash('md5').update(filename + timeStr).digest('hex');
+  return hash;
 };
 
 var arrayMoveMutate = function arrayMoveMutate(array, from, to) {

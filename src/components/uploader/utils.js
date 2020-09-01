@@ -7,9 +7,9 @@ export const getUploadClient = (params) => {
 }
 
 export const encodeFileName = (filename) => {
-  const timeStamp = new Date().valueOf()
-  const hash = createHash('md5').update(filename + timeStamp).digest('hex')
-  return hash+'_'+timeStamp
+  const timeStr = moment().format('YYYYMMDDHHmmss')
+  const hash = createHash('md5').update(filename + timeStr).digest('hex')
+  return hash
 }
 
 const arrayMoveMutate = (array, from, to) => {
