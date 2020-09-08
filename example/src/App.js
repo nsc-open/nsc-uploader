@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Icon ,message,Modal } from 'antd'
 import { Uploader } from 'nsc-uploader'
 import 'antd/dist/antd.css'
+const OSS = require('ali-oss')
 
 const toAttachment = file => ({
 	id: file.id || file.uid,
@@ -33,7 +34,7 @@ const defaultFiles =[{
   updatedAt: "2020-06-12 09:13:54",
   updatedBy: "74",
   uploadedFrom: null,
-  uri:'http://47.92.150.213:7040/api/workReports/93770d30-af0d-11ea-a637-236812180fd0'
+  uri:'http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/cc941191cb8eb3a190a9243c070f1cb5_1599531912024'
 },{
   cloudDir: null,
   comment: null,
@@ -52,9 +53,17 @@ const defaultFiles =[{
   updatedAt: "2020-06-12 09:13:50",
   updatedBy: "74",
   uploadedFrom: null,
-  uri:'http://47.92.150.213:7040/api/workReports/93770d30-af0d-11ea-a637-236812180fd0'
+  uri:'http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/cc941191cb8eb3a190a9243c070f1cb5_1599531912024'
 }
 ]
+const ossParams={
+  region:OSS_ENDPOINT,
+  bucket:OSS_BUCKET,
+  accessKeyId: "STS.NUNzcFFm1UzeK512WDgPJPU7V",
+  accessKeySecret: "ECfswkWN4FFoTN3bh2s7eXg6sW55icsjjme1P1ZxhRjc",
+  Expiration: "2020-09-08T04:03:36Z",
+  stsToken: "CAISjgJ1q6Ft5B2yfSjIr5b7Mdnyq7IQ4riOSROA1lcRa99mv5CctDz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHaxqjXzeqMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAFpRiynzV+BNEqQ4E1NvxQNh4NSLFLfVXj9UbPxXdp1x0gd3gINce2NgcdZfnHZx+DszMpuqh7DjTeYppC32b4dYLoIybmhciSAW0gu8sKmhlUMG2yyzDD5+3VNy51AuNKvdEuCqbWi0fil2rIbg78raRkyMPxAGBPUuiQita+Z9g=="
+}
 
 class App extends Component {
   constructor (props) {
@@ -69,15 +78,14 @@ class App extends Component {
     }
 
   getOssParams = () => new Promise((resolve,reject)=>{
-    const ossParams={
-      region:OSS_ENDPOINT,
-      bucket:OSS_BUCKET,
-      accessKeyId: "STS.NTWAULcK5xkBQavX2Mo8vCguM",
-      accessKeySecret: "7BJVTkygEoP5jvUx3dMT6ExojPr9GAyBkcsdf6WLr8Es",
-      stsToken: "CAISjgJ1q6Ft5B2yfSjIr5fiCu/4jpQUz6mpU0fHvDIYY7darKLerzz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHcpOpG+vqMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAEO4T83FdyQqRJ/LZbhHwas7+oMf6h/Ly3jrPYfgL/Nq4ccKCsbH1yWxEKFKFX6Hnt5u6iNWMYxBlwAR8ATTj42RiwCVGzjV6EHpWNDNB4acy1If/BIPxVQX1rFHey3CaGJzXezXNS6FTohJ/yR7pcTN4UvSNjgzV7L2jFWeVTg8g=="
-    }
     resolve(ossParams)
   })
+
+  signatureUrl = (url) => {
+    const client = new OSS(ossParams)
+    const index = url.lastIndexOf('/') + 1
+    return client.signatureUrl(url.substring(index))
+  }
 
 
 	onFileChange = (file,fileList) => {
@@ -90,24 +98,7 @@ class App extends Component {
 		this.setState({ previewFileVisible: false })
 	}
 	  
-	onPreview = (file) => {
-    const fileType = file.fileType
-    console.log(file)
-		if(fileType){
-			if (fileType.indexOf('image') !== -1) {
-			  this.setState({ previewVisible: true, previewImage:file.uri })
-			} else if (fileType.indexOf('pdf') !== -1) {
-			   this.setState({ previewFileVisible: true, previewFile:file.uri })
-			  //window.open(file.uri)
-			} else if (fileType.indexOf('word') !== -1) {
-				this.setState({ previewFileVisible: true, previewFile:`https://view.officeapps.live.com/op/view.aspx?src=${file.uri}`})
-			} else {
-			  message.info('该文件类型不支持预览')
-			}
-		}else{
-			message.info('该文件不支持预览')
-		}
-	}
+
   onSortEnd = (oldList,newList)=>{
     console.log(oldList,newList)
   }
@@ -122,7 +113,7 @@ class App extends Component {
   
   render() {
     const { previewVisible ,previewImage,previewFileVisible,previewFile,fileList } = this.state
-		let accept = ".xlsx"
+		let accept = "*"
 
 		const uploadProps = {
 		  getOssParams:this.getOssParams,
@@ -131,7 +122,6 @@ class App extends Component {
 		  onFileChange:this.onFileChange,
 		  maxFileSize:2,
       accept,
-      onPreview:this.onPreview,
       onSortEnd:this.onSortEnd,
       onDownload:this.onDownload,
       defaultFiles:fileList,
@@ -152,12 +142,6 @@ class App extends Component {
           {...uploadProps}
           showUploadList={{showDownloadIcon : true}}
         />
-        <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel} width='60%'>
-          <img alt="example" style={{ width: '100%', height : '100%' }} src={previewImage} />
-        </Modal>
-        <Modal visible={previewFileVisible} footer={null} onCancel={this.handlePdfViewCancel} width='60%' >
-          <iframe key={`iframe`} width='100%' height='80%' style={{overflowX:'hidden'}} src={ previewFile } ></iframe>
-        </Modal>
       </div>
       
     )

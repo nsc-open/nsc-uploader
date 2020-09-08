@@ -1,6 +1,51 @@
 import { createHash } from 'crypto'
+import moment from 'moment'
 
 const OSS = require('ali-oss')
+
+export const downloadFile = (uri, filename, onProgress, onComplete = () => { }) => {
+  xhrDownload(uri, progress => {
+    notification.open({
+      key: uri,
+      message: '下载',
+      duration: 0,
+      description: `正在下载[${filename}]：${Math.round(progress * 100)}%`,
+      placement: 'bottomRight'
+    })
+  }, blob => {
+    const a = document.createElement('a')
+    const url = window.URL.createObjectURL(blob)
+    a.href = url
+    a.download = filename
+    a.click()
+    window.URL.revokeObjectURL(url)
+    // onComplete()
+    notification.close(uri)
+  })
+  /*
+    fetch(uri, { cache: "no-store" })
+    .then(res => res.blob()
+    .then(blob => {
+      const a = document.createElement('a')
+      const url = window.URL.createObjectURL(blob)
+      a.href = url
+      a.download = filename
+      a.click()
+      window.URL.revokeObjectURL(url)
+    }))
+    */
+}
+
+const xhrDownload = (url, onProgress = () => { }, onComplete = () => { }) => {
+  const xmlhttp = new XMLHttpRequest()
+  xmlhttp.open('GET', url, true)
+  xmlhttp.responseType = 'blob'
+  xmlhttp.setRequestHeader("Cache-Control", "no-cache")
+  xmlhttp.onprogress = event => onProgress(event.loaded / event.total)
+  xmlhttp.onload = () => onComplete(xmlhttp.response)
+  xmlhttp.send()
+}
+
 
 export const getUploadClient = (params) => {
   return new OSS(params);

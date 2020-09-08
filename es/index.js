@@ -1,11 +1,12 @@
 import React__default, { createElement, Component } from 'react';
 import { Icon, Progress, Tooltip, message, Radio, Button } from 'antd';
 import RcUpload from 'rc-upload';
-import classNames from 'classnames';
 import { findIndex, uniqBy, maxBy, isEqual } from 'lodash';
 import { createHash } from 'crypto';
+import moment from 'moment';
 import Animate from 'rc-animate';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { Lightbox } from 'nsc-lightbox';
 
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -1316,6 +1317,55 @@ if (process.env.NODE_ENV !== 'production') {
 }
 });
 
+var classnames = createCommonjsModule(function (module) {
+/*!
+  Copyright (c) 2017 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+/* global define */
+
+(function () {
+
+	var hasOwn = {}.hasOwnProperty;
+
+	function classNames () {
+		var classes = [];
+
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (!arg) continue;
+
+			var argType = typeof arg;
+
+			if (argType === 'string' || argType === 'number') {
+				classes.push(arg);
+			} else if (Array.isArray(arg) && arg.length) {
+				var inner = classNames.apply(null, arg);
+				if (inner) {
+					classes.push(inner);
+				}
+			} else if (argType === 'object') {
+				for (var key in arg) {
+					if (hasOwn.call(arg, key) && arg[key]) {
+						classes.push(key);
+					}
+				}
+			}
+		}
+
+		return classes.join(' ');
+	}
+
+	if ( module.exports) {
+		classNames.default = classNames;
+		module.exports = classNames;
+	} else {
+		window.classNames = classNames;
+	}
+}());
+});
+
 var OSS = require('ali-oss');
 
 var getUploadClient = function getUploadClient(params) {
@@ -1593,7 +1643,7 @@ var UploadList = /*#__PURE__*/function (_React$Component) {
         }, loadingProgress);
       }
 
-      var infoUploadingClass = classNames((_classNames = {}, _defineProperty(_classNames, "".concat(prefixCls, "-list-item"), true), _defineProperty(_classNames, "".concat(prefixCls, "-list-item-").concat(file.status), true), _defineProperty(_classNames, "".concat(prefixCls, "-list-item-list-type-").concat(listType), true), _classNames));
+      var infoUploadingClass = classnames((_classNames = {}, _defineProperty(_classNames, "".concat(prefixCls, "-list-item"), true), _defineProperty(_classNames, "".concat(prefixCls, "-list-item-").concat(file.status), true), _defineProperty(_classNames, "".concat(prefixCls, "-list-item-list-type-").concat(listType), true), _classNames));
       var linkProps = typeof file.linkProps === 'string' ? JSON.parse(file.linkProps) : file.linkProps;
       var removeIcon = showRemoveIcon ? /*#__PURE__*/createElement(Icon, {
         type: "delete",
@@ -1617,7 +1667,7 @@ var UploadList = /*#__PURE__*/function (_React$Component) {
       }, downloadIcon), removeIcon && /*#__PURE__*/createElement("a", {
         title: locale.removeFile
       }, removeIcon));
-      var listItemNameClass = classNames((_classNames2 = {}, _defineProperty(_classNames2, "".concat(prefixCls, "-list-item-name"), true), _defineProperty(_classNames2, "".concat(prefixCls, "-list-item-name-icon-count-").concat([downloadIcon, removeIcon].filter(function (x) {
+      var listItemNameClass = classnames((_classNames2 = {}, _defineProperty(_classNames2, "".concat(prefixCls, "-list-item-name"), true), _defineProperty(_classNames2, "".concat(prefixCls, "-list-item-name-icon-count-").concat([downloadIcon, removeIcon].filter(function (x) {
         return x;
       }).length), true), _classNames2));
       var preview = file.url ? [/*#__PURE__*/createElement("a", _extends({
@@ -1680,7 +1730,7 @@ var UploadList = /*#__PURE__*/function (_React$Component) {
         transitionName: "fade",
         component: ""
       }, progress));
-      var listContainerNameClass = classNames(_defineProperty({}, "".concat(prefixCls, "-list-picture-card-container"), listType === 'picture-card'));
+      var listContainerNameClass = classnames(_defineProperty({}, "".concat(prefixCls, "-list-picture-card-container"), listType === 'picture-card'));
       return /*#__PURE__*/createElement("div", {
         key: file.uid,
         className: listContainerNameClass
@@ -1705,7 +1755,7 @@ var UploadList = /*#__PURE__*/function (_React$Component) {
       var list = items.map(function (file) {
         return _this.renderListItem(file);
       });
-      var listClassNames = classNames((_classNames4 = {}, _defineProperty(_classNames4, "".concat(prefixCls, "-list"), true), _defineProperty(_classNames4, "".concat(prefixCls, "-list-").concat(listType), true), _classNames4));
+      var listClassNames = classnames((_classNames4 = {}, _defineProperty(_classNames4, "".concat(prefixCls, "-list"), true), _defineProperty(_classNames4, "".concat(prefixCls, "-list-").concat(listType), true), _classNames4));
       var animationDirection = listType === 'picture-card' ? 'animate-inline' : 'animate';
 
       if (dragSortable) {
@@ -2075,7 +2125,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
       if (type === 'drag') {
         var _classNames;
 
-        var dragCls = classNames(prefixCls$1, (_classNames = {}, _defineProperty(_classNames, "".concat(prefixCls$1, "-drag"), true), _defineProperty(_classNames, "".concat(prefixCls$1, "-drag-uploading"), fileList.some(function (file) {
+        var dragCls = classnames(prefixCls$1, (_classNames = {}, _defineProperty(_classNames, "".concat(prefixCls$1, "-drag"), true), _defineProperty(_classNames, "".concat(prefixCls$1, "-drag-uploading"), fileList.some(function (file) {
           return file.status && file.status === 'uploading';
         })), _defineProperty(_classNames, "".concat(prefixCls$1, "-drag-hover"), dragState === 'dragover'), _defineProperty(_classNames, "".concat(prefixCls$1, "-disabled"), disabled), _classNames), className);
         return /*#__PURE__*/createElement("span", null, /*#__PURE__*/createElement("div", {
@@ -2092,7 +2142,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
         }, children))), uploadList);
       }
 
-      var uploadButtonCls = classNames(prefixCls$1, (_classNames2 = {}, _defineProperty(_classNames2, "".concat(prefixCls$1, "-select"), true), _defineProperty(_classNames2, "".concat(prefixCls$1, "-select-").concat(listType), true), _defineProperty(_classNames2, "".concat(prefixCls$1, "-disabled"), disabled), _classNames2));
+      var uploadButtonCls = classnames(prefixCls$1, (_classNames2 = {}, _defineProperty(_classNames2, "".concat(prefixCls$1, "-select"), true), _defineProperty(_classNames2, "".concat(prefixCls$1, "-select-").concat(listType), true), _defineProperty(_classNames2, "".concat(prefixCls$1, "-disabled"), disabled), _classNames2));
       var uploadButton = /*#__PURE__*/createElement("div", {
         className: uploadButtonCls,
         style: children ? undefined : {
@@ -2108,7 +2158,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
         var _type = dragSortable ? 'nsc' : 'ant';
 
         return /*#__PURE__*/createElement("span", {
-          className: classNames(className, "".concat(_type, "-upload-picture-card-wrapper"))
+          className: classnames(className, "".concat(_type, "-upload-picture-card-wrapper"))
         }, uploadList, uploadButton);
       }
 
@@ -2507,6 +2557,10 @@ var toAttachment = function toAttachment(file) {
   };
 };
 
+var isDoc = function isDoc(img) {
+  return img.fileExt.indexOf('doc') !== -1 || img.fileExt.indexOf('xls') !== -1;
+};
+
 var sorter = function sorter(a, b) {
   return a.sortNo - b.sortNo;
 };
@@ -2517,71 +2571,130 @@ var Uploader = /*#__PURE__*/function (_Component) {
   var _super = _createSuper(Uploader);
 
   function Uploader(props) {
-    var _this;
+    var _this2;
 
     _classCallCheck(this, Uploader);
 
-    _this = _super.call(this, props);
+    _this2 = _super.call(this, props);
 
-    _defineProperty(_assertThisInitialized(_this), "handleCancel", function () {
-      return _this.setState({
+    _defineProperty(_assertThisInitialized(_this2), "handleCancel", function () {
+      return _this2.setState({
         previewVisible: false
       });
     });
 
-    _defineProperty(_assertThisInitialized(_this), "handlePreview", function (file) {
-      var onPreview = _this.props.onPreview;
+    _defineProperty(_assertThisInitialized(_this2), "onPreview", function (file) {
+      var onPreview = _this2.props.onPreview;
       onPreview && onPreview(toAttachment(file));
     });
 
-    _defineProperty(_assertThisInitialized(_this), "handleChange", function (file, fileList) {
-      var onFileChange = _this.props.onFileChange;
+    _defineProperty(_assertThisInitialized(_this2), "handlePreview", function (file) {
+      var fileList = _this2.state.fileList;
+      var files = fileList.map(toAttachment);
+      var lightboxFiles = files.map(function (a) {
+        return _objectSpread2(_objectSpread2({}, a), {}, {
+          alt: a.name,
+          uri: isDoc(a) ? "https://view.officeUploadViewers.live.com/op/view.aspx?src=".concat(encodeURIComponent(_this2.signatureUrl(a.uri))) : _this2.signatureUrl(a.uri)
+        });
+      });
+      var lightboxIndex = files.map(function (a) {
+        return a.id;
+      }).indexOf(file.id) || 0;
+
+      _this2.setState({
+        lightboxFiles: lightboxFiles,
+        previewVisible: true,
+        lightboxIndex: lightboxIndex
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_this2), "signatureUrl", function (url) {
+      var getOssParams = _this2.props.getOssParams;
+
+      var _this = _assertThisInitialized(_this2);
+
+      if (!_this.ossParams || _this.ossParams && new Date(_this.ossParams.Expiration) < Date.now()) {
+        getOssParams().then(function (r) {
+          return Co( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+            var uploadClient, index;
+            return regeneratorRuntime.wrap(function _callee$(_context) {
+              while (1) {
+                switch (_context.prev = _context.next) {
+                  case 0:
+                    _this.ossParams = r;
+                    uploadClient = getUploadClient(r);
+                    index = url.lastIndexOf('/') + 1;
+                    return _context.abrupt("return", uploadClient.signatureUrl(url.substring(index)));
+
+                  case 4:
+                  case "end":
+                    return _context.stop();
+                }
+              }
+            }, _callee);
+          }));
+        });
+      } else {
+        var uploadClient = getUploadClient(_this.ossParams);
+        var index = url.lastIndexOf('/') + 1;
+        return uploadClient.signatureUrl(url.substring(index));
+      }
+    });
+
+    _defineProperty(_assertThisInitialized(_this2), "onLightboxClose", function () {
+      _this2.setState({
+        previewVisible: false
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_this2), "handleChange", function (file, fileList) {
+      var onFileChange = _this2.props.onFileChange;
       onFileChange && onFileChange(toAttachment(file), fileList.map(toAttachment));
     });
 
-    _defineProperty(_assertThisInitialized(_this), "handleDownload", function (file) {
-      var onDownload = _this.props.onDownload;
+    _defineProperty(_assertThisInitialized(_this2), "handleDownload", function (file) {
+      var onDownload = _this2.props.onDownload;
       onDownload && onDownload(toAttachment(file));
     });
 
-    _defineProperty(_assertThisInitialized(_this), "handleRemove", function (file) {
-      var _this$props = _this.props,
-          autoSave = _this$props.autoSave,
-          onRemove = _this$props.onRemove;
-      var fileList = _this.state.fileList;
+    _defineProperty(_assertThisInitialized(_this2), "handleRemove", function (file) {
+      var _this2$props = _this2.props,
+          autoSave = _this2$props.autoSave,
+          onRemove = _this2$props.onRemove;
+      var fileList = _this2.state.fileList;
       var newFileList = fileList.filter(function (f) {
         return f.id !== file.id;
       });
 
-      _this.setState({
+      _this2.setState({
         fileList: newFileList
       });
 
-      _this.handleChange(file, newFileList);
+      _this2.handleChange(file, newFileList);
 
       if (autoSave && onRemove) {
         onRemove(toAttachment(file));
       }
     });
 
-    _defineProperty(_assertThisInitialized(_this), "hasExtension", function (fileName) {
-      var fileExtension = _this.props.fileExtension;
+    _defineProperty(_assertThisInitialized(_this2), "hasExtension", function (fileName) {
+      var fileExtension = _this2.props.fileExtension;
       var extensions = fileExtension ? fileExtension : [];
       var pattern = '(' + extensions.join('|').replace(/\./g, '\\.') + ')$';
       return new RegExp(pattern, 'i').test(fileName);
     });
 
-    _defineProperty(_assertThisInitialized(_this), "beforeUpload", function (file, files) {
-      var _this$props2 = _this.props,
-          autoSave = _this$props2.autoSave,
-          getOssParams = _this$props2.getOssParams,
-          maxFileSize = _this$props2.maxFileSize,
-          maxFileNum = _this$props2.maxFileNum,
-          fileExtension = _this$props2.fileExtension,
-          fileErrorMsg = _this$props2.fileErrorMsg;
-      var fileList = _this.state.fileList; //Check for file extension
+    _defineProperty(_assertThisInitialized(_this2), "beforeUpload", function (file, files) {
+      var _this2$props2 = _this2.props,
+          autoSave = _this2$props2.autoSave,
+          getOssParams = _this2$props2.getOssParams,
+          maxFileSize = _this2$props2.maxFileSize,
+          maxFileNum = _this2$props2.maxFileNum,
+          fileExtension = _this2$props2.fileExtension,
+          fileErrorMsg = _this2$props2.fileErrorMsg;
+      var fileList = _this2.state.fileList; //Check for file extension
 
-      if (fileExtension && !_this.hasExtension(file.name)) {
+      if (fileExtension && !_this2.hasExtension(file.name)) {
         message.error(fileErrorMsg && fileErrorMsg.fileExtensionErrorMsg ? fileErrorMsg.fileExtensionErrorMsg : "\u4E0D\u652F\u6301\u7684\u6587\u4EF6\u683C\u5F0F\uFF0C\u8BF7\u4E0A\u4F20\u683C\u5F0F\u4E3A".concat(fileExtension.join(','), "\u7684\u6587\u4EF6"));
         return false;
       } // Check for file size
@@ -2606,26 +2719,29 @@ var Uploader = /*#__PURE__*/function (_Component) {
       var encodedFileName = encodeFileName(file.name);
 
       if (getOssParams) {
+        var _this = _assertThisInitialized(_this2);
+
         getOssParams().then(function (ossParams) {
-          return Co( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+          return Co( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
             var uploadClient;
-            return regeneratorRuntime.wrap(function _callee$(_context) {
+            return regeneratorRuntime.wrap(function _callee2$(_context2) {
               while (1) {
-                switch (_context.prev = _context.next) {
+                switch (_context2.prev = _context2.next) {
                   case 0:
                     uploadClient = getUploadClient(ossParams);
-                    _context.next = 3;
+                    _this.ossParams = ossParams;
+                    _context2.next = 4;
                     return uploadClient.put(encodedFileName, file);
 
-                  case 3:
-                    return _context.abrupt("return", _context.sent);
-
                   case 4:
+                    return _context2.abrupt("return", _context2.sent);
+
+                  case 5:
                   case "end":
-                    return _context.stop();
+                    return _context2.stop();
                 }
               }
-            }, _callee);
+            }, _callee2);
           }));
         }).then(function (aliRes) {
           var indexNo = files.findIndex(function (i) {
@@ -2645,7 +2761,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
           };
 
           if (autoSave) {
-            return _this.save(newFile);
+            return _this2.save(newFile);
           } else {
             return newFile;
           }
@@ -2653,11 +2769,11 @@ var Uploader = /*#__PURE__*/function (_Component) {
           fileList.push(newFile);
           fileList.sort(sorter);
 
-          _this.setState({
+          _this2.setState({
             fileList: fileList
           });
 
-          _this.handleChange(newFile, fileList);
+          _this2.handleChange(newFile, fileList);
 
           hideLoading();
         })["catch"](function (e) {
@@ -2670,27 +2786,27 @@ var Uploader = /*#__PURE__*/function (_Component) {
       }
     });
 
-    _defineProperty(_assertThisInitialized(_this), "onSortEnd", function (result) {
-      var onSortEnd = _this.props.onSortEnd;
+    _defineProperty(_assertThisInitialized(_this2), "onSortEnd", function (result) {
+      var onSortEnd = _this2.props.onSortEnd;
 
       if (result) {
-        var newFileList = arrayMove(_this.state.fileList, result.source.index, result.destination.index);
+        var newFileList = arrayMove(_this2.state.fileList, result.source.index, result.destination.index);
 
-        _this.setState({
+        _this2.setState({
           fileList: newFileList
         });
 
-        onSortEnd && onSortEnd(_this.state.fileList.map(toAttachment), newFileList.map(toAttachment));
+        onSortEnd && onSortEnd(_this2.state.fileList.map(toAttachment), newFileList.map(toAttachment));
       }
     });
 
-    _defineProperty(_assertThisInitialized(_this), "onListTypeChange", function (e) {
-      _this.setState({
+    _defineProperty(_assertThisInitialized(_this2), "onListTypeChange", function (e) {
+      _this2.setState({
         listType: e.target.value
       });
     });
 
-    _defineProperty(_assertThisInitialized(_this), "renderRadio", function (showRadioButton) {
+    _defineProperty(_assertThisInitialized(_this2), "renderRadio", function (showRadioButton) {
       var defaultRadioItems = [{
         key: 'picture-card',
         value: '网格'
@@ -2710,8 +2826,8 @@ var Uploader = /*#__PURE__*/function (_Component) {
       return /*#__PURE__*/React__default.createElement("div", {
         className: "nsc-uploader-radio nsc-uploader-radio-".concat(placement)
       }, showRadioTitle && /*#__PURE__*/React__default.createElement("span", null, "\u6587\u4EF6\u5C55\u793A\u6837\u5F0F\uFF1A"), /*#__PURE__*/React__default.createElement(Radio.Group, {
-        onChange: _this.onListTypeChange,
-        value: _this.state.listType
+        onChange: _this2.onListTypeChange,
+        value: _this2.state.listType
       }, radioItems && radioItems.map(function (item) {
         return /*#__PURE__*/React__default.createElement(Radio, {
           key: item.key,
@@ -2720,14 +2836,16 @@ var Uploader = /*#__PURE__*/function (_Component) {
       })));
     });
 
-    _this.state = {
-      previewVisible: false,
-      previewImage: '',
+    _this2.state = {
       listType: 'picture-card',
-      fileList: [] // [{ id, name, encodeFileName, size, type, ext, uid, url }]
-
+      fileList: [],
+      // [{ id, name, encodeFileName, size, type, ext, uid, url }]
+      lightboxFiles: [],
+      previewVisible: false,
+      lightboxIndex: 0
     };
-    return _this;
+    _this2.ossParams = null;
+    return _this2;
   }
 
   _createClass(Uploader, [{
@@ -2762,20 +2880,24 @@ var Uploader = /*#__PURE__*/function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      var fileList = this.state.fileList;
+      var _this$state = this.state,
+          fileList = _this$state.fileList,
+          previewVisible = _this$state.previewVisible,
+          lightboxFiles = _this$state.lightboxFiles,
+          lightboxIndex = _this$state.lightboxIndex;
 
-      var _this$props3 = this.props,
-          dragSortable = _this$props3.dragSortable,
-          beforeUpload = _this$props3.beforeUpload,
-          type = _this$props3.type,
-          maxFileNum = _this$props3.maxFileNum,
-          disabled = _this$props3.disabled,
-          children = _this$props3.children,
-          _this$props3$classNam = _this$props3.className,
-          className = _this$props3$classNam === void 0 ? '' : _this$props3$classNam,
-          showUploadButton = _this$props3.showUploadButton,
-          customRadioButton = _this$props3.customRadioButton,
-          restProps = _objectWithoutProperties(_this$props3, ["dragSortable", "beforeUpload", "type", "maxFileNum", "disabled", "children", "className", "showUploadButton", "customRadioButton"]);
+      var _this$props = this.props,
+          dragSortable = _this$props.dragSortable,
+          beforeUpload = _this$props.beforeUpload,
+          type = _this$props.type,
+          maxFileNum = _this$props.maxFileNum,
+          disabled = _this$props.disabled,
+          children = _this$props.children,
+          _this$props$className = _this$props.className,
+          className = _this$props$className === void 0 ? '' : _this$props$className,
+          showUploadButton = _this$props.showUploadButton,
+          customRadioButton = _this$props.customRadioButton,
+          restProps = _objectWithoutProperties(_this$props, ["dragSortable", "beforeUpload", "type", "maxFileNum", "disabled", "children", "className", "showUploadButton", "customRadioButton"]);
 
       var listType = this.props.listType ? this.props.listType : this.state.listType;
       var showRadioButton = this.props.listType ? false : this.props.showRadioButton;
@@ -2788,7 +2910,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
         disabled: disabled,
         onSortEnd: this.onSortEnd,
         className: showUploadButton ? "".concat(className) : type === 'dragger' ? "".concat(className, " nsc-uploader-dragger-hide") : "".concat(className),
-        onPreview: this.handlePreview,
+        onPreview: 'onPreview' in this.props ? this.props.onPreview : this.handlePreview,
         onRemove: this.handleRemove,
         onDownload: this.handleDownload
       }); //文件列表按上传顺序排序
@@ -2818,14 +2940,17 @@ var Uploader = /*#__PURE__*/function (_Component) {
       }, "\u70B9\u51FB\u83B7\u53D6\u62D6\u52A8 \u56FE\u7247\u6216\u6587\u6863 \u5230\u8FD9\u5757\u533A\u57DF\u5B8C\u6210\u6587\u4EF6\u4E0A\u4F20"));
       return /*#__PURE__*/React__default.createElement("div", {
         className: "nsc-upload-container"
-      }, customRadioButton ? customRadioButton : showRadioButton ? this.renderRadio(showRadioButton) : null, type === 'dragger' ? /*#__PURE__*/React__default.createElement(Dragger, props, showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : draggerBtn : null) : /*#__PURE__*/React__default.createElement(Upload, props, showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : listType === 'picture-card' ? cardButton : textButton : null));
+      }, customRadioButton ? customRadioButton : showRadioButton ? this.renderRadio(showRadioButton) : null, type === 'dragger' ? /*#__PURE__*/React__default.createElement(Dragger, props, showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : draggerBtn : null) : /*#__PURE__*/React__default.createElement(Upload, props, showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : listType === 'picture-card' ? cardButton : textButton : null), previewVisible && lightboxFiles.length ? /*#__PURE__*/React__default.createElement(Lightbox, {
+        visible: previewVisible,
+        imgvImages: lightboxFiles,
+        activeIndex: lightboxIndex,
+        onCancel: this.onLightboxClose
+      }) : null);
     }
   }]);
 
   return Uploader;
 }(Component);
-
-_defineProperty(Uploader, "slider", null);
 
 Uploader.propTypes = {
   getOssParams: propTypes.func
