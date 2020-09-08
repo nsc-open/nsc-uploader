@@ -75,7 +75,7 @@ class Uploader extends Component {
   handlePreview = (file) => {
     const { fileList } = this.state
     const files = fileList.map(toAttachment)
-    const lightboxFiles = files.map(a => ({ ...a, alt: a.name, uri: isDoc(a) ? `https://view.officeUploadViewers.live.com/op/view.aspx?src=${encodeURIComponent(this.signatureUrl(a.uri))}` : this.signatureUrl(a.uri) }))
+    const lightboxFiles = files.map(a => ({ ...a, alt: a.name, uri: isDoc(a) ? `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(this.signatureUrl(a.uri))}` : this.signatureUrl(a.uri) }))
     const lightboxIndex = (files.map(a => a.id).indexOf(file.id) || 0)
     this.setState({
       lightboxFiles,
@@ -113,6 +113,7 @@ class Uploader extends Component {
 
   handleDownload = (file) => {
     const { onDownload } = this.props
+    file.url = this.signatureUrl(file.url)
     onDownload && onDownload(toAttachment(file))
   }
 
