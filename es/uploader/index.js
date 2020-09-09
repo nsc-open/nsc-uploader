@@ -2502,22 +2502,22 @@ var Uploader = /*#__PURE__*/function (_Component) {
                 hideLoading = message.loading('文件正在预处理', 0);
                 encodedFileName = encodeFileName(file.name);
 
-                if (!getOssParams) {
-                  _context2.next = 22;
+                if (!(getOssParams && !_this.ossParams || _this.ossParams && new Date(_this.ossParams.Expiration) < Date.now())) {
+                  _context2.next = 18;
                   break;
                 }
 
-                if (!(!_this.ossParams || _this.ossParams && new Date(_this.ossParams.Expiration) < Date.now())) {
-                  _context2.next = 19;
-                  break;
-                }
-
-                _context2.next = 19;
+                _context2.next = 18;
                 return getOssParams().then(function (r) {
                   _this.ossParams = r;
                 });
 
-              case 19:
+              case 18:
+                if (!_this.ossParams) {
+                  _context2.next = 22;
+                  break;
+                }
+
                 uploadClient = getUploadClient(_this.ossParams);
                 uploadClient.put(encodedFileName, file).then(function (aliRes) {
                   var indexNo = files.findIndex(function (i) {
@@ -2628,7 +2628,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
       fileList: [] // [{ id, name, encodeFileName, size, type, ext, uid, url }]
 
     };
-    _this.ossParams = null;
+    _this.ossParams = props.ossParams || null;
     return _this;
   }
 

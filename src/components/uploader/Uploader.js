@@ -53,9 +53,11 @@ class Uploader extends Component {
 
   componentDidMount() {
     const { defaultFiles, getOssParams } = this.props
-    getOssParams && getOssParams().then(r => {
-      this.ossParams = r
-    })
+    if (getOssParams && !this.ossParams || (this.ossParams && (new Date(this.ossParams.Expiration) < Date.now()))) {
+      getOssParams().then(r => {
+        this.ossParams = r
+      })
+    }
     this.setState({ fileList: defaultFiles.map(toFile).sort(sorter) })
   }
 
