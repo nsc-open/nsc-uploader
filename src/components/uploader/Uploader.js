@@ -48,7 +48,7 @@ class Uploader extends Component {
       listType: 'picture-card',
       fileList: [], // [{ id, name, encodeFileName, size, type, ext, uid, url }]
     }
-    this.ossParams = null
+    this.ossParams = props.ossParams || null
   }
 
   componentDidMount() {
@@ -171,13 +171,13 @@ class Uploader extends Component {
 
     const hideLoading = message.loading('文件正在预处理', 0)
     let encodedFileName = encodeFileName(file.name)
-    if (getOssParams) {
-      if (!this.ossParams || (this.ossParams && (new Date(this.ossParams.Expiration) < Date.now()))) {
-        await getOssParams().then(r => {
-          this.ossParams = r
-        })
-      }
 
+    if (getOssParams && !this.ossParams || (this.ossParams && (new Date(this.ossParams.Expiration) < Date.now()))) {
+      await getOssParams().then(r => {
+        this.ossParams = r
+      })
+    }
+    if (this.ossParams) {
       const uploadClient = getUploadClient(this.ossParams)
       uploadClient.put(encodedFileName, file).then(aliRes => {
         const indexNo = files.findIndex(i => i.uid === file.uid)
