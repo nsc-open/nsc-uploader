@@ -2640,9 +2640,13 @@ var Uploader = /*#__PURE__*/function (_Component) {
       var _this$props3 = this.props,
           defaultFiles = _this$props3.defaultFiles,
           getOssParams = _this$props3.getOssParams;
-      getOssParams && getOssParams().then(function (r) {
-        _this2.ossParams = r;
-      });
+
+      if (getOssParams && !this.ossParams || this.ossParams && new Date(this.ossParams.Expiration) < Date.now()) {
+        getOssParams().then(function (r) {
+          _this2.ossParams = r;
+        });
+      }
+
       this.setState({
         fileList: defaultFiles.map(toFile).sort(sorter)
       });

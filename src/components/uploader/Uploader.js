@@ -48,11 +48,12 @@ class Uploader extends Component {
       listType: 'picture-card',
       fileList: [], // [{ id, name, encodeFileName, size, type, ext, uid, url }]
     }
-    this.ossParams = props.ossParams || null
+    this.ossParams = null
   }
 
   componentDidMount() {
-    const { defaultFiles, getOssParams } = this.props
+    const { defaultFiles, getOssParams ,ossParams } = this.props
+    this.ossParams = ossParams
     if (getOssParams && !this.ossParams || (this.ossParams && (new Date(this.ossParams.Expiration) < Date.now()))) {
       getOssParams().then(r => {
         this.ossParams = r
@@ -74,15 +75,9 @@ class Uploader extends Component {
     onPreview && onPreview(toAttachment(file))
   }
 
-  handlePreview = async (file) => {
-    const { getOssParams } = this.props
+  handlePreview =  (file) => {
     const { fileList } = this.state
     const files = fileList.map(toAttachment)
-    if (getOssParams && !this.ossParams || (this.ossParams && (new Date(this.ossParams.Expiration) < Date.now()))) {
-      await getOssParams().then(r => {
-        this.ossParams = r
-      })
-    }
     const lightboxFiles = files.map((a) => {
       return { ...a, alt: a.name, uri: isDoc(a) ? `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(this.signatureUrl(a.uri))}` : this.signatureUrl(a.uri) }
     }
@@ -149,8 +144,8 @@ class Uploader extends Component {
   }
 
   //文件先上传至阿里云
-  beforeUpload = async (file, files) => {
-    const { autoSave, getOssParams, maxFileSize, maxFileNum, fileExtension, fileErrorMsg } = this.props
+  beforeUpload = (file, files) => {
+    const { autoSave, maxFileSize, maxFileNum, fileExtension, fileErrorMsg } = this.props
     const { fileList } = this.state
     //Check for file extension
     if (fileExtension && !this.hasExtension(file.name)) {
@@ -174,11 +169,6 @@ class Uploader extends Component {
     const hideLoading = message.loading('文件正在预处理', 0)
     let encodedFileName = encodeFileName(file.name)
 
-    if (getOssParams && !this.ossParams || (this.ossParams && (new Date(this.ossParams.Expiration) < Date.now()))) {
-      await getOssParams().then(r => {
-        this.ossParams = r
-      })
-    }
     if (this.ossParams) {
       const uploadClient = getUploadClient(this.ossParams)
       uploadClient.put(encodedFileName, file).then(aliRes => {
