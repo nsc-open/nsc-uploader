@@ -3,43 +3,15 @@ import PropTypes from 'prop-types'
 import { Icon, Button, message, Radio } from 'antd'
 import Upload from './Upload'
 import Dragger from './Dragger'
-import { getUploadClient, encodeFileName, arrayMove } from './utils'
-import co from './Co'
-import { isEqual, maxBy } from 'lodash'
+import { getUploadClient, encodeFileName, arrayMove, toFile, toAttachment, isDoc } from './utils'
+import isEqual from 'lodash/isEqual'
+import maxBy from 'lodash/maxBy'
 import { Lightbox } from 'nsc-lightbox'
+import Url from 'url-parse'
 
 import './style/index.css'
 
-const toFile = attachment => ({
-  uid: attachment.id,
-  id: attachment.id,
-  name: attachment.fileName,
-  encodedFileName: attachment.encodedFileName,
-  url: attachment.uri,
-  size: attachment.fileSize,
-  ext: attachment.fileExt,
-  type: attachment.fileType,
-  sortNo: attachment.sortNo,
-  status: 'done',
-})
-const toAttachment = file => ({
-  id: file.id || file.uid,
-  fileName: file.name,
-  encodedFileName: file.encodedFileName,
-  fileSize: file.size,
-  fileType: file.type,
-  fileExt: file.ext,
-  uri: file.url,
-  sortNo: file.sortNo,
-  status: file.status,
-})
-
-const isDoc = (img) => {
-  return img.fileExt.indexOf('doc') !== -1 || img.fileExt.indexOf('xls') !== -1
-}
-
 const sorter = (a, b) => a.sortNo - b.sortNo
-
 
 class Uploader extends Component {
   constructor(props) {
@@ -52,12 +24,12 @@ class Uploader extends Component {
   }
 
   componentDidMount() {
-    const { defaultFiles, getOssParams ,ossParams } = this.props
+    const { defaultFiles, getOssParams, ossParams } = this.props
     if (getOssParams && !ossParams || (ossParams && (new Date(ossParams.Expiration) < Date.now()))) {
       getOssParams().then(r => {
         this.uploadClient = getUploadClient(r)
       })
-    }else if(ossParams){
+    } else if (ossParams) {
       this.uploadClient = getUploadClient(ossParams)
     }
     this.setState({ fileList: defaultFiles.map(toFile).sort(sorter) })
@@ -76,7 +48,7 @@ class Uploader extends Component {
     onPreview && onPreview(toAttachment(file))
   }
 
-  handlePreview =  (file) => {
+  handlePreview = (file) => {
     const { fileList } = this.state
     const files = fileList.map(toAttachment)
     const lightboxFiles = files.map((a) => {
@@ -92,8 +64,12 @@ class Uploader extends Component {
   }
 
   signatureUrl = (url) => {
-    const index = url.lastIndexOf('/') + 1
-    return this.uploadClient.signatureUrl(url.substring(index))
+    url = decodeURIComponent(url)
+    const { pathname } = new Url(decodeURIComponent(url))
+    // 兼容 http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/9467447a2edf9c569d4cf5930f2d5ea5
+    // http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/环水保/103/9467447a2edf9c569d4cf5930f2d5ea5
+    const fileName = pathname.substr(1)
+    return this.uploadClient.signatureUrl(fileName)
   }
 
   onLightboxClose = () => {
@@ -169,7 +145,7 @@ class Uploader extends Component {
     const hideLoading = message.loading('文件正在预处理', 0)
     let encodedFileName = encodeFileName(file.name)
 
-    if (this.uploadClient){
+    if (this.uploadClient) {
       this.uploadClient.put(encodedFileName, file).then(aliRes => {
         const indexNo = files.findIndex(i => i.uid === file.uid)
         const newFile = {

@@ -1,7 +1,8 @@
 import * as React from 'react'
 import RcUpload from 'rc-upload'
 import classNames from 'classnames'
-import { uniqBy ,findIndex } from 'lodash'
+import uniqBy from 'lodash/uniqBy'
+import findIndex from 'lodash/findIndex'
 import { T, fileToObject, getFileItem, removeFileItem } from './utils';
 import UploadList from './UploadList'
 const prefixCls = 'ant-upload'

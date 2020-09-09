@@ -3,6 +3,16 @@ import moment from 'moment'
 
 const OSS = require('ali-oss')
 
+export const getUploadClient = (params) => {
+  return new OSS(params);
+}
+
+export const encodeFileName = (filename) => {
+  const timeStr = moment().format('YYYYMMDDHHmmss')
+  const hash = createHash('md5').update(filename + timeStr).digest('hex')
+  return hash
+}
+
 export const downloadFile = (uri, filename, onProgress, onComplete = () => { }) => {
   xhrDownload(uri, progress => {
     notification.open({
@@ -22,18 +32,6 @@ export const downloadFile = (uri, filename, onProgress, onComplete = () => { }) 
     // onComplete()
     notification.close(uri)
   })
-  /*
-    fetch(uri, { cache: "no-store" })
-    .then(res => res.blob()
-    .then(blob => {
-      const a = document.createElement('a')
-      const url = window.URL.createObjectURL(blob)
-      a.href = url
-      a.download = filename
-      a.click()
-      window.URL.revokeObjectURL(url)
-    }))
-    */
 }
 
 const xhrDownload = (url, onProgress = () => { }, onComplete = () => { }) => {
@@ -46,16 +44,37 @@ const xhrDownload = (url, onProgress = () => { }, onComplete = () => { }) => {
   xmlhttp.send()
 }
 
+export const toFile = attachment => ({
+  uid: attachment.id,
+  id: attachment.id,
+  name: attachment.fileName,
+  encodedFileName: attachment.encodedFileName,
+  url: attachment.uri,
+  size: attachment.fileSize,
+  ext: attachment.fileExt,
+  type: attachment.fileType,
+  sortNo: attachment.sortNo,
+  status: 'done',
+})
 
-export const getUploadClient = (params) => {
-  return new OSS(params);
+export const toAttachment = file => ({
+  id: file.id || file.uid,
+  fileName: file.name,
+  encodedFileName: file.encodedFileName,
+  fileSize: file.size,
+  fileType: file.type,
+  fileExt: file.ext,
+  uri: file.url,
+  sortNo: file.sortNo,
+  status: file.status,
+})
+
+export const isDoc = (img) => {
+  return img.fileExt.indexOf('doc') !== -1 || img.fileExt.indexOf('xls') !== -1
 }
 
-export const encodeFileName = (filename) => {
-  const timeStr = moment().format('YYYYMMDDHHmmss')
-  const hash = createHash('md5').update(filename + timeStr).digest('hex')
-  return hash
-}
+
+
 
 const arrayMoveMutate = (array, from, to) => {
 	const startIndex = to < 0 ? array.length + to : to;
