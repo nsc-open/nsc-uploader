@@ -1,48 +1,12 @@
 import React__default, { createElement, Component } from 'react';
-import { Icon, Progress, Tooltip, Radio, message, Button } from 'antd';
+import { Icon, Progress, Tooltip, message, Radio, Button } from 'antd';
 import RcUpload from 'rc-upload';
-import { findIndex, uniqBy, isEqual, maxBy } from 'lodash';
+import { findIndex, uniqBy, maxBy, isEqual } from 'lodash';
 import { createHash } from 'crypto';
 import moment from 'moment';
 import Animate from 'rc-animate';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Lightbox } from 'nsc-lightbox';
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
-  try {
-    var info = gen[key](arg);
-    var value = info.value;
-  } catch (error) {
-    reject(error);
-    return;
-  }
-
-  if (info.done) {
-    resolve(value);
-  } else {
-    Promise.resolve(value).then(_next, _throw);
-  }
-}
-
-function _asyncToGenerator(fn) {
-  return function () {
-    var self = this,
-        args = arguments;
-    return new Promise(function (resolve, reject) {
-      var gen = fn.apply(self, args);
-
-      function _next(value) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
-      }
-
-      function _throw(err) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
-      }
-
-      _next(undefined);
-    });
-  };
-}
 
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -2386,61 +2350,29 @@ var Uploader = /*#__PURE__*/function (_Component) {
       onPreview && onPreview(toAttachment(file));
     });
 
-    _defineProperty(_assertThisInitialized(_this), "handlePreview", /*#__PURE__*/function () {
-      var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(file) {
-        var getOssParams, fileList, files, lightboxFiles, lightboxIndex;
-        return regeneratorRuntime.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                getOssParams = _this.props.getOssParams;
-                fileList = _this.state.fileList;
-                files = fileList.map(toAttachment);
+    _defineProperty(_assertThisInitialized(_this), "handlePreview", function (file) {
+      var fileList = _this.state.fileList;
+      var files = fileList.map(toAttachment);
+      var lightboxFiles = files.map(function (a) {
+        return _objectSpread2(_objectSpread2({}, a), {}, {
+          alt: a.name,
+          uri: isDoc(a) ? "https://view.officeapps.live.com/op/view.aspx?src=".concat(encodeURIComponent(_this.signatureUrl(a.uri))) : _this.signatureUrl(a.uri)
+        });
+      });
+      var lightboxIndex = files.map(function (a) {
+        return a.id;
+      }).indexOf(file.id) || 0;
 
-                if (!(getOssParams && !_this.ossParams || _this.ossParams && new Date(_this.ossParams.Expiration) < Date.now())) {
-                  _context.next = 6;
-                  break;
-                }
-
-                _context.next = 6;
-                return getOssParams().then(function (r) {
-                  _this.ossParams = r;
-                });
-
-              case 6:
-                lightboxFiles = files.map(function (a) {
-                  return _objectSpread2(_objectSpread2({}, a), {}, {
-                    alt: a.name,
-                    uri: isDoc(a) ? "https://view.officeapps.live.com/op/view.aspx?src=".concat(encodeURIComponent(_this.signatureUrl(a.uri))) : _this.signatureUrl(a.uri)
-                  });
-                });
-                lightboxIndex = files.map(function (a) {
-                  return a.id;
-                }).indexOf(file.id) || 0;
-
-                _this.setState({
-                  lightboxFiles: lightboxFiles,
-                  previewVisible: true,
-                  lightboxIndex: lightboxIndex
-                });
-
-              case 9:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee);
-      }));
-
-      return function (_x) {
-        return _ref.apply(this, arguments);
-      };
-    }());
+      _this.setState({
+        lightboxFiles: lightboxFiles,
+        previewVisible: true,
+        lightboxIndex: lightboxIndex
+      });
+    });
 
     _defineProperty(_assertThisInitialized(_this), "signatureUrl", function (url) {
-      var uploadClient = getUploadClient(_this.ossParams);
       var index = url.lastIndexOf('/') + 1;
-      return uploadClient.signatureUrl(url.substring(index));
+      return _this.uploadClient.signatureUrl(url.substring(index));
     });
 
     _defineProperty(_assertThisInitialized(_this), "onLightboxClose", function () {
@@ -2487,121 +2419,83 @@ var Uploader = /*#__PURE__*/function (_Component) {
       return new RegExp(pattern, 'i').test(fileName);
     });
 
-    _defineProperty(_assertThisInitialized(_this), "beforeUpload", /*#__PURE__*/function () {
-      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(file, files) {
-        var _this$props2, autoSave, getOssParams, maxFileSize, maxFileNum, fileExtension, fileErrorMsg, fileList, maxItem, maxSortNo, hideLoading, encodedFileName, uploadClient;
+    _defineProperty(_assertThisInitialized(_this), "beforeUpload", function (file, files) {
+      var _this$props2 = _this.props,
+          autoSave = _this$props2.autoSave,
+          maxFileSize = _this$props2.maxFileSize,
+          maxFileNum = _this$props2.maxFileNum,
+          fileExtension = _this$props2.fileExtension,
+          fileErrorMsg = _this$props2.fileErrorMsg;
+      var fileList = _this.state.fileList; //Check for file extension
 
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                _this$props2 = _this.props, autoSave = _this$props2.autoSave, getOssParams = _this$props2.getOssParams, maxFileSize = _this$props2.maxFileSize, maxFileNum = _this$props2.maxFileNum, fileExtension = _this$props2.fileExtension, fileErrorMsg = _this$props2.fileErrorMsg;
-                fileList = _this.state.fileList; //Check for file extension
+      if (fileExtension && !_this.hasExtension(file.name)) {
+        message.error(fileErrorMsg && fileErrorMsg.fileExtensionErrorMsg ? fileErrorMsg.fileExtensionErrorMsg : "\u4E0D\u652F\u6301\u7684\u6587\u4EF6\u683C\u5F0F\uFF0C\u8BF7\u4E0A\u4F20\u683C\u5F0F\u4E3A".concat(fileExtension.join(','), "\u7684\u6587\u4EF6"));
+        return false;
+      } // Check for file size
 
-                if (!(fileExtension && !_this.hasExtension(file.name))) {
-                  _context2.next = 5;
-                  break;
-                }
 
-                message.error(fileErrorMsg && fileErrorMsg.fileExtensionErrorMsg ? fileErrorMsg.fileExtensionErrorMsg : "\u4E0D\u652F\u6301\u7684\u6587\u4EF6\u683C\u5F0F\uFF0C\u8BF7\u4E0A\u4F20\u683C\u5F0F\u4E3A".concat(fileExtension.join(','), "\u7684\u6587\u4EF6"));
-                return _context2.abrupt("return", false);
+      if (file.size / 1024 / 1024 > maxFileSize) {
+        message.error(fileErrorMsg && fileErrorMsg.fileSizeErrorMsg ? fileErrorMsg.fileSizeErrorMsg : "\u6587\u4EF6\u8FC7\u5927\uFF0C\u6700\u5927\u53EF\u4E0A\u4F20".concat(maxFileNum));
+        return false;
+      } // Check for file number
 
-              case 5:
-                if (!(file.size / 1024 / 1024 > maxFileSize)) {
-                  _context2.next = 8;
-                  break;
-                }
 
-                message.error(fileErrorMsg && fileErrorMsg.fileSizeErrorMsg ? fileErrorMsg.fileSizeErrorMsg : "\u6587\u4EF6\u8FC7\u5927\uFF0C\u6700\u5927\u53EF\u4E0A\u4F20".concat(maxFileNum));
-                return _context2.abrupt("return", false);
+      if (files.length + fileList.length > maxFileNum) {
+        message.error(fileErrorMsg && fileErrorMsg.fileNumerErrorMsg ? fileErrorMsg.fileNumerErrorMsg : "\u6587\u4EF6\u6570\u91CF\u8FC7\u591A\uFF0C\u6700\u591A\u53EF\u4E0A\u4F20".concat(maxFileNum, "\u4EFD"));
+        return false;
+      }
 
-              case 8:
-                if (!(files.length + fileList.length > maxFileNum)) {
-                  _context2.next = 11;
-                  break;
-                }
+      var maxItem = maxBy(fileList, function (i) {
+        return i.sortNo;
+      });
+      var maxSortNo = maxItem ? maxItem.sortNo : 0;
+      var hideLoading = message.loading('文件正在预处理', 0);
+      var encodedFileName = encodeFileName(file.name);
 
-                message.error(fileErrorMsg && fileErrorMsg.fileNumerErrorMsg ? fileErrorMsg.fileNumerErrorMsg : "\u6587\u4EF6\u6570\u91CF\u8FC7\u591A\uFF0C\u6700\u591A\u53EF\u4E0A\u4F20".concat(maxFileNum, "\u4EFD"));
-                return _context2.abrupt("return", false);
+      if (_this.uploadClient) {
+        _this.uploadClient.put(encodedFileName, file).then(function (aliRes) {
+          var indexNo = files.findIndex(function (i) {
+            return i.uid === file.uid;
+          });
+          var newFile = {
+            uid: file.uid,
+            id: file.uid,
+            encodedFileName: encodedFileName,
+            name: file.name,
+            url: aliRes.url,
+            status: 'done',
+            size: file.size,
+            ext: file.name.split('.').pop(),
+            type: file.type,
+            sortNo: maxSortNo + 1 + indexNo
+          };
 
-              case 11:
-                maxItem = maxBy(fileList, function (i) {
-                  return i.sortNo;
-                });
-                maxSortNo = maxItem ? maxItem.sortNo : 0;
-                hideLoading = message.loading('文件正在预处理', 0);
-                encodedFileName = encodeFileName(file.name);
-
-                if (!(getOssParams && !_this.ossParams || _this.ossParams && new Date(_this.ossParams.Expiration) < Date.now())) {
-                  _context2.next = 18;
-                  break;
-                }
-
-                _context2.next = 18;
-                return getOssParams().then(function (r) {
-                  _this.ossParams = r;
-                });
-
-              case 18:
-                if (!_this.ossParams) {
-                  _context2.next = 22;
-                  break;
-                }
-
-                uploadClient = getUploadClient(_this.ossParams);
-                uploadClient.put(encodedFileName, file).then(function (aliRes) {
-                  var indexNo = files.findIndex(function (i) {
-                    return i.uid === file.uid;
-                  });
-                  var newFile = {
-                    uid: file.uid,
-                    id: file.uid,
-                    encodedFileName: encodedFileName,
-                    name: file.name,
-                    url: aliRes.url,
-                    status: 'done',
-                    size: file.size,
-                    ext: file.name.split('.').pop(),
-                    type: file.type,
-                    sortNo: maxSortNo + 1 + indexNo
-                  };
-
-                  if (autoSave) {
-                    return _this.save(newFile);
-                  } else {
-                    return newFile;
-                  }
-                }).then(function (newFile) {
-                  fileList.push(newFile);
-                  fileList.sort(sorter);
-
-                  _this.setState({
-                    fileList: fileList
-                  });
-
-                  _this.handleChange(newFile, fileList);
-
-                  hideLoading();
-                })["catch"](function (e) {
-                  console.error('Uploader error', e);
-                  message.error("".concat(file.name, " \u9884\u5904\u7406\u5931\u8D25"));
-                  hideLoading();
-                }); // not do the upload after image added
-
-                return _context2.abrupt("return", false);
-
-              case 22:
-              case "end":
-                return _context2.stop();
-            }
+          if (autoSave) {
+            return _this.save(newFile);
+          } else {
+            return newFile;
           }
-        }, _callee2);
-      }));
+        }).then(function (newFile) {
+          fileList.push(newFile);
+          fileList.sort(sorter);
 
-      return function (_x2, _x3) {
-        return _ref2.apply(this, arguments);
-      };
-    }());
+          _this.setState({
+            fileList: fileList
+          });
+
+          _this.handleChange(newFile, fileList);
+
+          hideLoading();
+        })["catch"](function (e) {
+          console.error('Uploader error', e);
+          message.error("".concat(file.name, " \u9884\u5904\u7406\u5931\u8D25"));
+          hideLoading();
+        }); // not do the upload after image added
+
+
+        return false;
+      }
+    });
 
     _defineProperty(_assertThisInitialized(_this), "onSortEnd", function (result) {
       var onSortEnd = _this.props.onSortEnd;
@@ -2658,7 +2552,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
       fileList: [] // [{ id, name, encodeFileName, size, type, ext, uid, url }]
 
     };
-    _this.ossParams = props.ossParams || null;
+    _this.uploadClient = null;
     return _this;
   }
 
@@ -2669,12 +2563,15 @@ var Uploader = /*#__PURE__*/function (_Component) {
 
       var _this$props3 = this.props,
           defaultFiles = _this$props3.defaultFiles,
-          getOssParams = _this$props3.getOssParams;
+          getOssParams = _this$props3.getOssParams,
+          ossParams = _this$props3.ossParams;
 
-      if (getOssParams && !this.ossParams || this.ossParams && new Date(this.ossParams.Expiration) < Date.now()) {
+      if (getOssParams && !ossParams || ossParams && new Date(ossParams.Expiration) < Date.now()) {
         getOssParams().then(function (r) {
-          _this2.ossParams = r;
+          _this2.uploadClient = getUploadClient(r);
         });
+      } else if (ossParams) {
+        this.uploadClient = getUploadClient(ossParams);
       }
 
       this.setState({

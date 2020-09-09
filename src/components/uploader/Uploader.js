@@ -48,16 +48,17 @@ class Uploader extends Component {
       listType: 'picture-card',
       fileList: [], // [{ id, name, encodeFileName, size, type, ext, uid, url }]
     }
-    this.ossParams = null
+    this.uploadClient = null
   }
 
   componentDidMount() {
     const { defaultFiles, getOssParams ,ossParams } = this.props
-    this.ossParams = ossParams
-    if (getOssParams && !this.ossParams || (this.ossParams && (new Date(this.ossParams.Expiration) < Date.now()))) {
+    if (getOssParams && !ossParams || (ossParams && (new Date(ossParams.Expiration) < Date.now()))) {
       getOssParams().then(r => {
-        this.ossParams = r
+        this.uploadClient = getUploadClient(r)
       })
+    }else if(ossParams){
+      this.uploadClient = getUploadClient(ossParams)
     }
     this.setState({ fileList: defaultFiles.map(toFile).sort(sorter) })
   }
@@ -91,9 +92,8 @@ class Uploader extends Component {
   }
 
   signatureUrl = (url) => {
-    const uploadClient = getUploadClient(this.ossParams)
     const index = url.lastIndexOf('/') + 1
-    return uploadClient.signatureUrl(url.substring(index))
+    return this.uploadClient.signatureUrl(url.substring(index))
   }
 
   onLightboxClose = () => {
@@ -169,9 +169,8 @@ class Uploader extends Component {
     const hideLoading = message.loading('文件正在预处理', 0)
     let encodedFileName = encodeFileName(file.name)
 
-    if (this.ossParams) {
-      const uploadClient = getUploadClient(this.ossParams)
-      uploadClient.put(encodedFileName, file).then(aliRes => {
+    if (this.uploadClient){
+      this.uploadClient.put(encodedFileName, file).then(aliRes => {
         const indexNo = files.findIndex(i => i.uid === file.uid)
         const newFile = {
           uid: file.uid,
