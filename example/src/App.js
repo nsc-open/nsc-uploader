@@ -16,54 +16,53 @@ const toAttachment = file => ({
 
 const OSS_ENDPOINT = 'oss-cn-beijing'
 const OSS_BUCKET ='corridorcleaningphoto'
-const defaultFiles =[{
-  cloudDir: null,
-  comment: null,
-  createdAt: "2020-06-12 09:13:55",
-  createdBy: null,
-  encodedFileName: "a81b88e1d05964f450d9e0c3b98ea084_1591923471032",
-  fileExt: "doc",
-  fileName: "360-photo-2",
-  fileSize: 34250,
-  fileType: "application/doc",
-  id: "fc1fbd30-ac49-11ea-96d1-7dc79c40ecd3",
+const defaultFiles = [{
+  category: "print",
+  createdAt: "2020-09-07 15:34:13",
+  createdBy: "1732",
+  encodedFileName: "8e67209cd9a58cdfc9469edfa1484866_1599459834761",
+  fileExt: "jpg",
+  fileName: "测试图片3.jpg",
+  fileSize: "268713",
+  fileType: "image/jpeg",
+  id: "24137691-f0df-11ea-8146-f9a5d6b3bf59",
   isDeleted: null,
-  setId: "c0660b70-ac47-11ea-b571-cd04ff54552a",
-  sortNo: null,
-  title: null,
-  updatedAt: "2020-06-12 09:13:54",
-  updatedBy: "74",
-  uploadedFrom: null,
-  uri:'http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/cc941191cb8eb3a190a9243c070f1cb5_1599531912024'
-},{
-  cloudDir: null,
-  comment: null,
-  createdAt: "2020-06-12 09:13:50",
-  createdBy: null,
-  encodedFileName: "a81b88e1d059640d9e0c3b98ea084_159192341032",
-  fileExt: "pdf",
-  fileName: "2",
-  fileSize: 34250,
-  fileType: "application/pdf",
-  id: "fc1fbd30-ac49-11ea-96-7dc79c40ecd3",
+  sortNo: "1",
+  updatedAt: "2020-09-07 15:52:55",
+  updatedBy: "1732",
+  uri: "http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/8e67209cd9a58cdfc9469edfa1484866_1599459834761",
+  volCode: null,
+  volId: "ef31a5d3-eb54-11ea-abe5-735dc8c1a294",
+  volRevision: "7",
+}, {
+  category: "print",
+  createdAt: "2020-09-07 15:34:13",
+  createdBy: "1732",
+  encodedFileName: "647d57d9d156b144b276c0fcae9fd761_1599459834788",
+  fileExt: "jpg",
+  fileName: "微信图片_20200616152747.jpg",
+  fileSize: "41219",
+  fileType: "image/jpeg",
+  id: "24137692-f0df-11ea-8146-f9a5d6b3bf59",
   isDeleted: null,
-  setId: "c0660b70-ac47-11ea-b571-cd0sf54s52a",
-  sortNo: null,
-  title: null,
-  updatedAt: "2020-06-12 09:13:50",
-  updatedBy: "74",
-  uploadedFrom: null,
-  uri:'http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/cc941191cb8eb3a190a9243c070f1cb5_1599531912024'
+  sortNo: "2",
+  updatedAt: "2020-09-07 15:52:55",
+  updatedBy: "1732",
+  uri: "http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/647d57d9d156b144b276c0fcae9fd761_1599459834788",
+  volCode: null,
+  volId: "ef31a5d3-eb54-11ea-abe5-735dc8c1a294",
+  volRevision: "7",
 }
 ]
-const ossParams={
-  region:OSS_ENDPOINT,
-  bucket:OSS_BUCKET,
-  accessKeyId: "STS.NUNzcFFm1UzeK512WDgPJPU7V",
-  accessKeySecret: "ECfswkWN4FFoTN3bh2s7eXg6sW55icsjjme1P1ZxhRjc",
-  Expiration: "2020-09-08T04:03:36Z",
-  stsToken: "CAISjgJ1q6Ft5B2yfSjIr5b7Mdnyq7IQ4riOSROA1lcRa99mv5CctDz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHaxqjXzeqMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAFpRiynzV+BNEqQ4E1NvxQNh4NSLFLfVXj9UbPxXdp1x0gd3gINce2NgcdZfnHZx+DszMpuqh7DjTeYppC32b4dYLoIybmhciSAW0gu8sKmhlUMG2yyzDD5+3VNy51AuNKvdEuCqbWi0fil2rIbg78raRkyMPxAGBPUuiQita+Z9g=="
+const ossParams = {
+  region: OSS_ENDPOINT,
+  bucket: OSS_BUCKET,
+  accessKeyId: "STS.NU37RtWzNzeQCaC2re4wkPk7g",
+  accessKeySecret: "97SJgL1BnxdU2gyv89RzJZmvbwcyvYeLx7FVPmVTNphZ",
+  Expiration: "2020-09-08T09:47:33Z",
+  stsToken: "CAISjgJ1q6Ft5B2yfSjIr5aGfOjAuqVvzae6QUfy1nIwOPhHv66chTz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHcg48UveqMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAFhyasKIz0zXlOaZpBvwFMhdzAa5wBeDIV8cIvYnVB5fbVN9Y3PKmX4Bf6Qhon/JqPOujYwyecZxQBGXxfwNfMqXEqKGlRpun51VyJS63LqTLCeIfTKIowyy7GC8jQPdvTBatTjHhCtk79ivtPhEUHKOKoioCt/ybt62ReL8gBcsQ=="
 }
+
 
 class App extends Component {
   constructor (props) {
@@ -133,8 +132,6 @@ class App extends Component {
         ]
       }
     }
-
-    
     
     return (
       <div style={{margin:'50px',width:'50%'}}>

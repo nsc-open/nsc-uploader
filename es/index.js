@@ -1,12 +1,48 @@
 import React__default, { createElement, Component } from 'react';
-import { Icon, Progress, Tooltip, message, Radio, Button } from 'antd';
+import { Icon, Progress, Tooltip, Radio, message, Button } from 'antd';
 import RcUpload from 'rc-upload';
-import { findIndex, uniqBy, maxBy, isEqual } from 'lodash';
+import { findIndex, uniqBy, isEqual, maxBy } from 'lodash';
 import { createHash } from 'crypto';
 import moment from 'moment';
 import Animate from 'rc-animate';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Lightbox } from 'nsc-lightbox';
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
+  }
+
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
+  }
+}
+
+function _asyncToGenerator(fn) {
+  return function () {
+    var self = this,
+        args = arguments;
+    return new Promise(function (resolve, reject) {
+      var gen = fn.apply(self, args);
+
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
+
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
+
+      _next(undefined);
+    });
+  };
+}
 
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -2260,244 +2296,6 @@ var Dragger = /*#__PURE__*/function (_React$Component) {
   return Dragger;
 }(Component);
 
-/**
- * slice() reference.
- */
-var slice = Array.prototype.slice;
-/**
- * Expose `co`.
- */
-
-var Co = co['default'] = co.co = co;
-/**
- * Wrap the given generator `fn` into a
- * function that returns a promise.
- * This is a separate function so that
- * every `co()` call doesn't create a new,
- * unnecessary closure.
- *
- * @param {GeneratorFunction} fn
- * @return {Function}
- * @api public
- */
-
-co.wrap = function (fn) {
-  createPromise.__generatorFunction__ = fn;
-  return createPromise;
-
-  function createPromise() {
-    return co.call(this, fn.apply(this, arguments));
-  }
-};
-/**
- * Execute the generator function or a generator
- * and return a promise.
- *
- * @param {Function} fn
- * @return {Promise}
- * @api public
- */
-
-
-function co(gen) {
-  var ctx = this;
-  var args = slice.call(arguments, 1); // we wrap everything in a promise to avoid promise chaining,
-  // which leads to memory leak errors.
-  // see https://github.com/tj/co/issues/180
-
-  return new Promise(function (resolve, reject) {
-    if (typeof gen === 'function') gen = gen.apply(ctx, args);
-    if (!gen || typeof gen.next !== 'function') return resolve(gen);
-    onFulfilled();
-    /**
-     * @param {Mixed} res
-     * @return {Promise}
-     * @api private
-     */
-
-    function onFulfilled(res) {
-      var ret;
-
-      try {
-        ret = gen.next(res);
-      } catch (e) {
-        return reject(e);
-      }
-
-      next(ret);
-      return null;
-    }
-    /**
-     * @param {Error} err
-     * @return {Promise}
-     * @api private
-     */
-
-
-    function onRejected(err) {
-      var ret;
-
-      try {
-        ret = gen["throw"](err);
-      } catch (e) {
-        return reject(e);
-      }
-
-      next(ret);
-    }
-    /**
-     * Get the next value in the generator,
-     * return a promise.
-     *
-     * @param {Object} ret
-     * @return {Promise}
-     * @api private
-     */
-
-
-    function next(ret) {
-      if (ret.done) return resolve(ret.value);
-      var value = toPromise.call(ctx, ret.value);
-      if (value && isPromise(value)) return value.then(onFulfilled, onRejected);
-      return onRejected(new TypeError('You may only yield a function, promise, generator, array, or object, ' + 'but the following object was passed: "' + String(ret.value) + '"'));
-    }
-  });
-}
-/**
- * Convert a `yield`ed value into a promise.
- *
- * @param {Mixed} obj
- * @return {Promise}
- * @api private
- */
-
-
-function toPromise(obj) {
-  if (!obj) return obj;
-  if (isPromise(obj)) return obj;
-  if (isGeneratorFunction(obj) || isGenerator(obj)) return co.call(this, obj);
-  if ('function' == typeof obj) return thunkToPromise.call(this, obj);
-  if (Array.isArray(obj)) return arrayToPromise.call(this, obj);
-  if (isObject(obj)) return objectToPromise.call(this, obj);
-  return obj;
-}
-/**
- * Convert a thunk to a promise.
- *
- * @param {Function}
- * @return {Promise}
- * @api private
- */
-
-
-function thunkToPromise(fn) {
-  var ctx = this;
-  return new Promise(function (resolve, reject) {
-    fn.call(ctx, function (err, res) {
-      if (err) return reject(err);
-      if (arguments.length > 2) res = slice.call(arguments, 1);
-      resolve(res);
-    });
-  });
-}
-/**
- * Convert an array of "yieldables" to a promise.
- * Uses `Promise.all()` internally.
- *
- * @param {Array} obj
- * @return {Promise}
- * @api private
- */
-
-
-function arrayToPromise(obj) {
-  return Promise.all(obj.map(toPromise, this));
-}
-/**
- * Convert an object of "yieldables" to a promise.
- * Uses `Promise.all()` internally.
- *
- * @param {Object} obj
- * @return {Promise}
- * @api private
- */
-
-
-function objectToPromise(obj) {
-  var results = new obj.constructor();
-  var keys = Object.keys(obj);
-  var promises = [];
-
-  for (var i = 0; i < keys.length; i++) {
-    var key = keys[i];
-    var promise = toPromise.call(this, obj[key]);
-    if (promise && isPromise(promise)) defer(promise, key);else results[key] = obj[key];
-  }
-
-  return Promise.all(promises).then(function () {
-    return results;
-  });
-
-  function defer(promise, key) {
-    // predefine the key in the result
-    results[key] = undefined;
-    promises.push(promise.then(function (res) {
-      results[key] = res;
-    }));
-  }
-}
-/**
- * Check if `obj` is a promise.
- *
- * @param {Object} obj
- * @return {Boolean}
- * @api private
- */
-
-
-function isPromise(obj) {
-  return 'function' == typeof obj.then;
-}
-/**
- * Check if `obj` is a generator.
- *
- * @param {Mixed} obj
- * @return {Boolean}
- * @api private
- */
-
-
-function isGenerator(obj) {
-  return 'function' == typeof obj.next && 'function' == typeof obj["throw"];
-}
-/**
- * Check if `obj` is a generator function.
- *
- * @param {Mixed} obj
- * @return {Boolean}
- * @api private
- */
-
-
-function isGeneratorFunction(obj) {
-  var constructor = obj.constructor;
-  if (!constructor) return false;
-  if ('GeneratorFunction' === constructor.name || 'GeneratorFunction' === constructor.displayName) return true;
-  return isGenerator(constructor.prototype);
-}
-/**
- * Check for plain object.
- *
- * @param {Mixed} val
- * @return {Boolean}
- * @api private
- */
-
-
-function isObject(val) {
-  return Object == val.constructor;
-}
-
 function styleInject(css, ref) {
   if ( ref === void 0 ) ref = {};
   var insertAt = ref.insertAt;
@@ -2571,242 +2369,261 @@ var Uploader = /*#__PURE__*/function (_Component) {
   var _super = _createSuper(Uploader);
 
   function Uploader(props) {
-    var _this2;
+    var _this;
 
     _classCallCheck(this, Uploader);
 
-    _this2 = _super.call(this, props);
+    _this = _super.call(this, props);
 
-    _defineProperty(_assertThisInitialized(_this2), "handleCancel", function () {
-      return _this2.setState({
+    _defineProperty(_assertThisInitialized(_this), "handleCancel", function () {
+      return _this.setState({
         previewVisible: false
       });
     });
 
-    _defineProperty(_assertThisInitialized(_this2), "onPreview", function (file) {
-      var onPreview = _this2.props.onPreview;
+    _defineProperty(_assertThisInitialized(_this), "onPreview", function (file) {
+      var onPreview = _this.props.onPreview;
       onPreview && onPreview(toAttachment(file));
     });
 
-    _defineProperty(_assertThisInitialized(_this2), "handlePreview", function (file) {
-      var fileList = _this2.state.fileList;
-      var files = fileList.map(toAttachment);
-      var lightboxFiles = files.map(function (a) {
-        return _objectSpread2(_objectSpread2({}, a), {}, {
-          alt: a.name,
-          uri: isDoc(a) ? "https://view.officeUploadViewers.live.com/op/view.aspx?src=".concat(encodeURIComponent(_this2.signatureUrl(a.uri))) : _this2.signatureUrl(a.uri)
-        });
-      });
-      var lightboxIndex = files.map(function (a) {
-        return a.id;
-      }).indexOf(file.id) || 0;
+    _defineProperty(_assertThisInitialized(_this), "handlePreview", /*#__PURE__*/function () {
+      var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(file) {
+        var getOssParams, fileList, files, lightboxFiles, lightboxIndex;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                getOssParams = _this.props.getOssParams;
+                fileList = _this.state.fileList;
+                files = fileList.map(toAttachment);
 
-      _this2.setState({
-        lightboxFiles: lightboxFiles,
-        previewVisible: true,
-        lightboxIndex: lightboxIndex
-      });
-    });
-
-    _defineProperty(_assertThisInitialized(_this2), "signatureUrl", function (url) {
-      var getOssParams = _this2.props.getOssParams;
-
-      var _this = _assertThisInitialized(_this2);
-
-      if (!_this.ossParams || _this.ossParams && new Date(_this.ossParams.Expiration) < Date.now()) {
-        getOssParams().then(function (r) {
-          return Co( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-            var uploadClient, index;
-            return regeneratorRuntime.wrap(function _callee$(_context) {
-              while (1) {
-                switch (_context.prev = _context.next) {
-                  case 0:
-                    _this.ossParams = r;
-                    uploadClient = getUploadClient(r);
-                    index = url.lastIndexOf('/') + 1;
-                    return _context.abrupt("return", uploadClient.signatureUrl(url.substring(index)));
-
-                  case 4:
-                  case "end":
-                    return _context.stop();
+                if (!(getOssParams && !_this.ossParams || _this.ossParams && new Date(_this.ossParams.Expiration) < Date.now())) {
+                  _context.next = 6;
+                  break;
                 }
-              }
-            }, _callee);
-          }));
-        });
-      } else {
-        var uploadClient = getUploadClient(_this.ossParams);
-        var index = url.lastIndexOf('/') + 1;
-        return uploadClient.signatureUrl(url.substring(index));
-      }
+
+                _context.next = 6;
+                return getOssParams().then(function (r) {
+                  _this.ossParams = r;
+                });
+
+              case 6:
+                lightboxFiles = files.map(function (a) {
+                  return _objectSpread2(_objectSpread2({}, a), {}, {
+                    alt: a.name,
+                    uri: isDoc(a) ? "https://view.officeapps.live.com/op/view.aspx?src=".concat(encodeURIComponent(_this.signatureUrl(a.uri))) : _this.signatureUrl(a.uri)
+                  });
+                });
+                lightboxIndex = files.map(function (a) {
+                  return a.id;
+                }).indexOf(file.id) || 0;
+
+                _this.setState({
+                  lightboxFiles: lightboxFiles,
+                  previewVisible: true,
+                  lightboxIndex: lightboxIndex
+                });
+
+              case 9:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }));
+
+      return function (_x) {
+        return _ref.apply(this, arguments);
+      };
+    }());
+
+    _defineProperty(_assertThisInitialized(_this), "signatureUrl", function (url) {
+      var uploadClient = getUploadClient(_this.ossParams);
+      var index = url.lastIndexOf('/') + 1;
+      return uploadClient.signatureUrl(url.substring(index));
     });
 
-    _defineProperty(_assertThisInitialized(_this2), "onLightboxClose", function () {
-      _this2.setState({
+    _defineProperty(_assertThisInitialized(_this), "onLightboxClose", function () {
+      _this.setState({
         previewVisible: false
       });
     });
 
-    _defineProperty(_assertThisInitialized(_this2), "handleChange", function (file, fileList) {
-      var onFileChange = _this2.props.onFileChange;
+    _defineProperty(_assertThisInitialized(_this), "handleChange", function (file, fileList) {
+      var onFileChange = _this.props.onFileChange;
       onFileChange && onFileChange(toAttachment(file), fileList.map(toAttachment));
     });
 
-    _defineProperty(_assertThisInitialized(_this2), "handleDownload", function (file) {
-      var onDownload = _this2.props.onDownload;
+    _defineProperty(_assertThisInitialized(_this), "handleDownload", function (file) {
+      var onDownload = _this.props.onDownload;
+      file.url = _this.signatureUrl(file.url);
       onDownload && onDownload(toAttachment(file));
     });
 
-    _defineProperty(_assertThisInitialized(_this2), "handleRemove", function (file) {
-      var _this2$props = _this2.props,
-          autoSave = _this2$props.autoSave,
-          onRemove = _this2$props.onRemove;
-      var fileList = _this2.state.fileList;
+    _defineProperty(_assertThisInitialized(_this), "handleRemove", function (file) {
+      var _this$props = _this.props,
+          autoSave = _this$props.autoSave,
+          onRemove = _this$props.onRemove;
+      var fileList = _this.state.fileList;
       var newFileList = fileList.filter(function (f) {
         return f.id !== file.id;
       });
 
-      _this2.setState({
+      _this.setState({
         fileList: newFileList
       });
 
-      _this2.handleChange(file, newFileList);
+      _this.handleChange(file, newFileList);
 
       if (autoSave && onRemove) {
         onRemove(toAttachment(file));
       }
     });
 
-    _defineProperty(_assertThisInitialized(_this2), "hasExtension", function (fileName) {
-      var fileExtension = _this2.props.fileExtension;
+    _defineProperty(_assertThisInitialized(_this), "hasExtension", function (fileName) {
+      var fileExtension = _this.props.fileExtension;
       var extensions = fileExtension ? fileExtension : [];
       var pattern = '(' + extensions.join('|').replace(/\./g, '\\.') + ')$';
       return new RegExp(pattern, 'i').test(fileName);
     });
 
-    _defineProperty(_assertThisInitialized(_this2), "beforeUpload", function (file, files) {
-      var _this2$props2 = _this2.props,
-          autoSave = _this2$props2.autoSave,
-          getOssParams = _this2$props2.getOssParams,
-          maxFileSize = _this2$props2.maxFileSize,
-          maxFileNum = _this2$props2.maxFileNum,
-          fileExtension = _this2$props2.fileExtension,
-          fileErrorMsg = _this2$props2.fileErrorMsg;
-      var fileList = _this2.state.fileList; //Check for file extension
+    _defineProperty(_assertThisInitialized(_this), "beforeUpload", /*#__PURE__*/function () {
+      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(file, files) {
+        var _this$props2, autoSave, getOssParams, maxFileSize, maxFileNum, fileExtension, fileErrorMsg, fileList, maxItem, maxSortNo, hideLoading, encodedFileName, uploadClient;
 
-      if (fileExtension && !_this2.hasExtension(file.name)) {
-        message.error(fileErrorMsg && fileErrorMsg.fileExtensionErrorMsg ? fileErrorMsg.fileExtensionErrorMsg : "\u4E0D\u652F\u6301\u7684\u6587\u4EF6\u683C\u5F0F\uFF0C\u8BF7\u4E0A\u4F20\u683C\u5F0F\u4E3A".concat(fileExtension.join(','), "\u7684\u6587\u4EF6"));
-        return false;
-      } // Check for file size
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _this$props2 = _this.props, autoSave = _this$props2.autoSave, getOssParams = _this$props2.getOssParams, maxFileSize = _this$props2.maxFileSize, maxFileNum = _this$props2.maxFileNum, fileExtension = _this$props2.fileExtension, fileErrorMsg = _this$props2.fileErrorMsg;
+                fileList = _this.state.fileList; //Check for file extension
 
-
-      if (file.size / 1024 / 1024 > maxFileSize) {
-        message.error(fileErrorMsg && fileErrorMsg.fileSizeErrorMsg ? fileErrorMsg.fileSizeErrorMsg : "\u6587\u4EF6\u8FC7\u5927\uFF0C\u6700\u5927\u53EF\u4E0A\u4F20".concat(maxFileNum));
-        return false;
-      } // Check for file number
-
-
-      if (files.length + fileList.length > maxFileNum) {
-        message.error(fileErrorMsg && fileErrorMsg.fileNumerErrorMsg ? fileErrorMsg.fileNumerErrorMsg : "\u6587\u4EF6\u6570\u91CF\u8FC7\u591A\uFF0C\u6700\u591A\u53EF\u4E0A\u4F20".concat(maxFileNum, "\u4EFD"));
-        return false;
-      }
-
-      var maxItem = maxBy(fileList, function (i) {
-        return i.sortNo;
-      });
-      var maxSortNo = maxItem ? maxItem.sortNo : 0;
-      var hideLoading = message.loading('文件正在预处理', 0);
-      var encodedFileName = encodeFileName(file.name);
-
-      if (getOssParams) {
-        var _this = _assertThisInitialized(_this2);
-
-        getOssParams().then(function (ossParams) {
-          return Co( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-            var uploadClient;
-            return regeneratorRuntime.wrap(function _callee2$(_context2) {
-              while (1) {
-                switch (_context2.prev = _context2.next) {
-                  case 0:
-                    uploadClient = getUploadClient(ossParams);
-                    _this.ossParams = ossParams;
-                    _context2.next = 4;
-                    return uploadClient.put(encodedFileName, file);
-
-                  case 4:
-                    return _context2.abrupt("return", _context2.sent);
-
-                  case 5:
-                  case "end":
-                    return _context2.stop();
+                if (!(fileExtension && !_this.hasExtension(file.name))) {
+                  _context2.next = 5;
+                  break;
                 }
-              }
-            }, _callee2);
-          }));
-        }).then(function (aliRes) {
-          var indexNo = files.findIndex(function (i) {
-            return i.uid === file.uid;
-          });
-          var newFile = {
-            uid: file.uid,
-            id: file.uid,
-            encodedFileName: encodedFileName,
-            name: file.name,
-            url: aliRes.url,
-            status: 'done',
-            size: file.size,
-            ext: file.name.split('.').pop(),
-            type: file.type,
-            sortNo: maxSortNo + 1 + indexNo
-          };
 
-          if (autoSave) {
-            return _this2.save(newFile);
-          } else {
-            return newFile;
+                message.error(fileErrorMsg && fileErrorMsg.fileExtensionErrorMsg ? fileErrorMsg.fileExtensionErrorMsg : "\u4E0D\u652F\u6301\u7684\u6587\u4EF6\u683C\u5F0F\uFF0C\u8BF7\u4E0A\u4F20\u683C\u5F0F\u4E3A".concat(fileExtension.join(','), "\u7684\u6587\u4EF6"));
+                return _context2.abrupt("return", false);
+
+              case 5:
+                if (!(file.size / 1024 / 1024 > maxFileSize)) {
+                  _context2.next = 8;
+                  break;
+                }
+
+                message.error(fileErrorMsg && fileErrorMsg.fileSizeErrorMsg ? fileErrorMsg.fileSizeErrorMsg : "\u6587\u4EF6\u8FC7\u5927\uFF0C\u6700\u5927\u53EF\u4E0A\u4F20".concat(maxFileNum));
+                return _context2.abrupt("return", false);
+
+              case 8:
+                if (!(files.length + fileList.length > maxFileNum)) {
+                  _context2.next = 11;
+                  break;
+                }
+
+                message.error(fileErrorMsg && fileErrorMsg.fileNumerErrorMsg ? fileErrorMsg.fileNumerErrorMsg : "\u6587\u4EF6\u6570\u91CF\u8FC7\u591A\uFF0C\u6700\u591A\u53EF\u4E0A\u4F20".concat(maxFileNum, "\u4EFD"));
+                return _context2.abrupt("return", false);
+
+              case 11:
+                maxItem = maxBy(fileList, function (i) {
+                  return i.sortNo;
+                });
+                maxSortNo = maxItem ? maxItem.sortNo : 0;
+                hideLoading = message.loading('文件正在预处理', 0);
+                encodedFileName = encodeFileName(file.name);
+
+                if (!getOssParams) {
+                  _context2.next = 22;
+                  break;
+                }
+
+                if (!(!_this.ossParams || _this.ossParams && new Date(_this.ossParams.Expiration) < Date.now())) {
+                  _context2.next = 19;
+                  break;
+                }
+
+                _context2.next = 19;
+                return getOssParams().then(function (r) {
+                  _this.ossParams = r;
+                });
+
+              case 19:
+                uploadClient = getUploadClient(_this.ossParams);
+                uploadClient.put(encodedFileName, file).then(function (aliRes) {
+                  var indexNo = files.findIndex(function (i) {
+                    return i.uid === file.uid;
+                  });
+                  var newFile = {
+                    uid: file.uid,
+                    id: file.uid,
+                    encodedFileName: encodedFileName,
+                    name: file.name,
+                    url: aliRes.url,
+                    status: 'done',
+                    size: file.size,
+                    ext: file.name.split('.').pop(),
+                    type: file.type,
+                    sortNo: maxSortNo + 1 + indexNo
+                  };
+
+                  if (autoSave) {
+                    return _this.save(newFile);
+                  } else {
+                    return newFile;
+                  }
+                }).then(function (newFile) {
+                  fileList.push(newFile);
+                  fileList.sort(sorter);
+
+                  _this.setState({
+                    fileList: fileList
+                  });
+
+                  _this.handleChange(newFile, fileList);
+
+                  hideLoading();
+                })["catch"](function (e) {
+                  console.error('Uploader error', e);
+                  message.error("".concat(file.name, " \u9884\u5904\u7406\u5931\u8D25"));
+                  hideLoading();
+                }); // not do the upload after image added
+
+                return _context2.abrupt("return", false);
+
+              case 22:
+              case "end":
+                return _context2.stop();
+            }
           }
-        }).then(function (newFile) {
-          fileList.push(newFile);
-          fileList.sort(sorter);
+        }, _callee2);
+      }));
 
-          _this2.setState({
-            fileList: fileList
-          });
+      return function (_x2, _x3) {
+        return _ref2.apply(this, arguments);
+      };
+    }());
 
-          _this2.handleChange(newFile, fileList);
-
-          hideLoading();
-        })["catch"](function (e) {
-          console.error('Uploader error', e);
-          message.error("".concat(file.name, " \u9884\u5904\u7406\u5931\u8D25"));
-          hideLoading();
-        }); // not do the upload after image added
-
-        return false;
-      }
-    });
-
-    _defineProperty(_assertThisInitialized(_this2), "onSortEnd", function (result) {
-      var onSortEnd = _this2.props.onSortEnd;
+    _defineProperty(_assertThisInitialized(_this), "onSortEnd", function (result) {
+      var onSortEnd = _this.props.onSortEnd;
 
       if (result) {
-        var newFileList = arrayMove(_this2.state.fileList, result.source.index, result.destination.index);
+        var newFileList = arrayMove(_this.state.fileList, result.source.index, result.destination.index);
 
-        _this2.setState({
+        _this.setState({
           fileList: newFileList
         });
 
-        onSortEnd && onSortEnd(_this2.state.fileList.map(toAttachment), newFileList.map(toAttachment));
+        onSortEnd && onSortEnd(_this.state.fileList.map(toAttachment), newFileList.map(toAttachment));
       }
     });
 
-    _defineProperty(_assertThisInitialized(_this2), "onListTypeChange", function (e) {
-      _this2.setState({
+    _defineProperty(_assertThisInitialized(_this), "onListTypeChange", function (e) {
+      _this.setState({
         listType: e.target.value
       });
     });
 
-    _defineProperty(_assertThisInitialized(_this2), "renderRadio", function (showRadioButton) {
+    _defineProperty(_assertThisInitialized(_this), "renderRadio", function (showRadioButton) {
       var defaultRadioItems = [{
         key: 'picture-card',
         value: '网格'
@@ -2826,8 +2643,8 @@ var Uploader = /*#__PURE__*/function (_Component) {
       return /*#__PURE__*/React__default.createElement("div", {
         className: "nsc-uploader-radio nsc-uploader-radio-".concat(placement)
       }, showRadioTitle && /*#__PURE__*/React__default.createElement("span", null, "\u6587\u4EF6\u5C55\u793A\u6837\u5F0F\uFF1A"), /*#__PURE__*/React__default.createElement(Radio.Group, {
-        onChange: _this2.onListTypeChange,
-        value: _this2.state.listType
+        onChange: _this.onListTypeChange,
+        value: _this.state.listType
       }, radioItems && radioItems.map(function (item) {
         return /*#__PURE__*/React__default.createElement(Radio, {
           key: item.key,
@@ -2836,22 +2653,26 @@ var Uploader = /*#__PURE__*/function (_Component) {
       })));
     });
 
-    _this2.state = {
+    _this.state = {
       listType: 'picture-card',
-      fileList: [],
-      // [{ id, name, encodeFileName, size, type, ext, uid, url }]
-      lightboxFiles: [],
-      previewVisible: false,
-      lightboxIndex: 0
+      fileList: [] // [{ id, name, encodeFileName, size, type, ext, uid, url }]
+
     };
-    _this2.ossParams = null;
-    return _this2;
+    _this.ossParams = null;
+    return _this;
   }
 
   _createClass(Uploader, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      var defaultFiles = this.props.defaultFiles;
+      var _this2 = this;
+
+      var _this$props3 = this.props,
+          defaultFiles = _this$props3.defaultFiles,
+          getOssParams = _this$props3.getOssParams;
+      getOssParams && getOssParams().then(function (r) {
+        _this2.ossParams = r;
+      });
       this.setState({
         fileList: defaultFiles.map(toFile).sort(sorter)
       });
@@ -2886,18 +2707,18 @@ var Uploader = /*#__PURE__*/function (_Component) {
           lightboxFiles = _this$state.lightboxFiles,
           lightboxIndex = _this$state.lightboxIndex;
 
-      var _this$props = this.props,
-          dragSortable = _this$props.dragSortable,
-          beforeUpload = _this$props.beforeUpload,
-          type = _this$props.type,
-          maxFileNum = _this$props.maxFileNum,
-          disabled = _this$props.disabled,
-          children = _this$props.children,
-          _this$props$className = _this$props.className,
-          className = _this$props$className === void 0 ? '' : _this$props$className,
-          showUploadButton = _this$props.showUploadButton,
-          customRadioButton = _this$props.customRadioButton,
-          restProps = _objectWithoutProperties(_this$props, ["dragSortable", "beforeUpload", "type", "maxFileNum", "disabled", "children", "className", "showUploadButton", "customRadioButton"]);
+      var _this$props4 = this.props,
+          dragSortable = _this$props4.dragSortable,
+          beforeUpload = _this$props4.beforeUpload,
+          type = _this$props4.type,
+          maxFileNum = _this$props4.maxFileNum,
+          disabled = _this$props4.disabled,
+          children = _this$props4.children,
+          _this$props4$classNam = _this$props4.className,
+          className = _this$props4$classNam === void 0 ? '' : _this$props4$classNam,
+          showUploadButton = _this$props4.showUploadButton,
+          customRadioButton = _this$props4.customRadioButton,
+          restProps = _objectWithoutProperties(_this$props4, ["dragSortable", "beforeUpload", "type", "maxFileNum", "disabled", "children", "className", "showUploadButton", "customRadioButton"]);
 
       var listType = this.props.listType ? this.props.listType : this.state.listType;
       var showRadioButton = this.props.listType ? false : this.props.showRadioButton;
@@ -2940,12 +2761,12 @@ var Uploader = /*#__PURE__*/function (_Component) {
       }, "\u70B9\u51FB\u83B7\u53D6\u62D6\u52A8 \u56FE\u7247\u6216\u6587\u6863 \u5230\u8FD9\u5757\u533A\u57DF\u5B8C\u6210\u6587\u4EF6\u4E0A\u4F20"));
       return /*#__PURE__*/React__default.createElement("div", {
         className: "nsc-upload-container"
-      }, customRadioButton ? customRadioButton : showRadioButton ? this.renderRadio(showRadioButton) : null, type === 'dragger' ? /*#__PURE__*/React__default.createElement(Dragger, props, showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : draggerBtn : null) : /*#__PURE__*/React__default.createElement(Upload, props, showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : listType === 'picture-card' ? cardButton : textButton : null), previewVisible && lightboxFiles.length ? /*#__PURE__*/React__default.createElement(Lightbox, {
+      }, customRadioButton ? customRadioButton : showRadioButton ? this.renderRadio(showRadioButton) : null, type === 'dragger' ? /*#__PURE__*/React__default.createElement(Dragger, props, showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : draggerBtn : null) : /*#__PURE__*/React__default.createElement(Upload, props, showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : listType === 'picture-card' ? cardButton : textButton : null), previewVisible && lightboxFiles.length > 0 && /*#__PURE__*/React__default.createElement(Lightbox, {
         visible: previewVisible,
         imgvImages: lightboxFiles,
         activeIndex: lightboxIndex,
         onCancel: this.onLightboxClose
-      }) : null);
+      }));
     }
   }]);
 

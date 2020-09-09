@@ -47,15 +47,15 @@ class Uploader extends Component {
     this.state = {
       listType: 'picture-card',
       fileList: [], // [{ id, name, encodeFileName, size, type, ext, uid, url }]
-      lightboxFiles: [],
-      previewVisible: false,
-      lightboxIndex: 0
     }
     this.ossParams = null
   }
 
   componentDidMount() {
-    const { defaultFiles } = this.props
+    const { defaultFiles, getOssParams } = this.props
+    getOssParams && getOssParams().then(r => {
+      this.ossParams = r
+    })
     this.setState({ fileList: defaultFiles.map(toFile).sort(sorter) })
   }
 
@@ -72,10 +72,19 @@ class Uploader extends Component {
     onPreview && onPreview(toAttachment(file))
   }
 
-  handlePreview = (file) => {
+  handlePreview = async (file) => {
+    const { getOssParams } = this.props
     const { fileList } = this.state
     const files = fileList.map(toAttachment)
-    const lightboxFiles = files.map(a => ({ ...a, alt: a.name, uri: isDoc(a) ? `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(this.signatureUrl(a.uri))}` : this.signatureUrl(a.uri) }))
+    if (getOssParams && !this.ossParams || (this.ossParams && (new Date(this.ossParams.Expiration) < Date.now()))) {
+      await getOssParams().then(r => {
+        this.ossParams = r
+      })
+    }
+    const lightboxFiles = files.map((a) => {
+      return { ...a, alt: a.name, uri: isDoc(a) ? `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(this.signatureUrl(a.uri))}` : this.signatureUrl(a.uri) }
+    }
+    )
     const lightboxIndex = (files.map(a => a.id).indexOf(file.id) || 0)
     this.setState({
       lightboxFiles,
@@ -85,20 +94,9 @@ class Uploader extends Component {
   }
 
   signatureUrl = (url) => {
-    const { getOssParams } = this.props
-    const _this = this
-    if (!_this.ossParams || (_this.ossParams && (new Date(_this.ossParams.Expiration) < Date.now()))) {
-      getOssParams().then(r => co(function* (){
-        _this.ossParams = r
-        const uploadClient = getUploadClient(r)
-        const index = url.lastIndexOf('/') + 1
-        return uploadClient.signatureUrl(url.substring(index))
-      }))
-    } else {
-      const uploadClient = getUploadClient(_this.ossParams)
-      const index = url.lastIndexOf('/') + 1
-      return uploadClient.signatureUrl(url.substring(index))
-    }
+    const uploadClient = getUploadClient(this.ossParams)
+    const index = url.lastIndexOf('/') + 1
+    return uploadClient.signatureUrl(url.substring(index))
   }
 
   onLightboxClose = () => {
@@ -149,7 +147,7 @@ class Uploader extends Component {
   }
 
   //文件先上传至阿里云
-  beforeUpload = (file, files) => {
+  beforeUpload = async (file, files) => {
     const { autoSave, getOssParams, maxFileSize, maxFileNum, fileExtension, fileErrorMsg } = this.props
     const { fileList } = this.state
     //Check for file extension
@@ -174,12 +172,14 @@ class Uploader extends Component {
     const hideLoading = message.loading('文件正在预处理', 0)
     let encodedFileName = encodeFileName(file.name)
     if (getOssParams) {
-      const _this = this
-      getOssParams().then(ossParams => co(function* () {
-        const uploadClient = getUploadClient(ossParams)
-        _this.ossParams = ossParams
-        return yield uploadClient.put(encodedFileName, file)
-      })).then(aliRes => {
+      if (!this.ossParams || (this.ossParams && (new Date(this.ossParams.Expiration) < Date.now()))) {
+        await getOssParams().then(r => {
+          this.ossParams = r
+        })
+      }
+
+      const uploadClient = getUploadClient(this.ossParams)
+      uploadClient.put(encodedFileName, file).then(aliRes => {
         const indexNo = files.findIndex(i => i.uid === file.uid)
         const newFile = {
           uid: file.uid,
@@ -302,7 +302,6 @@ class Uploader extends Component {
         <p className="ant-upload-text">点击获取拖动 图片或文档 到这块区域完成文件上传</p>
       </div>
     )
-
     return (
       <div className='nsc-upload-container'>
         {customRadioButton ? customRadioButton : showRadioButton ? this.renderRadio(showRadioButton) : null}
@@ -313,12 +312,12 @@ class Uploader extends Component {
           : <Upload {...props}>
             {showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : listType === 'picture-card' ? cardButton : textButton : null}
           </Upload>}
-        {previewVisible && lightboxFiles.length ? <Lightbox
+        {previewVisible && lightboxFiles.length > 0 && <Lightbox
           visible={previewVisible}
           imgvImages={lightboxFiles}
           activeIndex={lightboxIndex}
           onCancel={this.onLightboxClose}
-        /> : null
+        />
         }
       </div>
     );
