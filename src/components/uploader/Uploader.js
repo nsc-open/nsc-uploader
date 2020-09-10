@@ -147,8 +147,9 @@ class Uploader extends Component {
     let encodedFileName = encodeFileName(file.name)
 
     if (this.uploadClient) {
+      const _this = this
       co(function* () {
-        return yield this.uploadClient.put(encodedFileName, file)
+        return yield _this.uploadClient.put(encodedFileName, file)
       }).then(aliRes => {
         const indexNo = files.findIndex(i => i.uid === file.uid)
         const newFile = {
