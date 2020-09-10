@@ -7,6 +7,7 @@ import { getUploadClient, encodeFileName, arrayMove, toFile, toAttachment, isDoc
 import isEqual from 'lodash/isEqual'
 import maxBy from 'lodash/maxBy'
 import { Lightbox } from 'nsc-lightbox'
+import co from './Co'
 import Url from 'url-parse'
 
 import './style/index.css'
@@ -146,7 +147,9 @@ class Uploader extends Component {
     let encodedFileName = encodeFileName(file.name)
 
     if (this.uploadClient) {
-      this.uploadClient.put(encodedFileName, file).then(aliRes => {
+      co(function* () {
+        return yield this.uploadClient.put(encodedFileName, file)
+      }).then(aliRes => {
         const indexNo = files.findIndex(i => i.uid === file.uid)
         const newFile = {
           uid: file.uid,
