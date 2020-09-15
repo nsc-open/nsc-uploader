@@ -122,7 +122,7 @@ class Uploader extends Component {
 
   //文件先上传至阿里云
   beforeUpload = (file, files) => {
-    const { autoSave, maxFileSize, maxFileNum, fileExtension, fileErrorMsg } = this.props
+    const { autoSave, maxFileSize, maxFileNum, fileExtension, fileErrorMsg ,onProgress} = this.props
     const { fileList } = this.state
     //Check for file extension
     if (fileExtension && !this.hasExtension(file.name)) {
@@ -151,6 +151,7 @@ class Uploader extends Component {
       co(function* () {
         return yield _this.uploadClient.put(encodedFileName, file)
       }).then(aliRes => {
+        onProgress && onProgress(aliRes)
         const indexNo = files.findIndex(i => i.uid === file.uid)
         const newFile = {
           uid: file.uid,
