@@ -73,8 +73,24 @@ export const isDoc = (img) => {
   return img.fileExt.indexOf('doc') !== -1 || img.fileExt.indexOf('xls') !== -1
 }
 
-
-
+export const imgSize = (file,scales) => {
+  return new Promise((resolve, reject) => {
+    let img = new Image()
+    let URL = window.URL || window.webkitURL
+    img.onload = () =>{
+      // 图片比例校验
+      let scale = img.width / img.height
+      let valid = scales.includes(scale)
+      valid ? resolve(file) : reject();
+    }
+    img.src = URL.createObjectURL(file)
+  }).then(() => {
+    return file
+  },
+  () => {
+    return false
+  })
+}
 
 const arrayMoveMutate = (array, from, to) => {
 	const startIndex = to < 0 ? array.length + to : to;

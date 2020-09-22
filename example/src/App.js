@@ -115,7 +115,6 @@ class App extends Component {
 		let accept = "*"
 
 		const uploadProps = {
-		  getOssParams:this.getOssParams,
       multiple: true,
       dragSortable:true,
 		  onFileChange:this.onFileChange,
@@ -124,6 +123,7 @@ class App extends Component {
       onSortEnd:this.onSortEnd,
       onDownload:this.onDownload,
       defaultFiles:fileList,
+      fileScales:[1,2],
       showRadioButton:  {
         placement:'left' , 
         radioItems:[ 

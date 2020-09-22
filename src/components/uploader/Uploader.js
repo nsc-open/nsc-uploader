@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Icon, Button, message, Radio } from 'antd'
 import Upload from './Upload'
 import Dragger from './Dragger'
-import { getUploadClient, encodeFileName, arrayMove, toFile, toAttachment, isDoc } from './utils'
+import { getUploadClient, encodeFileName, arrayMove, toFile, toAttachment, isDoc ,imgSize} from './utils'
 import isEqual from 'lodash/isEqual'
 import maxBy from 'lodash/maxBy'
 import { Lightbox } from 'nsc-lightbox'
@@ -26,13 +26,13 @@ class Uploader extends Component {
 
   componentDidMount() {
     const { defaultFiles, getOssParams, ossParams } = this.props
-    if (getOssParams && !ossParams || (ossParams && (new Date(ossParams.Expiration) < Date.now()))) {
-      getOssParams().then(r => {
-        this.uploadClient = getUploadClient(r)
-      })
-    } else if (ossParams) {
-      this.uploadClient = getUploadClient(ossParams)
-    }
+    // if (getOssParams && !ossParams || (ossParams && (new Date(ossParams.Expiration) < Date.now()))) {
+    //   getOssParams().then(r => {
+    //     this.uploadClient = getUploadClient(r)
+    //   })
+    // } else if (ossParams) {
+    //   this.uploadClient = getUploadClient(ossParams)
+    // }
     this.setState({ fileList: defaultFiles.map(toFile).sort(sorter) })
   }
 
@@ -121,8 +121,8 @@ class Uploader extends Component {
   }
 
   //文件先上传至阿里云
-  beforeUpload = (file, files) => {
-    const { autoSave, maxFileSize, maxFileNum, fileExtension, fileErrorMsg ,onProgress} = this.props
+  beforeUpload = async(file, files) => {
+    const { autoSave, maxFileSize, maxFileNum, fileExtension, fileErrorMsg ,onProgress ,fileScales } = this.props
     const { fileList } = this.state
     //Check for file extension
     if (fileExtension && !this.hasExtension(file.name)) {
@@ -138,6 +138,19 @@ class Uploader extends Component {
     if (files.length + fileList.length > maxFileNum) {
       message.error(fileErrorMsg && fileErrorMsg.fileNumerErrorMsg ? fileErrorMsg.fileNumerErrorMsg : `文件数量过多，最多可上传${maxFileNum}份`)
       return false
+    }
+    // Check for file scale
+    if (fileScales) {
+      let isScale = true
+      await imgSize(file,fileScales).then(r=>{
+        if(!r){
+          message.error(fileErrorMsg && fileErrorMsg.fileNumerErrorMsg ? fileErrorMsg.fileScaleErrorMsg : `添加失败: ${file.name} - 错误的图片尺寸 (请使用${fileScales.join(':1 或')}:1的图片)`)
+          isScale = false
+        }
+      })
+      if(!isScale){
+        return false
+      }
     }
 
     const maxItem = maxBy(fileList, i => i.sortNo)
