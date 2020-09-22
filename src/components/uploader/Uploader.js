@@ -26,13 +26,13 @@ class Uploader extends Component {
 
   componentDidMount() {
     const { defaultFiles, getOssParams, ossParams } = this.props
-    // if (getOssParams && !ossParams || (ossParams && (new Date(ossParams.Expiration) < Date.now()))) {
-    //   getOssParams().then(r => {
-    //     this.uploadClient = getUploadClient(r)
-    //   })
-    // } else if (ossParams) {
-    //   this.uploadClient = getUploadClient(ossParams)
-    // }
+    if (getOssParams && !ossParams || (ossParams && (new Date(ossParams.Expiration) < Date.now()))) {
+      getOssParams().then(r => {
+        this.uploadClient = getUploadClient(r)
+      })
+    } else if (ossParams) {
+      this.uploadClient = getUploadClient(ossParams)
+    }
     this.setState({ fileList: defaultFiles.map(toFile).sort(sorter) })
   }
 

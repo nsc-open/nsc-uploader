@@ -1407,6 +1407,10 @@ var classnames = createCommonjsModule(function (module) {
 });
 
 var OSS = require('ali-oss');
+
+var getUploadClient = function getUploadClient(params) {
+  return new OSS(params);
+};
 var encodeFileName = function encodeFileName(filename) {
   var timeStr = moment().format('YYYYMMDDHHmmss');
   var hash = createHash('md5').update(filename + timeStr).digest('hex');
@@ -2895,16 +2899,20 @@ var Uploader = /*#__PURE__*/function (_Component) {
   _createClass(Uploader, [{
     key: "componentDidMount",
     value: function componentDidMount() {
+      var _this3 = this;
+
       var _this$props = this.props,
           defaultFiles = _this$props.defaultFiles,
           getOssParams = _this$props.getOssParams,
-          ossParams = _this$props.ossParams; // if (getOssParams && !ossParams || (ossParams && (new Date(ossParams.Expiration) < Date.now()))) {
-      //   getOssParams().then(r => {
-      //     this.uploadClient = getUploadClient(r)
-      //   })
-      // } else if (ossParams) {
-      //   this.uploadClient = getUploadClient(ossParams)
-      // }
+          ossParams = _this$props.ossParams;
+
+      if (getOssParams && !ossParams || ossParams && new Date(ossParams.Expiration) < Date.now()) {
+        getOssParams().then(function (r) {
+          _this3.uploadClient = getUploadClient(r);
+        });
+      } else if (ossParams) {
+        this.uploadClient = getUploadClient(ossParams);
+      }
 
       this.setState({
         fileList: defaultFiles.map(toFile).sort(sorter)
