@@ -97,7 +97,7 @@ class Uploader extends Component {
     this.setState({ fileList: newFileList })
     this.handleChange(file, newFileList)
 
-    if (autoSave && onRemove) {
+    if (onRemove) {
       onRemove(toAttachment(file))
     }
   }
