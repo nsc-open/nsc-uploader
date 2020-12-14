@@ -172,7 +172,7 @@ class Uploader extends Component {
     if (this.uploadClient) {
       const _this = this
       co(function* () {
-        if (uploadType = 'multipart') {
+        if (uploadType === 'multipart') {
           return yield _this.uploadClient.multipartUpload(encodedFileName, file, options)
         }
         return yield _this.uploadClient.put(encodedFileName, file)

@@ -252,6 +252,10 @@ function _createSuper(Derived) {
   };
 }
 
+function _readOnlyError(name) {
+  throw new Error("\"" + name + "\" is read-only");
+}
+
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
@@ -2693,13 +2697,13 @@ var Uploader = /*#__PURE__*/function (_Component) {
 
     _defineProperty(_assertThisInitialized(_this2), "beforeUpload", /*#__PURE__*/function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(file, files) {
-        var _this2$props2, autoSave, maxFileSize, maxFileNum, fileExtension, fileErrorMsg, onProgress, fileScales, fileList, isScale, maxItem, maxSortNo, hideLoading, encodedFileName, _this;
+        var _this2$props2, autoSave, maxFileSize, maxFileNum, fileExtension, fileErrorMsg, onProgress, fileScales, uploadType, fileList, isScale, maxItem, maxSortNo, hideLoading, encodedFileName, progress, options, _this;
 
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                _this2$props2 = _this2.props, autoSave = _this2$props2.autoSave, maxFileSize = _this2$props2.maxFileSize, maxFileNum = _this2$props2.maxFileNum, fileExtension = _this2$props2.fileExtension, fileErrorMsg = _this2$props2.fileErrorMsg, onProgress = _this2$props2.onProgress, fileScales = _this2$props2.fileScales;
+                _this2$props2 = _this2.props, autoSave = _this2$props2.autoSave, maxFileSize = _this2$props2.maxFileSize, maxFileNum = _this2$props2.maxFileNum, fileExtension = _this2$props2.fileExtension, fileErrorMsg = _this2$props2.fileErrorMsg, onProgress = _this2$props2.onProgress, fileScales = _this2$props2.fileScales, uploadType = _this2$props2.uploadType;
                 fileList = _this2.state.fileList; //Check for file extension
 
                 if (!(fileExtension && !_this2.hasExtension(file.name))) {
@@ -2759,8 +2763,20 @@ var Uploader = /*#__PURE__*/function (_Component) {
                 hideLoading = message.loading('文件正在预处理', 0);
                 encodedFileName = encodeFileName(file.name);
 
+                progress = function progress(p, _checkpoint) {
+                  onProgress && onProgress(p, _checkpoint);
+                };
+
+                options = {
+                  progress: progress,
+                  partSize: 1000 * 1024,
+                  //设置分片大小
+                  timeout: 120000000 //设置超时时间
+
+                };
+
                 if (!_this2.uploadClient) {
-                  _context2.next = 25;
+                  _context2.next = 27;
                   break;
                 }
 
@@ -2770,13 +2786,25 @@ var Uploader = /*#__PURE__*/function (_Component) {
                     while (1) {
                       switch (_context.prev = _context.next) {
                         case 0:
-                          _context.next = 2;
-                          return _this.uploadClient.put(encodedFileName, file);
+                          if (!(uploadType = (_readOnlyError("uploadType"), 'multipart'))) {
+                            _context.next = 4;
+                            break;
+                          }
 
-                        case 2:
-                          return _context.abrupt("return", _context.sent);
+                          _context.next = 3;
+                          return _this.uploadClient.multipartUpload(encodedFileName, file, options);
 
                         case 3:
+                          return _context.abrupt("return", _context.sent);
+
+                        case 4:
+                          _context.next = 6;
+                          return _this.uploadClient.put(encodedFileName, file);
+
+                        case 6:
+                          return _context.abrupt("return", _context.sent);
+
+                        case 7:
                         case "end":
                           return _context.stop();
                       }
@@ -2824,7 +2852,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
 
                 return _context2.abrupt("return", false);
 
-              case 25:
+              case 27:
               case "end":
                 return _context2.stop();
             }
