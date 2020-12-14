@@ -2679,7 +2679,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
 
       _this2.handleChange(file, newFileList);
 
-      if (autoSave && onRemove) {
+      if (onRemove) {
         onRemove(toAttachment(file));
       }
     });
