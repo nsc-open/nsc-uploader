@@ -1,21 +1,21 @@
 import React, { Component } from 'react'
-import { Icon ,message,Modal } from 'antd'
+import { Icon, message, Modal } from 'antd'
 import { Uploader } from 'nsc-uploader'
 import 'antd/dist/antd.css'
 const OSS = require('ali-oss')
 
 const toAttachment = file => ({
-	id: file.id || file.uid,
-	fileName: file.name,
-	encodedFileName: file.encodedFileName,
-	fileSize: file.size,
-	fileType: file.type,
-	fileExt: file.ext,
-	uri: file.url
-  })
+  id: file.id || file.uid,
+  fileName: file.name,
+  encodedFileName: file.encodedFileName,
+  fileSize: file.size,
+  fileType: file.type,
+  fileExt: file.ext,
+  uri: file.url
+})
 
 const OSS_ENDPOINT = 'oss-cn-beijing'
-const OSS_BUCKET ='corridorcleaningphoto'
+const OSS_BUCKET = 'corridorcleaningphoto'
 const defaultFiles = [{
   category: "print",
   createdAt: "2020-09-07 15:34:13",
@@ -57,27 +57,26 @@ const defaultFiles = [{
 const ossParams = {
   region: OSS_ENDPOINT,
   bucket: OSS_BUCKET,
-  accessKeyId: "STS.NU8DnDqNjMJE84KWhVJQqLVdu",
-  accessKeySecret: "5P3TsbFr5qvMt71AJ2yWct3MapWWUCX3N4vwBurKvHyp",
-  Expiration: "2020-12-15T01:38:38Z",
-  stsToken: "CAISjgJ1q6Ft5B2yfSjIr5aND9TwnJFL+oiuOhL6s2gDRt5do5PPlzz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHdtvtwP+qMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAFa0vKp0yNsgQNP12xcLoNoSy2LPs24AoNdJVZcWSUd86PaM9OhUhAcr9QD6RlYT1BMC7HZ7b7ULn5mYRpXP5z5Q3Wt4O/qdj7gwlyxvcCmZD+hU/EQR6pjrABWi/yyHka3vlrdNdHuU7J6phnk0Cj1VuDyKJ/VHOonfvrNj7UBsw=="
-
+  accessKeyId: "STS.NT6dKbC4VdjQQkVuHs7CvxpLx",
+  accessKeySecret: "DgUf9QCdAHjfnJMQh5N3NoxKm4Hux4BPtuYT8ivAjNDY",
+  Expiration: "2020-12-15T03:19:04Z",
+  stsToken: "CAISjgJ1q6Ft5B2yfSjIr5eDL/HWrut306i6U03nkUgmO8xal7Xnmjz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHa8cpwD+qMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAEIZ/03a50ON0S+MfjV1Q7pAgj3/8Zd4Zb6jSf8TkZBAANezA8tIZ5Q8QGw1FPOgvJWWs8vYDrWhkY5BzTd4iDasFQAnmPmv16RrnPlhNpdgG6HZKilr/ODRzQ5BAXaRXSI+7r0WTYuASt2O+4YwFAGXz2Ap3Y24JaC7aY+8iEvAg=="
 }
 
 
 class App extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
-      this.state={
-        fileList:defaultFiles,
-        previewVisible:false,
-        previewImage:null,
-        previewFileVisible:false,
-        previewFile:null
-      }
+    this.state = {
+      fileList: defaultFiles,
+      previewVisible: false,
+      previewImage: null,
+      previewFileVisible: false,
+      previewFile: null
     }
+  }
 
-  getOssParams = () => new Promise((resolve,reject)=>{
+  getOssParams = () => new Promise((resolve, reject) => {
     resolve(ossParams)
   })
 
@@ -87,57 +86,57 @@ class App extends Component {
     return client.signatureUrl(url.substring(index))
   }
 
-  onDownload=(file)=>{
+  onDownload = (file) => {
     window.open(file.url)
   }
 
-	onFileChange = (file,fileList) => {
-		this.setState({fileList:fileList})
+  onFileChange = (file, fileList) => {
+    this.setState({ fileList: fileList })
   }
-  handleCancel=()=>{
-		this.setState({ previewVisible: false })
-	}
-	handlePdfViewCancel=()=>{
-		this.setState({ previewFileVisible: false })
-	}
-	  
-
-  onSortEnd = (oldList,newList)=>{
-    console.log(oldList,newList)
+  handleCancel = () => {
+    this.setState({ previewVisible: false })
+  }
+  handlePdfViewCancel = () => {
+    this.setState({ previewFileVisible: false })
   }
 
-  onChange=({file})=>{
+
+  onSortEnd = (oldList, newList) => {
+    console.log(oldList, newList)
+  }
+
+  onChange = ({ file }) => {
     console.log(file)
   }
 
-  beforeUpload=({file})=>{
+  beforeUpload = ({ file }) => {
     console.log(file)
   }
-  
+
   render() {
-    const { previewVisible ,previewImage,previewFileVisible,previewFile,fileList } = this.state
-		let accept = "*"
+    const { previewVisible, previewImage, previewFileVisible, previewFile, fileList } = this.state
+    let accept = "*"
 
-		const uploadProps = {
+    const uploadProps = {
       multiple: true,
-      dragSortable:true,
-		  onFileChange:this.onFileChange,
+      dragSortable: true,
+      onFileChange: this.onFileChange,
       accept,
-      ossParams:ossParams,
-      // uploadType:'multipart',
-      onSortEnd:this.onSortEnd,
-      onDownload:this.onDownload,
-      defaultFiles:fileList,
+      ossParams: ossParams,
+      uploadType:'multipart',
+      onSortEnd: this.onSortEnd,
+      onDownload: this.onDownload,
+      defaultFiles: fileList,
     }
-    
+
     return (
-      <div style={{margin:'50px',width:'50%'}}>
-        <Uploader 
+      <div style={{ margin: '50px', width: '50%' }}>
+        <Uploader
           {...uploadProps}
-          showUploadList={{showDownloadIcon : true}}
+          showUploadList={{ showDownloadIcon: true }}
         />
       </div>
-      
+
     )
   }
 }

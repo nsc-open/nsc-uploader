@@ -2667,7 +2667,6 @@ var Uploader = /*#__PURE__*/function (_Component) {
 
     _defineProperty(_assertThisInitialized(_this2), "signatureUrl", function (url) {
       url = decodeURIComponent(url);
-      console.log(url);
 
       var _Url = new Url(decodeURIComponent(url)),
           pathname = _Url.pathname; // 兼容 http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/9467447a2edf9c569d4cf5930f2d5ea5
@@ -2675,7 +2674,6 @@ var Uploader = /*#__PURE__*/function (_Component) {
 
 
       var fileName = pathname.substr(1);
-      console.log(fileName);
       return _this2.uploadClient.signatureUrl(fileName);
     });
 
@@ -2725,49 +2723,49 @@ var Uploader = /*#__PURE__*/function (_Component) {
 
     _defineProperty(_assertThisInitialized(_this2), "beforeUpload", /*#__PURE__*/function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(file, files) {
-        var _this2$props2, autoSave, maxFileSize, maxFileNum, fileExtension, fileErrorMsg, onProgress, fileScales, uploadType, fileList, isScale, maxItem, maxSortNo, hideLoading, encodedFileName, progress, options, _this;
+        var _this2$props2, autoSave, maxFileSize, maxFileNum, fileExtension, uploadType, fileErrorMsg, onProgress, fileScales, fileList, isScale, maxItem, maxSortNo, hideLoading, encodedFileName, progress, options, _this;
 
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        return regeneratorRuntime.wrap(function _callee2$(_context3) {
           while (1) {
-            switch (_context2.prev = _context2.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
-                _this2$props2 = _this2.props, autoSave = _this2$props2.autoSave, maxFileSize = _this2$props2.maxFileSize, maxFileNum = _this2$props2.maxFileNum, fileExtension = _this2$props2.fileExtension, fileErrorMsg = _this2$props2.fileErrorMsg, onProgress = _this2$props2.onProgress, fileScales = _this2$props2.fileScales, uploadType = _this2$props2.uploadType;
+                _this2$props2 = _this2.props, autoSave = _this2$props2.autoSave, maxFileSize = _this2$props2.maxFileSize, maxFileNum = _this2$props2.maxFileNum, fileExtension = _this2$props2.fileExtension, uploadType = _this2$props2.uploadType, fileErrorMsg = _this2$props2.fileErrorMsg, onProgress = _this2$props2.onProgress, fileScales = _this2$props2.fileScales;
                 fileList = _this2.state.fileList; //Check for file extension
 
                 if (!(fileExtension && !_this2.hasExtension(file.name))) {
-                  _context2.next = 5;
+                  _context3.next = 5;
                   break;
                 }
 
                 message.error(fileErrorMsg && fileErrorMsg.fileExtensionErrorMsg ? fileErrorMsg.fileExtensionErrorMsg : "\u4E0D\u652F\u6301\u7684\u6587\u4EF6\u683C\u5F0F\uFF0C\u8BF7\u4E0A\u4F20\u683C\u5F0F\u4E3A".concat(fileExtension.join(','), "\u7684\u6587\u4EF6"));
-                return _context2.abrupt("return", false);
+                return _context3.abrupt("return", false);
 
               case 5:
                 if (!(file.size / 1024 / 1024 > maxFileSize)) {
-                  _context2.next = 8;
+                  _context3.next = 8;
                   break;
                 }
 
                 message.error(fileErrorMsg && fileErrorMsg.fileSizeErrorMsg ? fileErrorMsg.fileSizeErrorMsg : "\u6587\u4EF6\u8FC7\u5927\uFF0C\u6700\u5927\u53EF\u4E0A\u4F20".concat(maxFileNum));
-                return _context2.abrupt("return", false);
+                return _context3.abrupt("return", false);
 
               case 8:
                 if (!(files.length + fileList.length > maxFileNum)) {
-                  _context2.next = 11;
+                  _context3.next = 11;
                   break;
                 }
 
                 message.error(fileErrorMsg && fileErrorMsg.fileNumerErrorMsg ? fileErrorMsg.fileNumerErrorMsg : "\u6587\u4EF6\u6570\u91CF\u8FC7\u591A\uFF0C\u6700\u591A\u53EF\u4E0A\u4F20".concat(maxFileNum, "\u4EFD"));
-                return _context2.abrupt("return", false);
+                return _context3.abrupt("return", false);
 
               case 11:
                 if (!fileScales) {
-                  _context2.next = 17;
+                  _context3.next = 17;
                   break;
                 }
 
                 isScale = true;
-                _context2.next = 15;
+                _context3.next = 15;
                 return imgSize(file, fileScales).then(function (r) {
                   if (!r) {
                     message.error(fileErrorMsg && fileErrorMsg.fileNumerErrorMsg ? fileErrorMsg.fileScaleErrorMsg : "\u6DFB\u52A0\u5931\u8D25: ".concat(file.name, " - \u9519\u8BEF\u7684\u56FE\u7247\u5C3A\u5BF8 (\u8BF7\u4F7F\u7528").concat(fileScales.join(':1 或'), ":1\u7684\u56FE\u7247)"));
@@ -2777,11 +2775,11 @@ var Uploader = /*#__PURE__*/function (_Component) {
 
               case 15:
                 if (isScale) {
-                  _context2.next = 17;
+                  _context3.next = 17;
                   break;
                 }
 
-                return _context2.abrupt("return", false);
+                return _context3.abrupt("return", false);
 
               case 17:
                 maxItem = maxBy(fileList, function (i) {
@@ -2790,11 +2788,20 @@ var Uploader = /*#__PURE__*/function (_Component) {
                 maxSortNo = maxItem ? maxItem.sortNo : 0;
                 hideLoading = message.loading('文件正在预处理', 0);
                 encodedFileName = encodeFileName(file.name);
+                progress = /*#__PURE__*/regeneratorRuntime.mark(function generatorProgress(p, cpt, res) {
+                  return regeneratorRuntime.wrap(function generatorProgress$(_context) {
+                    while (1) {
+                      switch (_context.prev = _context.next) {
+                        case 0:
+                          onProgress && onProgress(p, cpt, res);
 
-                progress = function progress(p, _checkpoint) {
-                  onProgress && onProgress(p, _checkpoint);
-                };
-
+                        case 1:
+                        case "end":
+                          return _context.stop();
+                      }
+                    }
+                  }, generatorProgress);
+                });
                 options = {
                   progress: progress,
                   partSize: 1000 * 1024,
@@ -2804,42 +2811,42 @@ var Uploader = /*#__PURE__*/function (_Component) {
                 };
 
                 if (!_this2.uploadClient) {
-                  _context2.next = 27;
+                  _context3.next = 27;
                   break;
                 }
 
                 _this = _assertThisInitialized(_this2);
                 Co( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-                  return regeneratorRuntime.wrap(function _callee$(_context) {
+                  return regeneratorRuntime.wrap(function _callee$(_context2) {
                     while (1) {
-                      switch (_context.prev = _context.next) {
+                      switch (_context2.prev = _context2.next) {
                         case 0:
                           if (!(uploadType === 'multipart')) {
-                            _context.next = 6;
+                            _context2.next = 6;
                             break;
                           }
 
-                          _context.next = 3;
+                          _context2.next = 3;
                           return _this.uploadClient.multipartUpload(encodedFileName, file, options);
 
                         case 3:
-                          _context.t0 = _context.sent;
-                          _context.next = 9;
+                          _context2.t0 = _context2.sent;
+                          _context2.next = 9;
                           break;
 
                         case 6:
-                          _context.next = 8;
+                          _context2.next = 8;
                           return _this.uploadClient.put(encodedFileName, file);
 
                         case 8:
-                          _context.t0 = _context.sent;
+                          _context2.t0 = _context2.sent;
 
                         case 9:
-                          return _context.abrupt("return", _context.t0);
+                          return _context2.abrupt("return", _context2.t0);
 
                         case 10:
                         case "end":
-                          return _context.stop();
+                          return _context2.stop();
                       }
                     }
                   }, _callee);
@@ -2855,10 +2862,9 @@ var Uploader = /*#__PURE__*/function (_Component) {
                     url = origin + "/" + aliRes.name;
                   } else {
                     url = aliRes.url;
+                    onProgress && onProgress(aliRes);
                   }
 
-                  console.log('aliRes', aliRes);
-                  onProgress && onProgress(aliRes);
                   var indexNo = files.findIndex(function (i) {
                     return i.uid === file.uid;
                   });
@@ -2897,11 +2903,11 @@ var Uploader = /*#__PURE__*/function (_Component) {
                   hideLoading();
                 }); // not do the upload after image added
 
-                return _context2.abrupt("return", false);
+                return _context3.abrupt("return", false);
 
               case 27:
               case "end":
-                return _context2.stop();
+                return _context3.stop();
             }
           }
         }, _callee2);
@@ -2981,8 +2987,8 @@ var Uploader = /*#__PURE__*/function (_Component) {
           getOssParams = _this$props.getOssParams,
           ossParams = _this$props.ossParams;
 
-      if (getOssParams && !ossParams || ossParams && new Date(ossParams.Expiration) < Date.now()) {
-        getOssParams && getOssParams().then(function (r) {
+      if (getOssParams || getOssParams && ossParams && new Date(ossParams.Expiration) < Date.now()) {
+        getOssParams().then(function (r) {
           _this3.uploadClient = getUploadClient(r);
         });
       } else if (ossParams) {

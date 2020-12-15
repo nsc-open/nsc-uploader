@@ -26,8 +26,8 @@ class Uploader extends Component {
 
   componentDidMount() {
     const { defaultFiles, getOssParams, ossParams } = this.props
-    if (getOssParams && !ossParams || (ossParams && (new Date(ossParams.Expiration) < Date.now()))) {
-      getOssParams && getOssParams().then(r => {
+    if (getOssParams || (getOssParams && ossParams && (new Date(ossParams.Expiration) < Date.now()))) {
+      getOssParams().then(r => {
         this.uploadClient = getUploadClient(r)
       })
     } else if (ossParams) {
@@ -66,12 +66,10 @@ class Uploader extends Component {
 
   signatureUrl = (url) => {
     url = decodeURIComponent(url)
-    console.log(url)
     const { pathname } = new Url(decodeURIComponent(url))
     // 兼容 http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/9467447a2edf9c569d4cf5930f2d5ea5
     // http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/环水保/103/9467447a2edf9c569d4cf5930f2d5ea5
     const fileName = pathname.substr(1)
-    console.log(fileName)
     return this.uploadClient.signatureUrl(fileName)
   }
 
@@ -124,7 +122,7 @@ class Uploader extends Component {
 
   //文件先上传至阿里云
   beforeUpload = async (file, files) => {
-    const { autoSave, maxFileSize, maxFileNum, fileExtension, fileErrorMsg, onProgress, fileScales, uploadType } = this.props
+    const { autoSave, maxFileSize, maxFileNum, fileExtension, uploadType, fileErrorMsg, onProgress, fileScales } = this.props
     const { fileList } = this.state
     //Check for file extension
     if (fileExtension && !this.hasExtension(file.name)) {
@@ -161,9 +159,9 @@ class Uploader extends Component {
     const hideLoading = message.loading('文件正在预处理', 0)
     let encodedFileName = encodeFileName(file.name)
 
-    const progress = (p, _checkpoint) => {
-      onProgress && onProgress(p, _checkpoint)
-    };
+    const progress = function* generatorProgress(p, cpt, res) {
+      onProgress && onProgress(p, cpt, res)
+    }
 
     const options = {
       progress,
@@ -185,16 +183,15 @@ class Uploader extends Component {
           url = origin + "/" + aliRes.name
         } else {
           url = aliRes.url
+          onProgress && onProgress(aliRes)
         }
-        console.log('aliRes', aliRes)
-        onProgress && onProgress(aliRes)
         const indexNo = files.findIndex(i => i.uid === file.uid)
         const newFile = {
           uid: file.uid,
           id: file.uid,
           encodedFileName,
           name: file.name,
-          url: url,
+          url,
           status: 'done',
           size: file.size,
           ext: file.name.split('.').pop(),

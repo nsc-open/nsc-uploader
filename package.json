@@ -47,6 +47,7 @@
     "es"
   ],
   "dependencies": {
+    "ali-oss": "5.2.0",
     "lodash": "^4.17.20",
     "nsc-lightbox": "^0.0.3",
     "rc-animate": "^3.1.0",
