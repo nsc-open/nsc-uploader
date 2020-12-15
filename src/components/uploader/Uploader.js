@@ -27,7 +27,7 @@ class Uploader extends Component {
   componentDidMount() {
     const { defaultFiles, getOssParams, ossParams } = this.props
     if (getOssParams && !ossParams || (ossParams && (new Date(ossParams.Expiration) < Date.now()))) {
-      getOssParams().then(r => {
+      getOssParams && getOssParams().then(r => {
         this.uploadClient = getUploadClient(r)
       })
     } else if (ossParams) {
@@ -66,10 +66,12 @@ class Uploader extends Component {
 
   signatureUrl = (url) => {
     url = decodeURIComponent(url)
+    console.log(url)
     const { pathname } = new Url(decodeURIComponent(url))
     // 兼容 http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/9467447a2edf9c569d4cf5930f2d5ea5
     // http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/环水保/103/9467447a2edf9c569d4cf5930f2d5ea5
     const fileName = pathname.substr(1)
+    console.log(fileName)
     return this.uploadClient.signatureUrl(fileName)
   }
 
@@ -173,10 +175,20 @@ class Uploader extends Component {
       const _this = this
       co(function* () {
         if (uploadType === 'multipart') {
+          console.log('multipart', uploadType)
           return yield _this.uploadClient.multipartUpload(encodedFileName, file, options)
         }
         return yield _this.uploadClient.put(encodedFileName, file)
       }).then(aliRes => {
+        let url = ''
+        if (uploadType === 'multipart') {
+          const requestUrl = aliRes && aliRes.res && aliRes.res.requestUrls ? aliRes.res.requestUrls[0] : ''
+          const { origin } = new Url(decodeURIComponent(requestUrl))
+          url = origin +"/" + aliRes.name
+        } else {
+          url = aliRes.url
+        }
+        console.log('aliRes', aliRes)
         onProgress && onProgress(aliRes)
         const indexNo = files.findIndex(i => i.uid === file.uid)
         const newFile = {
@@ -184,7 +196,7 @@ class Uploader extends Component {
           id: file.uid,
           encodedFileName,
           name: file.name,
-          url: aliRes.url,
+          url: url,
           status: 'done',
           size: file.size,
           ext: file.name.split('.').pop(),

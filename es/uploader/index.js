@@ -252,10 +252,6 @@ function _createSuper(Derived) {
   };
 }
 
-function _readOnlyError(name) {
-  throw new Error("\"" + name + "\" is read-only");
-}
-
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
@@ -2641,6 +2637,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
 
     _defineProperty(_assertThisInitialized(_this2), "signatureUrl", function (url) {
       url = decodeURIComponent(url);
+      console.log(url);
 
       var _Url = new Url(decodeURIComponent(url)),
           pathname = _Url.pathname; // 兼容 http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/9467447a2edf9c569d4cf5930f2d5ea5
@@ -2648,6 +2645,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
 
 
       var fileName = pathname.substr(1);
+      console.log(fileName);
       return _this2.uploadClient.signatureUrl(fileName);
     });
 
@@ -2786,31 +2784,46 @@ var Uploader = /*#__PURE__*/function (_Component) {
                     while (1) {
                       switch (_context.prev = _context.next) {
                         case 0:
-                          if (!(uploadType = (_readOnlyError("uploadType"), 'multipart'))) {
-                            _context.next = 4;
+                          if (!(uploadType === 'multipart')) {
+                            _context.next = 5;
                             break;
                           }
 
-                          _context.next = 3;
+                          console.log('multipart', uploadType);
+                          _context.next = 4;
                           return _this.uploadClient.multipartUpload(encodedFileName, file, options);
 
-                        case 3:
+                        case 4:
                           return _context.abrupt("return", _context.sent);
 
-                        case 4:
-                          _context.next = 6;
+                        case 5:
+                          _context.next = 7;
                           return _this.uploadClient.put(encodedFileName, file);
 
-                        case 6:
+                        case 7:
                           return _context.abrupt("return", _context.sent);
 
-                        case 7:
+                        case 8:
                         case "end":
                           return _context.stop();
                       }
                     }
                   }, _callee);
                 })).then(function (aliRes) {
+                  var url = '';
+
+                  if (uploadType === 'multipart') {
+                    var requestUrl = aliRes && aliRes.res && aliRes.res.requestUrls ? aliRes.res.requestUrls[0] : '';
+
+                    var _Url2 = new Url(decodeURIComponent(requestUrl)),
+                        origin = _Url2.origin;
+
+                    url = origin + "/" + aliRes.name;
+                  } else {
+                    url = aliRes.url;
+                  }
+
+                  console.log('aliRes', aliRes);
                   onProgress && onProgress(aliRes);
                   var indexNo = files.findIndex(function (i) {
                     return i.uid === file.uid;
@@ -2820,7 +2833,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
                     id: file.uid,
                     encodedFileName: encodedFileName,
                     name: file.name,
-                    url: aliRes.url,
+                    url: url,
                     status: 'done',
                     size: file.size,
                     ext: file.name.split('.').pop(),
@@ -2935,7 +2948,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
           ossParams = _this$props.ossParams;
 
       if (getOssParams && !ossParams || ossParams && new Date(ossParams.Expiration) < Date.now()) {
-        getOssParams().then(function (r) {
+        getOssParams && getOssParams().then(function (r) {
           _this3.uploadClient = getUploadClient(r);
         });
       } else if (ossParams) {

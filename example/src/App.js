@@ -57,10 +57,11 @@ const defaultFiles = [{
 const ossParams = {
   region: OSS_ENDPOINT,
   bucket: OSS_BUCKET,
-  accessKeyId: "STS.NTuP5wWprTpUCXNidKvVZRdgW",
-  accessKeySecret: "Gnd4ggSmSe9LSYPjeM8ZTrCYQj9T9p278UXaHPnXWbn8",
-  Expiration: "2020-09-09T08:25:28Z",
-  stsToken: "CAISjgJ1q6Ft5B2yfSjIr5fAG4/Duq9T47K+QX7/jWQeetl2vaHMtTz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHaIs5CzfqMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAF4tSdtT3kTS4ZYrosR6QYS2qDWI9I6UGCLITTphI8GN73isRVeF94mzuOIDU4GY4opV1I+x00WprKfmvHAf3zeV26TTYl1Fn9D7gg1ogYRfR5hRII10Tv2KySG97p0z1pTTSCTGwFGZQmTMFPAnnc58bznOuq1liIW/seqp1y0HQ=="
+  accessKeyId: "STS.NU8DnDqNjMJE84KWhVJQqLVdu",
+  accessKeySecret: "5P3TsbFr5qvMt71AJ2yWct3MapWWUCX3N4vwBurKvHyp",
+  Expiration: "2020-12-15T01:38:38Z",
+  stsToken: "CAISjgJ1q6Ft5B2yfSjIr5aND9TwnJFL+oiuOhL6s2gDRt5do5PPlzz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHdtvtwP+qMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAFa0vKp0yNsgQNP12xcLoNoSy2LPs24AoNdJVZcWSUd86PaM9OhUhAcr9QD6RlYT1BMC7HZ7b7ULn5mYRpXP5z5Q3Wt4O/qdj7gwlyxvcCmZD+hU/EQR6pjrABWi/yyHka3vlrdNdHuU7J6phnk0Cj1VuDyKJ/VHOonfvrNj7UBsw=="
+
 }
 
 
@@ -86,6 +87,9 @@ class App extends Component {
     return client.signatureUrl(url.substring(index))
   }
 
+  onDownload=(file)=>{
+    window.open(file.url)
+  }
 
 	onFileChange = (file,fileList) => {
 		this.setState({fileList:fileList})
@@ -118,19 +122,12 @@ class App extends Component {
       multiple: true,
       dragSortable:true,
 		  onFileChange:this.onFileChange,
-		  maxFileSize:2,
       accept,
+      ossParams:ossParams,
+      // uploadType:'multipart',
       onSortEnd:this.onSortEnd,
       onDownload:this.onDownload,
       defaultFiles:fileList,
-      fileScales:[1,2],
-      showRadioButton:  {
-        placement:'left' , 
-        radioItems:[ 
-          {key:'picture-card',value:'网格'},
-          {key:'text',value:'列表'}
-        ]
-      }
     }
     
     return (
