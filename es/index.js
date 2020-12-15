@@ -2815,25 +2815,29 @@ var Uploader = /*#__PURE__*/function (_Component) {
                       switch (_context.prev = _context.next) {
                         case 0:
                           if (!(uploadType === 'multipart')) {
-                            _context.next = 5;
+                            _context.next = 6;
                             break;
                           }
 
-                          console.log('multipart', uploadType);
-                          _context.next = 4;
+                          _context.next = 3;
                           return _this.uploadClient.multipartUpload(encodedFileName, file, options);
 
-                        case 4:
-                          return _context.abrupt("return", _context.sent);
+                        case 3:
+                          _context.t0 = _context.sent;
+                          _context.next = 9;
+                          break;
 
-                        case 5:
-                          _context.next = 7;
+                        case 6:
+                          _context.next = 8;
                           return _this.uploadClient.put(encodedFileName, file);
 
-                        case 7:
-                          return _context.abrupt("return", _context.sent);
-
                         case 8:
+                          _context.t0 = _context.sent;
+
+                        case 9:
+                          return _context.abrupt("return", _context.t0);
+
+                        case 10:
                         case "end":
                           return _context.stop();
                       }

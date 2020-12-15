@@ -174,17 +174,15 @@ class Uploader extends Component {
     if (this.uploadClient) {
       const _this = this
       co(function* () {
-        if (uploadType === 'multipart') {
-          console.log('multipart', uploadType)
-          return yield _this.uploadClient.multipartUpload(encodedFileName, file, options)
-        }
-        return yield _this.uploadClient.put(encodedFileName, file)
+        return uploadType === 'multipart' ?
+          yield _this.uploadClient.multipartUpload(encodedFileName, file, options)
+          : yield _this.uploadClient.put(encodedFileName, file)
       }).then(aliRes => {
         let url = ''
         if (uploadType === 'multipart') {
           const requestUrl = aliRes && aliRes.res && aliRes.res.requestUrls ? aliRes.res.requestUrls[0] : ''
           const { origin } = new Url(decodeURIComponent(requestUrl))
-          url = origin +"/" + aliRes.name
+          url = origin + "/" + aliRes.name
         } else {
           url = aliRes.url
         }
