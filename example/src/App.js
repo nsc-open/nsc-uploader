@@ -39,16 +39,16 @@ const defaultFiles = [{
   createdAt: "2020-09-07 15:34:13",
   createdBy: "1732",
   encodedFileName: "647d57d9d156b144b276c0fcae9fd761_1599459834788",
-  fileExt: "jpg",
+  fileExt: "pdf",
   fileName: "微信图片_20200616152747.jpg",
   fileSize: "41219",
-  fileType: "image/jpeg",
+  fileType: "pdf",
   id: "24137692-f0df-11ea-8146-f9a5d6b3bf59",
   isDeleted: null,
   sortNo: "2",
   updatedAt: "2020-09-07 15:52:55",
   updatedBy: "1732",
-  uri: "http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/647d57d9d156b144b276c0fcae9fd761_1599459834788",
+  uri: "http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/72fccc852992f4cedb9ecd72a4347655",
   volCode: null,
   volId: "ef31a5d3-eb54-11ea-abe5-735dc8c1a294",
   volRevision: "7",
@@ -57,10 +57,11 @@ const defaultFiles = [{
 const ossParams = {
   region: OSS_ENDPOINT,
   bucket: OSS_BUCKET,
-  accessKeyId: "STS.NT6dKbC4VdjQQkVuHs7CvxpLx",
-  accessKeySecret: "DgUf9QCdAHjfnJMQh5N3NoxKm4Hux4BPtuYT8ivAjNDY",
-  Expiration: "2020-12-15T03:19:04Z",
-  stsToken: "CAISjgJ1q6Ft5B2yfSjIr5eDL/HWrut306i6U03nkUgmO8xal7Xnmjz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHa8cpwD+qMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAEIZ/03a50ON0S+MfjV1Q7pAgj3/8Zd4Zb6jSf8TkZBAANezA8tIZ5Q8QGw1FPOgvJWWs8vYDrWhkY5BzTd4iDasFQAnmPmv16RrnPlhNpdgG6HZKilr/ODRzQ5BAXaRXSI+7r0WTYuASt2O+4YwFAGXz2Ap3Y24JaC7aY+8iEvAg=="
+  accessKeyId: "STS.NUx85NnQvQeFDfWSnb4tdjkTZ",
+  accessKeySecret: "8paPbM7atWeLKAtEMqnfyCttk5wgEUUAYquoicqhpPDe",
+  Expiration: "2020-12-16T10:25:58Z",
+  stsToken: "CAISjgJ1q6Ft5B2yfSjIr5bNc4/6g45X5qetRkDmt243OPtIha7/uDz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHZQj0nv+qMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAEhoZ6QShZhL3Uuce2MfNf9XibN7pgtxqyd289ksH50duj6RElp49oZJkWj15T5eqmoLFGPbYTePf94Ky4XTSgdXliY9cBN7HmZtG0ydRU3intGW5CE6R78IMsqHTeX6ad/u2kfnmhm4xDpuoXnlDsgFka6fEdXQIq3dK2HJ/fhTg=="
+
 }
 
 
