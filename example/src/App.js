@@ -4,16 +4,6 @@ import { Uploader } from 'nsc-uploader'
 import 'antd/dist/antd.css'
 const OSS = require('ali-oss')
 
-const toAttachment = file => ({
-  id: file.id || file.uid,
-  fileName: file.name,
-  encodedFileName: file.encodedFileName,
-  fileSize: file.size,
-  fileType: file.type,
-  fileExt: file.ext,
-  uri: file.url
-})
-
 const OSS_ENDPOINT = 'oss-cn-beijing'
 const OSS_BUCKET = 'corridorcleaningphoto'
 const defaultFiles = [{
@@ -57,12 +47,10 @@ const defaultFiles = [{
 const ossParams = {
   region: OSS_ENDPOINT,
   bucket: OSS_BUCKET,
-  accessKeyId: "STS.NTAd8Gjpa7pi2LRjKKfnAfv9b",
-  accessKeySecret: "2RxLvjuEc6xNgs7iDDdSyS3339rmD21kfCjywWzzWDcd",
-  Expiration: "2020-12-16T12:49:52Z",
-  stsToken: "CAISjgJ1q6Ft5B2yfSjIr5f0L4Lzh69AgLKCMGrjjkseauFtibOSgDz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHdEg43/+qMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAFKw5OvqsEnIGON8HMrsMFxRpytV9HIIUxwVvWspq+/SdyPqeKtuqxjhmkCEynO1qWlApBULqGt9bBjeAFtS5bT34Vq1loRnmE3PK52UieQIcgWM3NnrwhvbaZL7lPxUribQ/1mpE2HRkpaRfKoiNmY9ypX+XE1vGkR1jqRJARoiQ=="
-
-
+  accessKeyId: "STS.NTj4NTVM3ueQfzzHuAf4Qe1gj",
+  accessKeySecret: "79989zxAWevaJj762LHCa5ub4hwgvqTgUD2E9Mob4cDZ",
+  Expiration: "2021-01-26T03:58:36Z",
+  stsToken: "CAISjgJ1q6Ft5B2yfSjIr5fff/Tgu5ISwqe6ZFzLrHUUart9ivTMiDz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHbdv2kXrqMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAE5kHuGqbUZIBfHgMK7/bZG5tZtfIzB/dlFL6IpHDmeDI/z4wQ5ODOiDS5bGbmmwgfal7u3urp3izaCmmGjhS7c6mIwrJjomtT7TxIx1b0y0ssZY+r0dkvA7FDKHh0S8rOyxImMZkfcuQk3ICvyKlsILJ8lJeHIOFuxFaKbSUnr5Q=="
 }
 
 
@@ -105,14 +93,6 @@ class App extends Component {
 
   onSortEnd = (oldList, newList) => {
     console.log(oldList, newList)
-  }
-
-  onChange = ({ file }) => {
-    console.log(file)
-  }
-
-  beforeUpload = ({ file }) => {
-    console.log(file)
   }
 
   render() {

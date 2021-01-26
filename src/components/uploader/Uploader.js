@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Icon, Button, message, Radio } from 'antd'
+import { Icon, Button, message, Radio, Checkbox } from 'antd'
 import Upload from './Upload'
 import Dragger from './Dragger'
 import { getUploadClient, encodeFileName, arrayMove, toFile, toAttachment, isDoc, imgSize } from './utils'
@@ -9,7 +9,6 @@ import maxBy from 'lodash/maxBy'
 import { Lightbox } from 'nsc-lightbox'
 import co from './Co'
 import Url from 'url-parse'
-
 import './style/index.css'
 
 const sorter = (a, b) => a.sortNo - b.sortNo
@@ -20,6 +19,11 @@ class Uploader extends Component {
     this.state = {
       listType: 'picture-card',
       fileList: [], // [{ id, name, encodeFileName, size, type, ext, uid, url }]
+      OSSData: {},
+      isBatch: false,
+      selectedIds: [],
+      indeterminate: true,
+      checkAll: false,
     }
     this.uploadClient = null
   }
@@ -152,73 +156,110 @@ class Uploader extends Component {
         return false
       }
     }
+  }
 
+  uploadFile = ({ file }) => {
+
+    const { autoSave, maxFileSize, maxFileNum, fileExtension, uploadType, fileErrorMsg, onProgress, fileScales } = this.props
+    const { fileList } = this.state
+    let encodedFileName = encodeFileName(file.name)
     const maxItem = maxBy(fileList, i => i.sortNo)
     const maxSortNo = maxItem ? maxItem.sortNo : 0
+    // const indexNo = fileList.findIndex(i => i.uid === file.uid)
 
-    const hideLoading = message.loading('文件正在预处理', 0)
-    let encodedFileName = encodeFileName(file.name)
-
-    const progress = function* generatorProgress(p, cpt, res) {
-      onProgress && onProgress(p, cpt, res)
+    const newItem = {
+      uid: file.uid,
+      id: file.uid,
+      encodedFileName,
+      name: file.name,
+      percent: 0,
+      url: '',
+      status: 'uploading',
+      size: file.size,
+      ext: file.name.split('.').pop(),
+      type: file.type,
+      sortNo: maxSortNo + 1
+    }
+    if (uploadType !== 'multiple') {
+      const newFileList = fileList.concat([newItem])
+      newFileList.sort(sorter)
+      this.setState({ fileList: newFileList })
     }
 
-    const options = {
-      progress,
-      partSize: 1000 * 1024,//设置分片大小
-      timeout: 120000000,//设置超时时间
-    }
-
+    // start：进度条相关
     if (this.uploadClient) {
-      const _this = this
-      co(function* () {
-        return uploadType === 'multipart' ?
-          yield _this.uploadClient.multipartUpload(encodedFileName, file, options)
-          : yield _this.uploadClient.put(encodedFileName, file)
-      }).then(aliRes => {
-        let url = ''
-        if (uploadType === 'multipart') {
-          const requestUrl = aliRes && aliRes.res && aliRes.res.requestUrls ? aliRes.res.requestUrls[0] : ''
-          const { origin } = new Url(decodeURIComponent(requestUrl))
-          url = origin + "/" + aliRes.name
-        } else {
-          url = aliRes.url
-          onProgress && onProgress(aliRes)
+      const _ = this
+      const progress = function* generatorProgress(p, cpt, aliRes) {
+        // const indexNo = files.findIndex(i => i.uid === file.uid)
+        const requestUrl = aliRes && aliRes.res && aliRes.res.requestUrls ? aliRes.res.requestUrls[0] : ''
+        const { origin } = new Url(decodeURIComponent(requestUrl))
+        const url = cpt ? origin + "/" + aliRes.name : ''
+        const newItem = {
+          uid: file.uid,
+          id: file.uid,
+          encodedFileName,
+          name: file.name,
+          percent: p * 100,
+          url,
+          status: p === 1 ? 'done' : 'uploading',
+          size: file.size,
+          ext: file.name.split('.').pop(),
+          type: file.type,
+          sortNo: maxSortNo + 1
         }
-        const indexNo = files.findIndex(i => i.uid === file.uid)
+        // console.log('newItem', newItem)
+
+        const newFileList = _.state.fileList.filter(i => i.uid !== file.uid).concat([newItem])
+        newFileList.sort(sorter)
+        _.setState({ fileList: newFileList })
+        onProgress && onProgress(p, cpt, aliRes)
+      }
+
+      const options = {
+        progress,
+        partSize: 1000 * 1024,//设置分片大小
+        timeout: 120000000,//设置超时时间
+      }
+      const _this = this
+
+      co(function* () {
+        return yield _this.uploadClient.multipartUpload(encodedFileName, file, options)
+      }).then(aliRes => {
+        const requestUrl = aliRes && aliRes.res && aliRes.res.requestUrls ? aliRes.res.requestUrls[0] : ''
+        const { origin } = new Url(decodeURIComponent(requestUrl))
+        const url = origin + "/" + aliRes.name
+        // const indexNo = files.findIndex(i => i.uid === file.uid)
+        onProgress && onProgress(aliRes)
         const newFile = {
           uid: file.uid,
           id: file.uid,
           encodedFileName,
           name: file.name,
           url,
+          percent: 100,
           status: 'done',
           size: file.size,
           ext: file.name.split('.').pop(),
           type: file.type,
-          sortNo: maxSortNo + 1 + indexNo
+          sortNo: maxSortNo + 1
         }
+        const newFileList = _.state.fileList.filter(i => i.uid !== file.uid).concat([newFile])
+        newFileList.sort(sorter)
+        this.setState({ fileList: newFileList })
+        this.handleChange(newFile, newFileList)
         if (autoSave) {
-          return this.save(newFile)
+          this.save(newFile)
         } else {
           return newFile
         }
-      }).then(newFile => {
-        fileList.push(newFile)
-        fileList.sort(sorter)
-        this.setState({ fileList })
-        this.handleChange(newFile, fileList)
-        hideLoading()
       }).catch(e => {
         console.error('Uploader error', e)
         message.error(`${file.name} 预处理失败`)
-        hideLoading()
       })
       // not do the upload after image added
       return false
     }
   }
-
 
   onSortEnd = (result) => {
     const { onSortEnd } = this.props
@@ -249,8 +290,47 @@ class Uploader extends Component {
     </div>
   }
 
+  onBatchClicked = () => {
+    const { isBatch } = this.state
+    this.setState({ isBatch: !isBatch, selectedIds: [], checkAll: false, indeterminate: true })
+  }
+
+  onBatchDelete = () => {
+    const { selectedIds } = this.state
+    if (selectedIds.length > 0) {
+      const { autoSave, onRemove } = this.props
+      const { fileList } = this.state
+      const newFileList = fileList.filter(f => !selectedIds.includes(f.uid))
+
+      this.setState({ fileList: newFileList })
+
+      if (onRemove) {
+        onRemove(newFileList.map(toAttachment))
+      }
+    }
+
+  }
+
+  onSelected = selectedIds => {
+    const plainOptions = this.state.fileList.map(i => i.uid)
+    this.setState({
+      selectedIds,
+      indeterminate: !!selectedIds.length && selectedIds.length < plainOptions.length,
+      checkAll: selectedIds.length === plainOptions.length,
+    })
+  }
+
+  onCheckAllChange = e => {
+    const plainOptions = this.state.fileList.map(i => i.uid)
+    this.setState({
+      selectedIds: e.target.checked ? plainOptions : [],
+      indeterminate: false,
+      checkAll: e.target.checked,
+    })
+  }
+
   render() {
-    const { fileList, previewVisible, lightboxFiles, lightboxIndex } = this.state
+    const { fileList, previewVisible, lightboxFiles, lightboxIndex, isBatch, selectedIds, indeterminate, checkAll } = this.state
     const {
       dragSortable,
       beforeUpload,
@@ -261,6 +341,7 @@ class Uploader extends Component {
       className = '',
       showUploadButton,
       customRadioButton,
+      showBatchButton,
       ...restProps
     } = this.props
 
@@ -271,7 +352,8 @@ class Uploader extends Component {
       ...restProps,
       fileList: fileList,
       listType: listType,
-      beforeUpload: beforeUpload ? beforeUpload : this.beforeUpload,
+      beforeUpload: this.beforeUpload,
+      customRequest: this.uploadFile,
       dragSortable: dragSortable,
       disabled: disabled,
       onSortEnd: this.onSortEnd,
@@ -279,6 +361,10 @@ class Uploader extends Component {
       onPreview: 'onPreview' in this.props ? this.props.onPreview : this.handlePreview,
       onRemove: this.handleRemove,
       onDownload: this.handleDownload,
+      signatureUrl: this.signatureUrl,
+      onSelected: this.onSelected,
+      selectedIds,
+      isBatch,
     }
     //文件列表按上传顺序排序
     fileList.sort(sorter)
@@ -309,7 +395,20 @@ class Uploader extends Component {
     )
     return (
       <div className='nsc-upload-container'>
-        {customRadioButton ? customRadioButton : showRadioButton ? this.renderRadio(showRadioButton) : null}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          {customRadioButton ? customRadioButton : showRadioButton ? this.renderRadio(showRadioButton) : null}
+          {showBatchButton &&
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              {isBatch && <Checkbox indeterminate={indeterminate} onChange={this.onCheckAllChange} checked={checkAll}> 全选</Checkbox >}
+              <Button type="primary" onClick={this.onBatchClicked} style={{ marginRight: '10px' }}>
+                {isBatch
+                  ? `取消选择(${selectedIds.length})`
+                  : '批量选择'}
+              </Button>
+              {isBatch && <Button type="danger" onClick={this.onBatchDelete}>批量删除</Button>}
+            </div>
+          }
+        </div>
         {type === 'dragger' ?
           <Dragger {...props} >
             {showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : draggerBtn : null}
@@ -338,8 +437,10 @@ Uploader.defaultProps = {
   defaultFiles: [],
   multiple: false,
   type: 'select',
+  uploadType: 'multiple',
   showUploadButton: true,
   showRadioButton: true,
+  showBatchButton: true,
 }
 
 export default Uploader

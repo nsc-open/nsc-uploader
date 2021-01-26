@@ -9,21 +9,6 @@ const prefixCls = 'ant-upload'
 
 class Upload extends React.Component {
 
-  static defaultProps = {
-    type: 'select' ,
-    multiple: true,
-    action: '',
-    data: {},
-    accept: '',
-    beforeUpload: T,
-    showUploadList: true,
-    listType: 'text', // or picture
-    className: '',
-    disabled: false,
-    supportServerRender: true,
-    dragSortable:false
-  }
-
   static getDerivedStateFromProps(nextProps) {
     if ('fileList' in nextProps) {
       return {
@@ -34,7 +19,7 @@ class Upload extends React.Component {
   }
 
 
-  progressTimer =null
+  progressTimer = null
 
   upload = null
 
@@ -196,7 +181,7 @@ class Upload extends React.Component {
       });
       return false;
     }
-    if (result && (result ).then) {
+    if (result && (result).then) {
       return result;
     }
     return true;
@@ -231,7 +216,11 @@ class Upload extends React.Component {
       previewFile,
       dragSortable,
       onSortEnd,
-      disabled
+      disabled,
+      signatureUrl,
+      isBatch,
+      onSelected,
+      selectedIds
     } = this.props;
     const { showRemoveIcon, showPreviewIcon, showDownloadIcon } = showUploadList;
     const { fileList } = this.state
@@ -248,6 +237,10 @@ class Upload extends React.Component {
         showDownloadIcon={showDownloadIcon}
         dragSortable={dragSortable}
         onSortEnd={onSortEnd}
+        signatureUrl={signatureUrl}
+        isBatch={isBatch}
+        selectedIds={selectedIds}
+        onSelected={onSelected}
       />
     );
   }
@@ -284,7 +277,7 @@ class Upload extends React.Component {
       delete rcUploadProps.id;
     }
 
-    const uploadList = showUploadList ?this.renderUploadList() : null;
+    const uploadList = showUploadList ? this.renderUploadList() : null;
 
     if (type === 'drag') {
       const dragCls = classNames(
@@ -344,7 +337,7 @@ class Upload extends React.Component {
         {uploadList}
       </span>
     );
-    }
+  }
 
   render() {
     return <div>{this.renderUpload()}</div>;
