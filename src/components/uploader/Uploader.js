@@ -1,15 +1,21 @@
-import React, { Component } from 'react'
+import React, { Component, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { Icon, Button, message, Radio, Checkbox } from 'antd'
 import Upload from './Upload'
 import Dragger from './Dragger'
 import { getUploadClient, encodeFileName, arrayMove, toFile, toAttachment, isDoc, imgSize } from './utils'
+import { DndProvider, useDrag, useDrop, createDndContext } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 import isEqual from 'lodash/isEqual'
 import maxBy from 'lodash/maxBy'
 import { Lightbox } from 'nsc-lightbox'
 import co from './Co'
 import Url from 'url-parse'
 import './style/index.css'
+
+const RNDContext = createDndContext(HTML5Backend)
+
+const manager = useRef(RNDContext)
 
 const sorter = (a, b) => a.sortNo - b.sortNo
 
@@ -261,10 +267,10 @@ class Uploader extends Component {
     }
   }
 
-  onSortEnd = (result) => {
+  onSortEnd = (sourceIndex, destinationIndex) => {
     const { onSortEnd } = this.props
-    if (result) {
-      const newFileList = arrayMove(this.state.fileList, result.source.index, result.destination.index)
+    if (sourceIndex) {
+      const newFileList = arrayMove(this.state.fileList, sourceIndex, destinationIndex)
       this.setState({ fileList: newFileList });
       onSortEnd && onSortEnd(this.state.fileList.map(toAttachment), newFileList.map(toAttachment))
     }
@@ -393,6 +399,17 @@ class Uploader extends Component {
         <p className="ant-upload-text">点击获取拖动 图片或文档 到这块区域完成文件上传</p>
       </div>
     )
+
+    const uploader = type === 'dragger' ?
+      <Dragger {...props} >
+        {showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : draggerBtn : null}
+      </Dragger>
+      : <DndProvider manager={manager.current.dragDropManager}>
+        <Upload {...props}>
+          {showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : listType === 'picture-card' ? cardButton : textButton : null}
+        </Upload>
+      </DndProvider>
+
     return (
       <div className='nsc-upload-container'>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -409,13 +426,12 @@ class Uploader extends Component {
             </div>
           }
         </div>
-        {type === 'dragger' ?
-          <Dragger {...props} >
-            {showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : draggerBtn : null}
-          </Dragger>
-          : <Upload {...props}>
-            {showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : listType === 'picture-card' ? cardButton : textButton : null}
-          </Upload>}
+        {dragSortable ?
+          <DndProvider manager={manager.current.dragDropManager}>
+            {uploader}
+          </DndProvider>
+          : uploader
+        }
         {previewVisible && lightboxFiles.length > 0 && <Lightbox
           visible={previewVisible}
           imgvImages={lightboxFiles}

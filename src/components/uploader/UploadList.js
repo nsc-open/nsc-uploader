@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { previewImage, isImageUrl } from './utils';
 import { Tooltip, Progress, Icon, Checkbox } from 'antd'
+import { DndProvider, useDrag, useDrop, createDndContext } from 'react-dnd'
 import docPng from '../../assets/doc.png'
 import pdfPng from '../../assets/pdf.png'
 import xlsPng from '../../assets/xls.png'
@@ -99,7 +100,51 @@ export default class UploadList extends React.Component {
     if (onRemove) {
       onRemove(file);
     }
-  };
+  }
+
+  renderDragableUploadListItem = (file) => {
+    const type = 'DragableUploadList'
+    const { items = [] } = this.props
+    const ref = React.useRef();
+    const index = items.indexOf(file);
+    const [{ isOver, dropClassName }, drop] = useDrop({
+      accept: type,
+      collect: monitor => {
+        const { index: dragIndex } = monitor.getItem() || {};
+        if (dragIndex === index) {
+          return {};
+        }
+        return {
+          isOver: monitor.isOver(),
+          dropClassName: dragIndex < index ? ' drop-over-downward' : ' drop-over-upward',
+        };
+      },
+      drop: item => {
+        this.moveRow(item.index, index);
+      },
+    });
+    const [, drag] = useDrag({
+      item: { type, index },
+      collect: monitor => ({
+        isDragging: monitor.isDragging(),
+      }),
+    });
+    drop(drag(ref))
+    return (
+      <div
+        ref={ref}
+        className={`ant-upload-draggable-list-item ${isOver ? dropClassName : ''}`}
+        style={{ cursor: 'move' }}
+      >
+        {this.renderListItem(file)}
+      </div>
+    )
+  }
+
+  moveRow = (dragIndex, hoverIndex) => {
+    const { onSortEnd } = this.props
+    onSortEnd && onSortEnd(dragIndex, hoverIndex)
+  }
 
   renderListItem = (file) => {
     const {
@@ -293,6 +338,9 @@ export default class UploadList extends React.Component {
     const list = items.map(file => {
       return this.renderListItem(file)
     });
+    const dragableList = items.map(file => {
+      return this.renderDragableUploadListItem(file)
+    });
     const listClassNames = classNames({
       [`${prefixCls}-list`]: true,
       [`${prefixCls}-list-${listType}`]: true,
@@ -302,38 +350,39 @@ export default class UploadList extends React.Component {
     if (dragSortable) {
       const dragDirection = listType === 'picture-card' ? "horizontal" : "vertical"
       const horizontalStyle = listType === 'picture-card' ? { display: 'flex', flexWrap: 'wrap' } : {}
-      return <DragDropContext onDragEnd={this.onSortEnd} >
-        <Droppable droppableId="droppable" direction={dragDirection}>
-          {(provided, snapshot) => (
+      return dragableList
+      // return <DragDropContext onDragEnd={this.onSortEnd} >
+      //   <Droppable droppableId="droppable" direction={dragDirection}>
+      //     {(provided, snapshot) => (
 
-            <CheckboxGroup style={{ width: '100%', display: 'flex' }} value={selectedIds} onChange={(selectedIds) => onSelected(selectedIds)}>
-              <div
-                ref={provided.innerRef}
-                className={listClassNames}
-                style={horizontalStyle}
-                {...provided.droppableProps}
-              >
-                {items.map((file, index) => (
-                  <Draggable key={file.id} draggableId={file.id} index={index}>
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        key={file.id}
-                      >
-                        {this.renderListItem(file)}
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </div>
-            </CheckboxGroup>
-          )
-          }
-        </Droppable>
-      </DragDropContext>
+      //       <CheckboxGroup style={{ width: '100%', display: 'flex' }} value={selectedIds} onChange={(selectedIds) => onSelected(selectedIds)}>
+      //         <div
+      //           ref={provided.innerRef}
+      //           className={listClassNames}
+      //           style={horizontalStyle}
+      //           {...provided.droppableProps}
+      //         >
+      //           {items.map((file, index) => (
+      //             <Draggable key={file.id} draggableId={file.id} index={index}>
+      //               {(provided, snapshot) => (
+      //                 <div
+      //                   ref={provided.innerRef}
+      //                   {...provided.draggableProps}
+      //                   {...provided.dragHandleProps}
+      //                   key={file.id}
+      //                 >
+      //                   {this.renderListItem(file)}
+      //                 </div>
+      //               )}
+      //             </Draggable>
+      //           ))}
+      //           {provided.placeholder}
+      //         </div>
+      //       </CheckboxGroup>
+      //     )
+      //     }
+      //   </Droppable>
+      // </DragDropContext>
     } else {
       return (
         <Animate
