@@ -131,7 +131,7 @@ class Uploader extends Component {
     }
     // Check for file size
     if (file.size / 1024 / 1024 > maxFileSize) {
-      message.error(fileErrorMsg && fileErrorMsg.fileSizeErrorMsg ? fileErrorMsg.fileSizeErrorMsg : `文件过大，最大可上传${maxFileNum}`)
+      message.error(fileErrorMsg && fileErrorMsg.fileSizeErrorMsg ? fileErrorMsg.fileSizeErrorMsg : `文件过大，最大可上传${maxFileSize}M`)
       return false
     }
     // Check for file number
