@@ -1,4 +1,4 @@
-import React__default, { createElement, Component } from 'react';
+import React, { createElement, Component } from 'react';
 import { Icon, Progress, Tooltip, Radio, message, Button } from 'antd';
 import RcUpload from 'rc-upload';
 import uniqBy from 'lodash/uniqBy';
@@ -2955,13 +2955,13 @@ var Uploader = /*#__PURE__*/function (_Component) {
           showRadioTitle = _showRadioButton$show === void 0 ? true : _showRadioButton$show,
           _showRadioButton$radi = showRadioButton.radioItems,
           radioItems = _showRadioButton$radi === void 0 ? defaultRadioItems : _showRadioButton$radi;
-      return /*#__PURE__*/React__default.createElement("div", {
+      return /*#__PURE__*/React.createElement("div", {
         className: "nsc-uploader-radio nsc-uploader-radio-".concat(placement)
-      }, showRadioTitle && /*#__PURE__*/React__default.createElement("span", null, "\u6587\u4EF6\u5C55\u793A\u6837\u5F0F\uFF1A"), /*#__PURE__*/React__default.createElement(Radio.Group, {
+      }, showRadioTitle && /*#__PURE__*/React.createElement("span", null, "\u6587\u4EF6\u5C55\u793A\u6837\u5F0F\uFF1A"), /*#__PURE__*/React.createElement(Radio.Group, {
         onChange: _this2.onListTypeChange,
         value: _this2.state.listType
       }, radioItems && radioItems.map(function (item) {
-        return /*#__PURE__*/React__default.createElement(Radio, {
+        return /*#__PURE__*/React.createElement(Radio, {
           key: item.key,
           value: item.key
         }, item.value);
@@ -3061,29 +3061,29 @@ var Uploader = /*#__PURE__*/function (_Component) {
 
       fileList.sort(sorter); //listType === "picture-card"时 默认上传按钮
 
-      var cardButton = /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement(Icon, {
+      var cardButton = /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Icon, {
         type: "plus"
-      }), /*#__PURE__*/React__default.createElement("div", {
+      }), /*#__PURE__*/React.createElement("div", {
         className: "uploadText"
       }, "\u4E0A\u4F20\u6587\u4EF6")); //listType === "text' 或 'picture"时默认上传按钮
 
-      var textButton = /*#__PURE__*/React__default.createElement(Button, null, /*#__PURE__*/React__default.createElement(Icon, {
+      var textButton = /*#__PURE__*/React.createElement(Button, null, /*#__PURE__*/React.createElement(Icon, {
         type: "upload"
       }), " \u4E0A\u4F20\u6587\u4EF6"); //拖动上传时默认上传按钮
 
-      var draggerBtn = /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement("p", {
+      var draggerBtn = /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
         className: "ant-upload-drag-icon"
-      }, /*#__PURE__*/React__default.createElement(Icon, {
+      }, /*#__PURE__*/React.createElement(Icon, {
         type: "inbox",
         style: {
           color: '#3db389'
         }
-      })), /*#__PURE__*/React__default.createElement("p", {
+      })), /*#__PURE__*/React.createElement("p", {
         className: "ant-upload-text"
       }, "\u70B9\u51FB\u83B7\u53D6\u62D6\u52A8 \u56FE\u7247\u6216\u6587\u6863 \u5230\u8FD9\u5757\u533A\u57DF\u5B8C\u6210\u6587\u4EF6\u4E0A\u4F20"));
-      return /*#__PURE__*/React__default.createElement("div", {
+      return /*#__PURE__*/React.createElement("div", {
         className: "nsc-upload-container"
-      }, customRadioButton ? customRadioButton : showRadioButton ? this.renderRadio(showRadioButton) : null, type === 'dragger' ? /*#__PURE__*/React__default.createElement(Dragger, props, showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : draggerBtn : null) : /*#__PURE__*/React__default.createElement(Upload, props, showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : listType === 'picture-card' ? cardButton : textButton : null), previewVisible && lightboxFiles.length > 0 && /*#__PURE__*/React__default.createElement(Lightbox, {
+      }, customRadioButton ? customRadioButton : showRadioButton ? this.renderRadio(showRadioButton) : null, type === 'dragger' ? /*#__PURE__*/React.createElement(Dragger, props, showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : draggerBtn : null) : /*#__PURE__*/React.createElement(Upload, props, showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : listType === 'picture-card' ? cardButton : textButton : null), previewVisible && lightboxFiles.length > 0 && /*#__PURE__*/React.createElement(Lightbox, {
         visible: previewVisible,
         imgvImages: lightboxFiles,
         activeIndex: lightboxIndex,
