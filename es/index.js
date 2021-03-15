@@ -2675,7 +2675,12 @@ var Uploader = /*#__PURE__*/function (_Component) {
 
 
       var fileName = pathname.substr(1);
-      return _this2.uploadClient.signatureUrl(fileName);
+
+      if (_this2.uploadClient) {
+        return _this2.uploadClient.signatureUrl(fileName);
+      }
+
+      return url;
     });
 
     _defineProperty(_assertThisInitialized(_this2), "onLightboxClose", function () {

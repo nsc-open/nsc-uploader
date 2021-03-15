@@ -29,11 +29,12 @@ class Uploader extends Component {
     if (getOssParams || (getOssParams && ossParams && (new Date(ossParams.Expiration) < Date.now()))) {
       getOssParams().then(r => {
         this.uploadClient = getUploadClient(r)
+        this.setState({ fileList: defaultFiles.map(this.toFile).sort(sorter) })
       })
     } else if (ossParams) {
       this.uploadClient = getUploadClient(ossParams)
+      this.setState({ fileList: defaultFiles.map(this.toFile).sort(sorter) })
     }
-    this.setState({ fileList: defaultFiles.map(this.toFile).sort(sorter) })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -83,7 +84,10 @@ class Uploader extends Component {
     // 兼容 http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/9467447a2edf9c569d4cf5930f2d5ea5
     // http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/环水保/103/9467447a2edf9c569d4cf5930f2d5ea5
     const fileName = pathname.substr(1)
-    return this.uploadClient.signatureUrl(fileName)
+    if (this.uploadClient) {
+      return this.uploadClient.signatureUrl(fileName)
+    }
+    return url
   }
 
   onLightboxClose = () => {
