@@ -20,7 +20,7 @@ const defaultFiles = [{
   sortNo: "1",
   updatedAt: "2020-09-07 15:52:55",
   updatedBy: "1732",
-  uri: "http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/2a0fd55b26bdbcaccf8178fc6579811d",
+  uri: "http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/2a0fd55b26bdbcaccf8178fc6579811d?OSSAccessKeyId=LTAIQGGepIoPZUhk&Expires=1615791303",
   volCode: null,
   volId: "ef31a5d3-eb54-11ea-abe5-735dc8c1a294",
   volRevision: "7",
@@ -30,10 +30,10 @@ const defaultFiles = [{
 const ossParams = {
   region: OSS_ENDPOINT,
   bucket: OSS_BUCKET,
-  accessKeyId: "STS.NThU2qDSGUNmZJ4uNUnpK6QJu",
-  accessKeySecret: "FGjhWzvR1iNFb5FPLzuAHRnMX9NQu4SwwqbjugikYoTA",
-  Expiration: "2021-03-15T07:44:24Z",
-  stsToken: "CAISjgJ1q6Ft5B2yfSjIr5fdHojFqYxm4oyGWGyFkU4AYv9n2ZThlzz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHdYd2gWbqcY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAGllj7UHzVUR8mX1naFdtNWH8LmeZmlE+cgUJ8TJHyCy8rL8W+2ueJztxEuesliFqUa24eYBTLhoGG/uBh64xWxCRu6YrGLuOBk2h3z8Op27TUcHi8Wx0gYg+9Cy32WI5Hq5LmFe4EXo8vcnOe16C3quD3UlmsCqf7DvDRd5+T4KA=="
+  accessKeyId: "STS.NTBRfzyreUDycJgYqjczZHxjC",
+  accessKeySecret: "2cq8TbDCVvQit1hQ3e8b3WNogff1gNiELZzd5KKwxjih",
+  Expiration: "2021-03-15T08:50:41Z",
+  stsToken: "CAISjgJ1q6Ft5B2yfSjIr5f3GdzOlK1E4oaSYWzWvXE/b/V2p73BoTz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHZA91wubqcY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAE9NdTnS/zAByo/pN3OfXcyDBTPg1g9R5aYpInWSJesJmvxk1YJYJEC6AD+aRPTuCbRhlWmabmtol7ytA1uroIgbI78nanwvVaOFCjCoGKQXI3i/S0UnKeCpnKpnG2NTkUt9kF9+ZAMn6S8SrxuDQFqCs7oz/m4YSERSoTaQqOL1w=="
 }
 
 

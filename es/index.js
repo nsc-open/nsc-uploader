@@ -2667,10 +2667,6 @@ var Uploader = /*#__PURE__*/function (_Component) {
     });
 
     _defineProperty(_assertThisInitialized(_this2), "signatureUrl", function (url) {
-      if (url.includes('Signature')) {
-        return url;
-      }
-
       url = decodeURIComponent(url);
 
       var _Url = new Url(decodeURIComponent(url)),
