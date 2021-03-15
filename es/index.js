@@ -1417,20 +1417,6 @@ var encodeFileName = function encodeFileName(filename) {
   return hash;
 };
 
-var toFile = function toFile(attachment) {
-  return {
-    uid: attachment.id,
-    id: attachment.id,
-    name: attachment.fileName,
-    encodedFileName: attachment.encodedFileName,
-    url: attachment.uri,
-    size: attachment.fileSize,
-    ext: attachment.fileExt,
-    type: attachment.fileType,
-    sortNo: attachment.sortNo,
-    status: 'done'
-  };
-};
 var toAttachment = function toAttachment(file) {
   return {
     id: file.id || file.uid,
@@ -2634,6 +2620,21 @@ var Uploader = /*#__PURE__*/function (_Component) {
 
     _this2 = _super.call(this, props);
 
+    _defineProperty(_assertThisInitialized(_this2), "toFile", function (attachment) {
+      return {
+        uid: attachment.id,
+        id: attachment.id,
+        name: attachment.fileName,
+        encodedFileName: attachment.encodedFileName,
+        url: _this2.signatureUrl(attachment.uri),
+        size: attachment.fileSize,
+        ext: attachment.fileExt,
+        type: attachment.fileType,
+        sortNo: attachment.sortNo,
+        status: 'done'
+      };
+    });
+
     _defineProperty(_assertThisInitialized(_this2), "handleCancel", function () {
       return _this2.setState({
         previewVisible: false
@@ -2666,6 +2667,10 @@ var Uploader = /*#__PURE__*/function (_Component) {
     });
 
     _defineProperty(_assertThisInitialized(_this2), "signatureUrl", function (url) {
+      if (url.includes('Signature')) {
+        return url;
+      }
+
       url = decodeURIComponent(url);
 
       var _Url = new Url(decodeURIComponent(url)),
@@ -2996,7 +3001,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
       }
 
       this.setState({
-        fileList: defaultFiles.map(toFile).sort(sorter)
+        fileList: defaultFiles.map(this.toFile).sort(sorter)
       });
     }
   }, {
@@ -3004,17 +3009,19 @@ var Uploader = /*#__PURE__*/function (_Component) {
     value: function componentWillReceiveProps(nextProps) {
       if (!isEqual(nextProps.defaultFiles, this.props.defaultFiles)) {
         this.setState({
-          fileList: nextProps.defaultFiles.map(toFile).sort(sorter)
+          fileList: nextProps.defaultFiles.map(this.toFile).sort(sorter)
         });
       }
     }
   }, {
     key: "save",
     value: function save(file) {
+      var _this4 = this;
+
       var onSave = this.props.onSave;
       return onSave(toAttachment(file)).then(function (r) {
         message.success('上传成功');
-        return toFile(r);
+        return _this4.toFile(r);
       })["catch"](function (e) {
         console.error(e);
         message.error('上传失败');

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Icon, Button, message, Radio } from 'antd'
 import Upload from './Upload'
 import Dragger from './Dragger'
-import { getUploadClient, encodeFileName, arrayMove, toFile, toAttachment, isDoc, imgSize } from './utils'
+import { getUploadClient, encodeFileName, arrayMove, toAttachment, isDoc, imgSize } from './utils'
 import isEqual from 'lodash/isEqual'
 import maxBy from 'lodash/maxBy'
 import { Lightbox } from 'nsc-lightbox'
@@ -33,14 +33,27 @@ class Uploader extends Component {
     } else if (ossParams) {
       this.uploadClient = getUploadClient(ossParams)
     }
-    this.setState({ fileList: defaultFiles.map(toFile).sort(sorter) })
+    this.setState({ fileList: defaultFiles.map(this.toFile).sort(sorter) })
   }
 
   componentWillReceiveProps(nextProps) {
     if (!isEqual(nextProps.defaultFiles, this.props.defaultFiles)) {
-      this.setState({ fileList: nextProps.defaultFiles.map(toFile).sort(sorter) })
+      this.setState({ fileList: nextProps.defaultFiles.map(this.toFile).sort(sorter) })
     }
   }
+
+  toFile = attachment => ({
+    uid: attachment.id,
+    id: attachment.id,
+    name: attachment.fileName,
+    encodedFileName: attachment.encodedFileName,
+    url: this.signatureUrl(attachment.uri),
+    size: attachment.fileSize,
+    ext: attachment.fileExt,
+    type: attachment.fileType,
+    sortNo: attachment.sortNo,
+    status: 'done',
+  })
 
   handleCancel = () => this.setState({ previewVisible: false })
 
@@ -65,6 +78,9 @@ class Uploader extends Component {
   }
 
   signatureUrl = (url) => {
+    if (url.includes('Signature')) {
+      return url
+    }
     url = decodeURIComponent(url)
     const { pathname } = new Url(decodeURIComponent(url))
     // 兼容 http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/9467447a2edf9c569d4cf5930f2d5ea5
@@ -106,7 +122,7 @@ class Uploader extends Component {
     const { onSave } = this.props
     return onSave(toAttachment(file)).then(r => {
       message.success('上传成功')
-      return toFile(r)
+      return this.toFile(r)
     }).catch(e => {
       console.error(e)
       message.error('上传失败')
