@@ -81,8 +81,6 @@ class Uploader extends Component {
   signatureUrl = (url) => {
     url = decodeURIComponent(url)
     const { pathname } = new Url(decodeURIComponent(url))
-    // 兼容 http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/9467447a2edf9c569d4cf5930f2d5ea5
-    // http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/环水保/103/9467447a2edf9c569d4cf5930f2d5ea5
     const fileName = pathname.substr(1)
     if (this.uploadClient) {
       return this.uploadClient.signatureUrl(fileName)

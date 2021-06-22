@@ -2670,9 +2670,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
       url = decodeURIComponent(url);
 
       var _Url = new Url(decodeURIComponent(url)),
-          pathname = _Url.pathname; // 兼容 http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/9467447a2edf9c569d4cf5930f2d5ea5
-      // http://corridorcleaningphoto.oss-cn-beijing.aliyuncs.com/环水保/103/9467447a2edf9c569d4cf5930f2d5ea5
-
+          pathname = _Url.pathname; 
 
       var fileName = pathname.substr(1);
 
@@ -2996,14 +2994,17 @@ var Uploader = /*#__PURE__*/function (_Component) {
       if (getOssParams || getOssParams && ossParams && new Date(ossParams.Expiration) < Date.now()) {
         getOssParams().then(function (r) {
           _this3.uploadClient = getUploadClient(r);
+
+          _this3.setState({
+            fileList: defaultFiles.map(_this3.toFile).sort(sorter)
+          });
         });
       } else if (ossParams) {
         this.uploadClient = getUploadClient(ossParams);
+        this.setState({
+          fileList: defaultFiles.map(this.toFile).sort(sorter)
+        });
       }
-
-      this.setState({
-        fileList: defaultFiles.map(this.toFile).sort(sorter)
-      });
     }
   }, {
     key: "componentWillReceiveProps",
