@@ -4,8 +4,8 @@ import { Uploader } from 'nsc-uploader'
 import 'antd/dist/antd.css'
 const OSS = require('ali-oss')
 
-const OSS_ENDPOINT = 'oss-cn-beijing'
-const OSS_BUCKET = 'corridorcleaningphoto'
+const OSS_ENDPOINT = ''
+const OSS_BUCKET = ''
 const defaultFiles = [{
   category: "print",
   createdAt: "2020-09-07 15:34:13",
@@ -47,10 +47,10 @@ const defaultFiles = [{
 const ossParams = {
   region: OSS_ENDPOINT,
   bucket: OSS_BUCKET,
-  accessKeyId: "STS.NSur1Em9wStDiuTJ6eXrKKZJu",
-  accessKeySecret: "HNmbPKTQ8RhoQeZYcJbdxgSDK4JrFPewvCxyDVWEhv4L",
+  accessKeyId: "",
+  accessKeySecret: "",
   Expiration: "2021-01-26T08:43:53Z",
-  stsToken: "CAISjgJ1q6Ft5B2yfSjIr5DAOYvxgOZW5Lava1PlrjYwVP1npJ/hlzz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHbwM8U3rqMY5yxioRqackf7XhOV2tf/IMGyXDAGBq622Su7lTdTbV+6wYlTf7EFayqf7cjPQMD7INoaS29wdLbZxZASjaidcD9p7PxZrrNRgVUHcLvGwKBXn8A2yaUNjoVh7kngtq/b9kI++kkOP0gagl75P/NisfMn+NJJWUc0hA4vv7otfbbHc1SNc0R9O+ZptgbZMkTW95YvNWAMAukrYarWLqYc/fFUnfNszH69Vsf77juZkve/ekYv6zRtXNP1SST7YQI2wOTsxuiVz4L0agAFdRZWPsHCwuZ4B341j7/2etVf+t7qdfHdLxzwwV7OT6PydYzys8QWsMKb/WYc2/pfXZcgwWKF7L/XKdtL2QEaeFy+BHSLuNdSt311ypo8KY4mGHbSM3z1U7AVNzFGU8La+2M5WzR3RHnQlpv4w+0SP8TbFKhTHPfWrandapsaGjg=="
+  stsToken: ''
 }
 
 
