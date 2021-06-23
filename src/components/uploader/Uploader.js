@@ -34,7 +34,7 @@ class Uploader extends Component {
     } else if (ossParams) {
       this.uploadClient = getUploadClient(ossParams)
       this.setState({ fileList: defaultFiles.map(this.toFile).sort(sorter) })
-    }
+    } 
   }
 
   componentWillReceiveProps(nextProps) {
@@ -237,7 +237,7 @@ class Uploader extends Component {
 
   onSortEnd = (result) => {
     const { onSortEnd } = this.props
-    if (result) {
+    if (result && result.source && result.destination) {
       const newFileList = arrayMove(this.state.fileList, result.source.index, result.destination.index)
       this.setState({ fileList: newFileList });
       onSortEnd && onSortEnd(this.state.fileList.map(toAttachment), newFileList.map(toAttachment))
@@ -276,6 +276,7 @@ class Uploader extends Component {
       className = '',
       showUploadButton,
       customRadioButton,
+      displayTools,
       ...restProps
     } = this.props
 
@@ -336,6 +337,7 @@ class Uploader extends Component {
           visible={previewVisible}
           imgvImages={lightboxFiles}
           activeIndex={lightboxIndex}
+          displayTools={displayTools}
           onCancel={this.onLightboxClose}
         />
         }
@@ -355,6 +357,7 @@ Uploader.defaultProps = {
   type: 'select',
   showUploadButton: true,
   showRadioButton: true,
+  displayTools: ['zoomIn', 'zoomOut', 'prev', 'next', 'download', 'close']
 }
 
 export default Uploader

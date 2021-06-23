@@ -2640,7 +2640,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
       url = decodeURIComponent(url);
 
       var _Url = new Url(decodeURIComponent(url)),
-          pathname = _Url.pathname; 
+          pathname = _Url.pathname;
 
       var fileName = pathname.substr(1);
 
@@ -2895,7 +2895,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
     _defineProperty(_assertThisInitialized(_this2), "onSortEnd", function (result) {
       var onSortEnd = _this2.props.onSortEnd;
 
-      if (result) {
+      if (result && result.source && result.destination) {
         var newFileList = arrayMove(_this2.state.fileList, result.source.index, result.destination.index);
 
         _this2.setState({
@@ -3019,7 +3019,8 @@ var Uploader = /*#__PURE__*/function (_Component) {
           className = _this$props2$classNam === void 0 ? '' : _this$props2$classNam,
           showUploadButton = _this$props2.showUploadButton,
           customRadioButton = _this$props2.customRadioButton,
-          restProps = _objectWithoutProperties(_this$props2, ["dragSortable", "beforeUpload", "type", "maxFileNum", "disabled", "children", "className", "showUploadButton", "customRadioButton"]);
+          displayTools = _this$props2.displayTools,
+          restProps = _objectWithoutProperties(_this$props2, ["dragSortable", "beforeUpload", "type", "maxFileNum", "disabled", "children", "className", "showUploadButton", "customRadioButton", "displayTools"]);
 
       var listType = this.props.listType ? this.props.listType : this.state.listType;
       var showRadioButton = this.props.listType ? false : this.props.showRadioButton;
@@ -3066,6 +3067,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
         visible: previewVisible,
         imgvImages: lightboxFiles,
         activeIndex: lightboxIndex,
+        displayTools: displayTools,
         onCancel: this.onLightboxClose
       }));
     }
@@ -3083,7 +3085,8 @@ Uploader.defaultProps = {
   multiple: false,
   type: 'select',
   showUploadButton: true,
-  showRadioButton: true
+  showRadioButton: true,
+  displayTools: ['zoomIn', 'zoomOut', 'prev', 'next', 'download', 'close']
 };
 
 export default Uploader;
