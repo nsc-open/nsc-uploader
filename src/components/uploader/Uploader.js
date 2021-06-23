@@ -1,11 +1,11 @@
-import React, { Component, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Icon, Button, message, Radio, Checkbox } from 'antd'
 import Upload from './Upload'
 import Dragger from './Dragger'
 import { getUploadClient, encodeFileName, arrayMove, toFile, toAttachment, isDoc, imgSize } from './utils'
-import { DndProvider, useDrag, useDrop, createDndContext } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
+// import { DndProvider, useDrag, useDrop, createDndContext } from 'react-dnd'
+// import { HTML5Backend } from 'react-dnd-html5-backend'
 import isEqual from 'lodash/isEqual'
 import maxBy from 'lodash/maxBy'
 import { Lightbox } from 'nsc-lightbox'
@@ -13,105 +13,122 @@ import co from './Co'
 import Url from 'url-parse'
 import './style/index.css'
 
-const RNDContext = createDndContext(HTML5Backend)
-
-const manager = useRef(RNDContext)
-
 const sorter = (a, b) => a.sortNo - b.sortNo
 
-class Uploader extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      listType: 'picture-card',
-      fileList: [], // [{ id, name, encodeFileName, size, type, ext, uid, url }]
-      OSSData: {},
-      isBatch: false,
-      selectedIds: [],
-      indeterminate: true,
-      checkAll: false,
-    }
-    this.uploadClient = null
-  }
+const Uploader = (props) => {
+  const {
+    defaultFiles,
+    getOssParams,
+    ossParams,
+    dragSortable,
+    type,
+    maxFileNum,
+    disabled,
+    children,
+    className = '',
+    showUploadButton,
+    customRadioButton,
+    showBatchButton,
+    ...restProps
+  } = props
 
-  componentDidMount() {
-    const { defaultFiles, getOssParams, ossParams } = this.props
+  // const RNDContext = createDndContext(HTML5Backend)
+  // const manager = useRef(RNDContext)
+
+  const [listType, setListType] = useState('picture-card')
+  const [fileList, setFileList] = useState([])
+  const [isBatch, setIsBatch] = useState(false)
+  const [selectedIds, setSelectedIds] = useState([])
+  const [indeterminate, setIndeterminate] = useState(true)
+  const [checkAll, setCheckAll] = useState(false)
+  const [previewVisible, setPreviewVisible] = useState(false)
+  const [lightboxFiles, setLightboxFiles] = useState([])
+  const [lightboxIndex, setLightboxIndex] = useState(0)
+  const [uploadClient, setUploadClient] = useState(null)
+
+  useEffect(() => {
     if (getOssParams || (getOssParams && ossParams && (new Date(ossParams.Expiration) < Date.now()))) {
       getOssParams().then(r => {
-        this.uploadClient = getUploadClient(r)
+        const uploadClient = getUploadClient(r)
+        setUploadClient(uploadClient)
+        setFileList(defaultFiles.map(toFile).sort(sorter))
       })
     } else if (ossParams) {
-      this.uploadClient = getUploadClient(ossParams)
+      const uploadClient = getUploadClient(ossParams)
+      setUploadClient(uploadClient)
+      setFileList(defaultFiles.map(toFile).sort(sorter))
     }
-    this.setState({ fileList: defaultFiles.map(toFile).sort(sorter) })
-  }
+  }, [])
+  useEffect(() => {
+    setFileList(defaultFiles.map(toFile).sort(sorter))
+  }, [props.defaultFiles])
 
-  componentWillReceiveProps(nextProps) {
-    if (!isEqual(nextProps.defaultFiles, this.props.defaultFiles)) {
-      this.setState({ fileList: nextProps.defaultFiles.map(toFile).sort(sorter) })
-    }
-  }
+  const toFile = attachment => ({
+    uid: attachment.id,
+    id: attachment.id,
+    name: attachment.fileName,
+    encodedFileName: attachment.encodedFileName,
+    url: signatureUrl(attachment.uri),
+    size: attachment.fileSize,
+    ext: attachment.fileExt,
+    type: attachment.fileType,
+    sortNo: attachment.sortNo,
+    status: attachment.status,
+    percent: attachment.percent,
+  })
 
-  handleCancel = () => this.setState({ previewVisible: false })
-
-  onPreview = (file) => {
-    const { onPreview } = this.props
-    onPreview && onPreview(toAttachment(file))
-  }
-
-  handlePreview = (file) => {
-    const { fileList } = this.state
+  const handlePreview = (file) => {
     const files = fileList.map(toAttachment)
     const lightboxFiles = files.map((a) => {
-      return { ...a, alt: a.name, uri: isDoc(a) ? `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(this.signatureUrl(a.uri))}` : this.signatureUrl(a.uri) }
+      return { ...a, alt: a.name, uri: isDoc(a) ? `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(signatureUrl(a.uri))}` : signatureUrl(a.uri) }
     }
     )
     const lightboxIndex = (files.map(a => a.id).indexOf(file.id) || 0)
-    this.setState({
-      lightboxFiles,
-      previewVisible: true,
-      lightboxIndex
-    })
+    setPreviewVisible(true)
+    setLightboxFiles(lightboxFiles)
+    setLightboxIndex(lightboxIndex)
+
   }
 
-  signatureUrl = (url) => {
-    url = decodeURIComponent(url)
-    const { pathname } = new Url(decodeURIComponent(url))
+  const signatureUrl = (uri) => {
+    let url = decodeURIComponent(uri)
+    const { pathname } = new Url(decodeURIComponent(uri))
     const fileName = pathname.substr(1)
-    return this.uploadClient.signatureUrl(fileName)
+    if (uploadClient) {
+      url = uploadClient.signatureUrl(fileName)
+    }
+    return url
   }
 
-  onLightboxClose = () => {
-    this.setState({ previewVisible: false })
+  const onLightboxClose = () => {
+    setPreviewVisible(false)
   }
 
 
-  handleChange = (file, fileList) => {
-    const { onFileChange } = this.props
+  const handleChange = (file, fileList) => {
+    const { onFileChange } = props
     onFileChange && onFileChange(toAttachment(file), fileList.map(toAttachment))
   }
 
-  handleDownload = (file) => {
-    const { onDownload } = this.props
-    file.url = this.signatureUrl(file.url)
+  const handleDownload = (file) => {
+    const { onDownload } = props
+    file.url = signatureUrl(file.url)
     onDownload && onDownload(toAttachment(file))
   }
 
-  handleRemove = (file) => {
-    const { autoSave, onRemove } = this.props
-    const { fileList } = this.state
+  const handleRemove = (file) => {
+    const { autoSave, onRemove } = props
     const newFileList = fileList.filter(f => f.id !== file.id)
-
-    this.setState({ fileList: newFileList })
-    this.handleChange(file, newFileList)
+    setFileList(newFileList)
+    handleChange(file, newFileList)
 
     if (onRemove) {
       onRemove(toAttachment(file))
     }
   }
 
-  save(file) {
-    const { onSave } = this.props
+  const save = (file) => {
+    const { onSave } = props
     return onSave(toAttachment(file)).then(r => {
       message.success('上传成功')
       return toFile(r)
@@ -121,19 +138,18 @@ class Uploader extends Component {
     })
   }
 
-  hasExtension = (fileName) => {
-    const { fileExtension } = this.props
+  const hasExtension = (fileName) => {
+    const { fileExtension } = props
     const extensions = fileExtension ? fileExtension : []
     const pattern = '(' + extensions.join('|').replace(/\./g, '\\.') + ')$';
     return new RegExp(pattern, 'i').test(fileName);
   }
 
   //文件先上传至阿里云
-  beforeUpload = async (file, files) => {
-    const { autoSave, maxFileSize, maxFileNum, fileExtension, uploadType, fileErrorMsg, onProgress, fileScales } = this.props
-    const { fileList } = this.state
+  const beforeUpload = async (file, files) => {
+    const { autoSave, maxFileSize, maxFileNum, fileExtension, uploadType, fileErrorMsg, onProgress, fileScales } = props
     //Check for file extension
-    if (fileExtension && !this.hasExtension(file.name)) {
+    if (fileExtension && !hasExtension(file.name)) {
       message.error(fileErrorMsg && fileErrorMsg.fileExtensionErrorMsg ? fileErrorMsg.fileExtensionErrorMsg : `不支持的文件格式，请上传格式为${fileExtension.join(',')}的文件`)
       return false
     }
@@ -162,15 +178,13 @@ class Uploader extends Component {
     }
   }
 
-  uploadFile = ({ file }) => {
+  const uploadFile = ({ file }) => {
 
-    const { autoSave, maxFileSize, maxFileNum, fileExtension, uploadType, fileErrorMsg, onProgress, fileScales } = this.props
-    const { fileList } = this.state
+    const { autoSave, uploadType, onProgress } = props
     let encodedFileName = encodeFileName(file.name)
     const maxItem = maxBy(fileList, i => i.sortNo)
     const maxSortNo = maxItem ? maxItem.sortNo : 0
     // const indexNo = fileList.findIndex(i => i.uid === file.uid)
-
     const newItem = {
       uid: file.uid,
       id: file.uid,
@@ -187,11 +201,11 @@ class Uploader extends Component {
     if (uploadType !== 'multiple') {
       const newFileList = fileList.concat([newItem])
       newFileList.sort(sorter)
-      this.setState({ fileList: newFileList })
+      setFileList(newFileList)
     }
 
     // start：进度条相关
-    if (this.uploadClient) {
+    if (uploadClient) {
       const _ = this
       const progress = function* generatorProgress(p, cpt, aliRes) {
         // const indexNo = files.findIndex(i => i.uid === file.uid)
@@ -213,9 +227,9 @@ class Uploader extends Component {
         }
         // console.log('newItem', newItem)
 
-        const newFileList = _.state.fileList.filter(i => i.uid !== file.uid).concat([newItem])
+        const newFileList = fileList.filter(i => i.uid !== file.uid).concat([newItem])
         newFileList.sort(sorter)
-        _.setState({ fileList: newFileList })
+        setFileList(newFileList)
         onProgress && onProgress(p, cpt, aliRes)
       }
 
@@ -224,10 +238,9 @@ class Uploader extends Component {
         partSize: 1000 * 1024,//设置分片大小
         timeout: 120000000,//设置超时时间
       }
-      const _this = this
 
       co(function* () {
-        return yield _this.uploadClient.multipartUpload(encodedFileName, file, options)
+        return yield uploadClient.multipartUpload(encodedFileName, file, options)
       }).then(aliRes => {
         const requestUrl = aliRes && aliRes.res && aliRes.res.requestUrls ? aliRes.res.requestUrls[0] : ''
         const { origin } = new Url(decodeURIComponent(requestUrl))
@@ -247,12 +260,13 @@ class Uploader extends Component {
           type: file.type,
           sortNo: maxSortNo + 1
         }
-        const newFileList = _.state.fileList.filter(i => i.uid !== file.uid).concat([newFile])
+
+        const newFileList = fileList.filter(i => i.uid !== file.uid).concat([newFile])
         newFileList.sort(sorter)
-        this.setState({ fileList: newFileList })
-        this.handleChange(newFile, newFileList)
+        setFileList(newFileList)
+        handleChange(newFile, newFileList)
         if (autoSave) {
-          this.save(newFile)
+          save(newFile)
         } else {
           return newFile
         }
@@ -265,21 +279,21 @@ class Uploader extends Component {
     }
   }
 
-  onSortEnd = (sourceIndex, destinationIndex) => {
-    const { onSortEnd } = this.props
+  const onSortEnd = (sourceIndex, destinationIndex) => {
+    const { onSortEnd } = props
     if (sourceIndex) {
-      const newFileList = arrayMove(this.state.fileList, sourceIndex, destinationIndex)
-      this.setState({ fileList: newFileList });
-      onSortEnd && onSortEnd(this.state.fileList.map(toAttachment), newFileList.map(toAttachment))
+      const newFileList = arrayMove(fileList, sourceIndex, destinationIndex)
+      setFileList(newFileList)
+      onSortEnd && onSortEnd(fileList.map(toAttachment), newFileList.map(toAttachment))
     }
 
   }
 
-  onListTypeChange = (e) => {
-    this.setState({ listType: e.target.value })
+  const onListTypeChange = (e) => {
+    setListType(e.target.value)
   }
 
-  renderRadio = (showRadioButton) => {
+  const renderRadio = (showRadioButton) => {
     const defaultRadioItems = [
       { key: 'picture-card', value: '网格' },
       { key: 'text', value: '列表' },
@@ -288,25 +302,24 @@ class Uploader extends Component {
     const { placement = 'right', showRadioTitle = true, radioItems = defaultRadioItems } = showRadioButton
     return <div className={`nsc-uploader-radio nsc-uploader-radio-${placement}`}>
       {showRadioTitle && <span>文件展示样式：</span>}
-      <Radio.Group onChange={this.onListTypeChange} value={this.state.listType}>
+      <Radio.Group onChange={onListTypeChange} value={listType}>
         {radioItems && radioItems.map(item => <Radio key={item.key} value={item.key}>{item.value}</Radio>)}
       </Radio.Group>
     </div>
   }
 
-  onBatchClicked = () => {
-    const { isBatch } = this.state
-    this.setState({ isBatch: !isBatch, selectedIds: [], checkAll: false, indeterminate: true })
+  const onBatchClicked = () => {
+    setIsBatch(!isBatch)
+    setSelectedIds([])
+    setCheckAll(false)
+    setIndeterminate(true)
   }
 
-  onBatchDelete = () => {
-    const { selectedIds } = this.state
+  const onBatchDelete = () => {
     if (selectedIds.length > 0) {
-      const { autoSave, onRemove } = this.props
-      const { fileList } = this.state
+      const { autoSave, onRemove } = props
       const newFileList = fileList.filter(f => !selectedIds.includes(f.uid))
-
-      this.setState({ fileList: newFileList })
+      setFileList(newFileList)
 
       if (onRemove) {
         onRemove(newFileList.map(toAttachment))
@@ -315,131 +328,102 @@ class Uploader extends Component {
 
   }
 
-  onSelected = selectedIds => {
-    const plainOptions = this.state.fileList.map(i => i.uid)
-    this.setState({
-      selectedIds,
-      indeterminate: !!selectedIds.length && selectedIds.length < plainOptions.length,
-      checkAll: selectedIds.length === plainOptions.length,
-    })
+  const onSelected = selectedIds => {
+    const plainOptions = fileList.map(i => i.uid)
+    setSelectedIds(selectedIds)
+    setIndeterminate(!!selectedIds.length && selectedIds.length < plainOptions.length)
+    setCheckAll(selectedIds.length === plainOptions.length)
   }
 
-  onCheckAllChange = e => {
-    const plainOptions = this.state.fileList.map(i => i.uid)
-    this.setState({
-      selectedIds: e.target.checked ? plainOptions : [],
-      indeterminate: false,
-      checkAll: e.target.checked,
-    })
+  const onCheckAllChange = e => {
+    const plainOptions = fileList.map(i => i.uid)
+    setSelectedIds(e.target.checked ? plainOptions : [])
+    setIndeterminate(false)
+    setCheckAll(e.target.checked)
   }
 
-  render() {
-    const { fileList, previewVisible, lightboxFiles, lightboxIndex, isBatch, selectedIds, indeterminate, checkAll } = this.state
-    const {
-      dragSortable,
-      beforeUpload,
-      type,
-      maxFileNum,
-      disabled,
-      children,
-      className = '',
-      showUploadButton,
-      customRadioButton,
-      showBatchButton,
-      ...restProps
-    } = this.props
+  const newListType = props.listType ? props.listType : listType
 
-    const listType = this.props.listType ? this.props.listType : this.state.listType
+  const showRadioButton = props.listType ? false : props.showRadioButton
+  //文件列表按上传顺序排序
+  fileList.sort(sorter)
+  const newProps = {/*  */
+    ...restProps,
+    fileList: fileList,
+    listType: newListType,
+    beforeUpload: beforeUpload,
+    customRequest: uploadFile,
+    dragSortable: dragSortable,
+    disabled: disabled,
+    onSortEnd: onSortEnd,
+    className: showUploadButton ? `${className}` : type === 'dragger' ? `${className} nsc-uploader-dragger-hide` : `${className}`,
+    onPreview: 'onPreview' in props ? props.onPreview : handlePreview,
+    onRemove: handleRemove,
+    onDownload: handleDownload,
+    signatureUrl: signatureUrl,
+    onSelected: onSelected,
+    selectedIds,
+    isBatch,
+  }
 
-    const showRadioButton = this.props.listType ? false : this.props.showRadioButton
-    const props = {/*  */
-      ...restProps,
-      fileList: fileList,
-      listType: listType,
-      beforeUpload: this.beforeUpload,
-      customRequest: this.uploadFile,
-      dragSortable: dragSortable,
-      disabled: disabled,
-      onSortEnd: this.onSortEnd,
-      className: showUploadButton ? `${className}` : type === 'dragger' ? `${className} nsc-uploader-dragger-hide` : `${className}`,
-      onPreview: 'onPreview' in this.props ? this.props.onPreview : this.handlePreview,
-      onRemove: this.handleRemove,
-      onDownload: this.handleDownload,
-      signatureUrl: this.signatureUrl,
-      onSelected: this.onSelected,
-      selectedIds,
-      isBatch,
-    }
-    //文件列表按上传顺序排序
-    fileList.sort(sorter)
+  //listType === "picture-card"时 默认上传按钮
+  const cardButton = (
+    <div>
+      <Icon type="plus" />
+      <div className="uploadText">上传文件</div>
+    </div>
+  );
 
-    //listType === "picture-card"时 默认上传按钮
-    const cardButton = (
-      <div>
-        <Icon type="plus" />
-        <div className="uploadText">上传文件</div>
-      </div>
-    );
+  //listType === "text' 或 'picture"时默认上传按钮
+  const textButton = (
+    <Button>
+      <Icon type="upload" /> 上传文件
+    </Button>
+  );
 
-    //listType === "text' 或 'picture"时默认上传按钮
-    const textButton = (
-      <Button>
-        <Icon type="upload" /> 上传文件
-      </Button>
-    );
+  //拖动上传时默认上传按钮
+  const draggerBtn = (
+    <div>
+      <p className="ant-upload-drag-icon">
+        <Icon type="inbox" style={{ color: '#3db389' }} />
+      </p>
+      <p className="ant-upload-text">点击获取拖动 图片或文档 到这块区域完成文件上传</p>
+    </div>
+  )
 
-    //拖动上传时默认上传按钮
-    const draggerBtn = (
-      <div>
-        <p className="ant-upload-drag-icon">
-          <Icon type="inbox" style={{ color: '#3db389' }} />
-        </p>
-        <p className="ant-upload-text">点击获取拖动 图片或文档 到这块区域完成文件上传</p>
-      </div>
-    )
-
-    const uploader = type === 'dragger' ?
-      <Dragger {...props} >
-        {showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : draggerBtn : null}
-      </Dragger>
-      : <DndProvider manager={manager.current.dragDropManager}>
-        <Upload {...props}>
-          {showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : listType === 'picture-card' ? cardButton : textButton : null}
-        </Upload>
-      </DndProvider>
-
-    return (
-      <div className='nsc-upload-container'>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          {customRadioButton ? customRadioButton : showRadioButton ? this.renderRadio(showRadioButton) : null}
-          {showBatchButton &&
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              {isBatch && <Checkbox indeterminate={indeterminate} onChange={this.onCheckAllChange} checked={checkAll}> 全选</Checkbox >}
-              <Button type="primary" onClick={this.onBatchClicked} style={{ marginRight: '10px' }}>
-                {isBatch
-                  ? `取消选择(${selectedIds.length})`
-                  : '批量选择'}
-              </Button>
-              {isBatch && <Button type="danger" onClick={this.onBatchDelete}>批量删除</Button>}
-            </div>
-          }
-        </div>
-        {dragSortable ?
-          <DndProvider manager={manager.current.dragDropManager}>
-            {uploader}
-          </DndProvider>
-          : uploader
-        }
-        {previewVisible && lightboxFiles.length > 0 && <Lightbox
-          visible={previewVisible}
-          imgvImages={lightboxFiles}
-          activeIndex={lightboxIndex}
-          onCancel={this.onLightboxClose}
-        />
+  const uploader = type === 'dragger' ?
+    <Dragger {...newProps} >
+      {showUploadButton ? children ? children : maxFileNum in newProps && fileList.length >= maxFileNum ? null : draggerBtn : null}
+    </Dragger>
+    : <Upload {...newProps}>
+      {showUploadButton ? children ? children : maxFileNum in newProps && fileList.length >= maxFileNum ? null : listType === 'picture-card' ? cardButton : textButton : null}
+    </Upload>
+  return (
+    <div className='nsc-upload-container'>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        {customRadioButton ? customRadioButton : showRadioButton ? renderRadio(showRadioButton) : null}
+        {showBatchButton &&
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            {isBatch && <Checkbox indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}> 全选</Checkbox >}
+            <Button type="primary" onClick={onBatchClicked} style={{ marginRight: '10px' }}>
+              {isBatch
+                ? `取消选择(${selectedIds.length})`
+                : '批量选择'}
+            </Button>
+            {isBatch && <Button type="danger" onClick={onBatchDelete}>批量删除</Button>}
+          </div>
         }
       </div>
-    );
-  }
+      {uploader}
+      {previewVisible && lightboxFiles.length > 0 && <Lightbox
+        visible={previewVisible}
+        imgvImages={lightboxFiles}
+        activeIndex={lightboxIndex}
+        onCancel={onLightboxClose}
+      />
+      }
+    </div>
+  )
 }
 
 Uploader.propTypes = {

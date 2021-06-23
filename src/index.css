@@ -13,3 +13,7 @@ code {
     monospace;
 }
 
+:global(.ant-upload-draggable-list-item){
+  border-top: 2px dashed rgba(0, 0, 0, 0);
+  border-bottom: 2px dashed rgba(0, 0, 0, 0);
+}

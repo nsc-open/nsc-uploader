@@ -44,19 +44,7 @@ const xhrDownload = (url, onProgress = () => { }, onComplete = () => { }) => {
   xmlhttp.send()
 }
 
-export const toFile = attachment => ({
-  uid: attachment.id,
-  id: attachment.id,
-  name: attachment.fileName,
-  encodedFileName: attachment.encodedFileName,
-  url: attachment.uri,
-  size: attachment.fileSize,
-  ext: attachment.fileExt,
-  type: attachment.fileType,
-  sortNo: attachment.sortNo,
-  status: attachment.status,
-  percent: attachment.percent,
-})
+
 
 export const toAttachment = file => ({
   id: file.id || file.uid,
