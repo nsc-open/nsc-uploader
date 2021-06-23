@@ -2877,7 +2877,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
                     id: file.uid,
                     encodedFileName: encodedFileName,
                     name: file.name,
-                    url: url,
+                    url: _this2.signatureUrl(url),
                     status: 'done',
                     size: file.size,
                     ext: file.name.split('.').pop(),

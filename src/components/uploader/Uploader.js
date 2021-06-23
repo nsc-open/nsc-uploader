@@ -34,7 +34,7 @@ class Uploader extends Component {
     } else if (ossParams) {
       this.uploadClient = getUploadClient(ossParams)
       this.setState({ fileList: defaultFiles.map(this.toFile).sort(sorter) })
-    } 
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -206,7 +206,7 @@ class Uploader extends Component {
           id: file.uid,
           encodedFileName,
           name: file.name,
-          url,
+          url: this.signatureUrl(url),
           status: 'done',
           size: file.size,
           ext: file.name.split('.').pop(),
