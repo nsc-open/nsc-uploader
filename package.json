@@ -5,8 +5,8 @@
   "author": "aaxuyun",
   "license": "ISC",
   "repository": "https://github.com/nsc-open/nsc-uploader.git",
-  "main": "dist/index.js",
-  "jsnext:main": "dist/index.es.js",
+  "main": "es/index.js",
+  "jsnext:main": "es/index.es.js",
   "engines": {
     "node": ">=10"
   },
@@ -43,7 +43,7 @@
     "rollup-plugin-url": "^3.0.1"
   },
   "files": [
-    "dist"
+    "es"
   ],
   "dependencies": {
     "nsc-lightbox": "^1.2.21",
