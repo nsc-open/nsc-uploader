@@ -1,5 +1,6 @@
 import React, { createElement, Component } from 'react';
-import { Icon, Progress, Tooltip, Radio, message, Button } from 'antd';
+import { Progress, Tooltip, Radio, message, Button } from 'antd';
+import { LoadingOutlined, PaperClipOutlined, PictureTwoTone, FileTwoTone, DownloadOutlined, EyeOutlined, DeleteOutlined, PlusOutlined, InboxOutlined } from '@ant-design/icons';
 import RcUpload from 'rc-upload';
 import { createHash } from 'crypto';
 import moment from 'moment';
@@ -4880,7 +4881,7 @@ var pdfPng = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6e
 
 var xlsPng = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAScUlEQVR4Xu2dC3RU1bnHv30CyhsBkYAhJOQJc8pVqAooEAtGaeXlld6qPCrcogWRUMACF3oTq+CtEpN6i4LWLkAvvnq9vqokEcKl9YGiUsVHwTKgyKXSFkUxEObsu/YE0hwyMzn7ZM+ZObP/Zy1Wsibf/vb+/vv/Y599zpkZRjigABSIqgCDNlAACkRXAIDAHVAghgIABPaAAgAEHoAC7hTACuJON7TSRAEAoslEo0x3CgAQd7qhlSYKABBNJhplulMAgLjTDa00UQCAaDLRKNOdAgDEnW5opYkCAESTiUaZ7hQAIO50QytNFAAgSTzR2Qu+04+HjGyZIQYrampl4hEbWwEAkgQOyVr03XTr5AnTMFiAczIZkUnEAkS8s+zwguXVmFNZ0WLEQ0yFYraUKnPx97qlHa8zuWEEGCeTUxiGACc6t6W2Tv8OQJwq5SwOgDjTSSqqT+m4Dmd/ccK0WMg0iAkATM5pIGOUIZXIRTAAcSEaVhC1ojVmmzw5Lbvvl6bFuMk4DxATp0ZUSJzy4tRji2kBSIsSSQVgBXEoV9aC4kIrRKZhWAHOmckYFRBRPhGd7TCFJ2EARK3MAOQMPfstLM42QmRygwKMWyYnJiAQK8I5aqWPTzYAolZXbQHpe9sVfdrUCxBYQJwe8TAEPJ+IpauV2NtsAESt3ikPyPlLRvdoW2eY/NT+gDWcFol/WWqlTI5sAETtPKQMIIHZRZ2+btfG5IyZxFkBC68G4VMj8TNNrWzJmw2AqJ0b3wEyZNaQtoc7dTMNi4mrR/mMGeFTI0aUx4k6qZXHf9kAiNo5S2pAMheMHpjGjYDFKI9ZYiUQQDABgrIba2rlTHw2AKJ2DpICkL6Lxua0DYUGhBpWgnxilMctyvfixppaOROfDYConQNPAcm9bWyGVV9fGCJDmL/hqpH4mcAba2rlTHw2AKJ2DuICSO6SsT1PnKgvMKyGTbLYJ/CGTXPS3VhTK2fiswEQtXPQKkBy547tcuKsUJ5x6ooR4zzfbzfW1MqZ+GwARO0cSAOSVTKmiBlsSqrcWFMrZzJk42XJMArPxsDYMeL8KCN2lDP2lcX5UYuHPvz03s0HVIzBFSBksC0qOkcOKBA/BfjHjFitZRnL91VsOui2HwDiVjm085ECvCxYXlPqZsAAxI1qaOM/Baz6bsGK2iOyAwcgsooh3qcKsIpgedV82cEDEFnFEO9XBYLB8mqpD8AQhQIQv053lHHPK56aYhW5K6eyakOzhmnEMj8ur/pEJiMAkVHLB7F7V1X5YJTxHWLFpg0UCRCLaMz+8uqXZXoHIDJq+SAWgBBFA4Q4nxi8t+YZmWkEIDJq+SAWgEQHhDM2Zd+qqkdlphGAyKjlg1gAEmMFIbo5WF69RmYaAYiMWj6IBSCxVhBauG9V9SqZaQQgMmr5IBaAxFpB5O+oAxAfmF5miAAEgMj4RbtYAAJAtDO9TMEABIDI+EW7WAACQLQzvUzBAASAyPhFu9jWPotVcmX0Z7le+/iP9NqenZ5qGms80QYS9U464SqWp5OXip3FWoEEINetXuhZ2QJ2AOKZ3OjIiQIAxK4S7oM4cY1GMQAEgGhkd/lSAQgAkXeNRi0ACADRyO7ypQIQACLvGo1aABAAopHd5UsFIABE3jUatQAgAEQju8uXCkAAiLxrNGoBQACIRnaXLxWAABB512jUAoAAkJS2+8bZ97SqvqE5g6K2Fw8ren3EGk+0seBpXq9nyUf94f0geD+Ij+zq/VABCADx3nU+6hGAABAf2dX7oQIQAOK963zUIwABID6yq/dDBSAAxHvX+ahHAAJAfGRX74c6NOefWtXpxtl3x7wPUrmp+Tc3tarDGI0vyRmED22Il7jI604B3EnHnXR3ztGkFQABIJpY3V2ZAASAuHOOJq0ACADRxOruygQgAMSdczRpBUAAiCZWd1cmAAEg7pyjSSsAAkA0sbq7MgEIAHHnHE1aARAAoonV3ZUJQACIO+do0gqAxBGQrHPPpwmDv9PMSjuCu+j3f3orpsWifXVYZVXDw3GR/n76b63xbpf2nWjcBUU0JDtAub0yqVeX7nRelx4UPHyAgoc/o0//9n/07ie76YntL7WmG9+0BSBxBESkvnHEJPrZxB/bennv09007t45UU0y/sLLqXLKEtvf3973AU1fu5SO1n3dCMiZX8eVvaC4VcYrNofTvCun0sA+OS3mqd71Kq3Z8gTt2LurxdhEBuBxdx887r5+1koaUTDE5pNlv/0lPfrK8xG984dlj1CfbufZ/nbLhjvphXe2Nr4W6fvqWgPIRdkmrb9pJbVre7aUnydV3krv7P9Qqo2XwQDEB4CMCQyjB2eU2XxxtO4YDS37AR07UWd7ff5V0+jWK6bYXnty+ya67fFVttdUA/JMyX/SoL750t5999PdNG3NYjpy7Kh0Wy8aABAfACKMcOe18+j6Yd+zeeLB2qdoxXNrG1/L6J5O2/5tvS2mPnQyfDr20cG9cQPkqkGX0f3Tf2bL/5cv/0orn3uQdh34mHYf2kcD+vQPr4LXDf0uib1V0+OhrU/Rnc/+ow4vjO+0DwDiE0DE5velhWuo9zk9bXN7dfls2nVgT/i1ihsWN9vUC5OurX2ymR9UriDLJ9xMM0ZeY+sj2una6IFD6aGZt9tivf46ZKdwiDgA4hNAxGTNGDmJlk+wb9ir33uVZv3m32lkwRBaN2ulbe4/PLiXBEAhKxRXQB7+1zvo8gEXN/YR/aMqG0K2Ll1HmT16N8Z/ffwbMpdOkPGtZ7EAxEeACFc8PmcVXdz/WzaDiA34jBGTaHDWQNvrMx9aTps/eD2imVSuICsml4RPnZoesTb8ou8vvjlKX9UdIwGH2Edt/fANz0wv0xEA8Rkg4hLqCwvut83xnkP7w/ccmh6/2/m/NGf9HVG9oBKQaZdNoLJJ9svOp/cgr+zZSeJ3vx4AxGeACKOJ0yxxuhXrGLViOu3/60FPALksfzBtuOmuiH2dDJ2k7X9+j7b/+V16Y++74d/Fa7ocuFFon2kmO/FZJWOKyGBbZNvtuP1J6t6xa8Rm91U/SuUvrYuZUuUKIjqKdJUt0gDEavLy+6/TxldfIHGJN9UPAJIgQMRd6zU3ljbz1xfffEUXLLNfUYpkQtWAiD7WziijKwLDHHu+pc2840RJHAhAEgTIFeZwWhsBkGff3kLzHrFfzfIKENHPv1wylu76/nzHlk11SABIggCJdYp1/f2L6NU9Oz09xWrambiEe2nehST2JpfmD6au7TvFHEsqQwJAEgDIsvE308xR0U+j9h3+jIpW/jBhgDTt+JwOnamo8CIaNeBiGtxvgO3+x+m44yfraew9s2jv5wccrzx+CQQgHgNS2DubXly4pkV/3PX8Q+GnZaMd8diDtDgoIrph+NW0dNws6nBWO1t4qq4iAMRjQJ6YU04X9TdtvT7yynM0Zfi4Zv68fOWN4fdhxHMPMqrw25TRLT389HB61x7Uq+u5NOWBn8Zk5YLMQnp63i9tMf/9Zg0t2PgLJ4z5KgaAeAjI9MsmUOkZN+TE+zsECD8cMZFuGXO9bTQv/nEbzV7387gCMiz3AvqvH9uNfe19JbQj+H5MI4tvj236javJ/DxWa4gEIB4B0vHs9lTz019TetdzbT2WPr2a1v3+f8hgjLYuXU8Z3XvZ/j53wwp6/p3aZnOs6hSrZ+futL30MVv+Z97aTCWPRr5xeDrwrdufom4duzS2e+qNKlr0WOu+crk1Ro5XWwDiESCRnnfauf8jmlg5t3EE115UTHf/YKFtRAf+/pfwA4tHjn1pe10VICLp5sUPU3bPDFt+8ZiLeNwl0hHpSQDsQeKF6D/yRppzJ70m/fekiydlxROzZx5T1yxu9t508ciHuLza9BCbdbFpb3pEEksIIXOcfg/7svE30cxR/9ysqci35YPXafeh/dS5XUfK7JFO0y6dQOMuLGoWW/yLH4XfN5JqB1YQD1aQSKZ/+s0a+kmETe2gvgX0TMl9LcLk9n+T04nP/F/lt7dWhi/jujlaerDSTc5kaQNA4gzIzJHX0LIJNzeb7+E/v4EOHvk8og/KrrmFpl063va3P+x+m6Y+sJg48fDrqgH5VkYePTv/V9K+TGU4hBgAJI6A9O+ZQQ//6A7q16OPrZd7XvwN/apmY1Qzig9OeKP0cerUroMt5j9e+DU9sPnxuAAikorLt9NHTKSJET6qKNJgV7/8GN39u4elofKyAR53T+LH3UsnzaaC3tlEZH9I+LrV9o14JMPcMOxqujrCuf6KZ9eEn6IVK8jQXPdfUPnanp0U7XO0xJ3zkYXfDt81z+zeO/yzrv44Hf7q7/T50SO07aM3w2PY9tEOL73uqi8AksSAuJpRNFKqAAABIEoNlWrJAAgASTVPK60HgAAQpYZKtWQABICkmqeV1gNAAIhSQ6VaMgACQFLN00lVD24UxvFGYVLNNAbjSgEAAkBcGUeXRgAEgOjidVd1AhAA4so4ujQCIABEF6+7qhOAABBXxtGlEQABILp43VWdAASAuDKOLo0ACADRxeuu6gQgAMSVcXRpBEAAiC5ed1UnAAEgroyjSyMAAkBS2utDc9y/b18Is3H23VH1ER+3Win5WWStEfuSnEFUcuVU6RRJ/8Fx0hWhgTIF8Lg7HndXZqZUTARAAEgq+lpZTQAEgCgzUyomAiAAJBV9rawmAAJAlJkpFRMBEACSir5WVhMAASDKzJSKicRXxbXmaPo1c2fmEfdBvD5ijSfaWHAfxOtZ0qg/3EnHnXSN7C5fKgABIPKu0agFAAEgGtldvlQAAkDkXaNRCwACQDSyu3ypAASAyLtGoxYABIBoZHf5UgEIAJF3jUYtAAgA0cju8qUCEAAi7xqNWgAQAKKR3eVLBSAARN41GrUAIAAkpe0+r1j+U0CaChLrU0TwqSYOrJNVMqaIDLbFQShCEqAA3g+C94MkwHb+6RKAABD/uDUBIwUgACQBtvNPlwAEgPjHrQkYKQABIAmwnX+6BCDRAeGczdl3b9VqmdlkMsEiFlexZBXzNh6ARAeEEX1/b3n1kzIzAkBk1PJBLACJcYpl8cuDFTW1MtMIQGTU8kEsAIkOiMWswP5VL78vM40AREYtH8QCkOiAtKlvc96e+178XGYaAYiMWj6IBSBRATkeLK9uJzuFAERWsSSPb+2zWElenuPhVVZtODP2k2B5dabjBKcCAYisYoj3qQL8rWB5zRDZwQMQWcUQ71MFWEWwvGq+7OABiKxiiPenAlZ9t2BF7RHZwQMQWcUQ70MFeFmwvKbUzcABiBvV0MYPCvyJEW2zLGP5vopNB90OGIC4VS5p2/EyBUPjRCS8IftTQdduUxh/I6JDZFmHTqSdfO+zVbWH3WZq2g6AqFAxiXIEy6ul5zSJhp90Q5EWUzysyAw2hRPPJzLyiHh60lWl8YAAiNrJlwakafe5c8d2sdqczA8Rz2fMyCeiPEY8nxOJ37uoHSqyOVEAgDhRyXlMqwCJ1k3WoqJ0Zp2Vb1mUx5hYacQ/FgaHEbVxPjxEyioAQGQVix0fF0CiglNyVRalnSxgZORbnAtYwqsOEWWrLUvfbABE7dx7CkhUcBYUF3KLD2AsvMLkcWKnVh3qpbbc1M8GQNTOcVIAEqmkIbOGtD3cqZtJnAY07G8aVpyGiwOss1oZUicbAFE7l0kLSLQyC24b37nuxNemkWYELAEND8OT1wAP9jcARHNAopWfu2Rsz/rjlmkwbhJvvJIm9jhZaiVL7mwARO38+G4FkS2//61jMkNtmMkYCXAKxP7m1MWB82Rz+SEegKidpZQHJJpc/X8yOj/EmMksZpJBAxhvvDjg6/0NAAEgahVomm3y5LTsvl+aFg8FGGMmERvYcA8nfDk6LX4dq8sMQNRpKTJpu4LIyNhrYXHH9kQmD1HDqRrxwClo+snk8SIWgKhVGYC0Qs/zl4zu0bbOMDlrAIdzMhO9vwEgrZjQCE0BiFo9w9nOn1uU0bZNmskNI8AaoDEtokJG1CkO3dlSAhC1CgMQtXrGzJYz/8rckMFNZpHJmSX2OCYRFarc3wAQtRMKQNTq6SYby1lYHAid2t9wEnuc8D4nx00yAOJGtehtAIhaPZVly5g/rP1ZRgfTCrGOMkllP3tWJreOsQBEx1lHzY4VACCOpUKgjgoAEB1nHTU7VgCAOJYKgToqAEB0nHXU7FgBAOJYKgTqqAAA0XHWUbNjBQCIY6kQqKMCAETHWUfNjhUAII6lQqCOCgAQHWcdNTtWAIA4lgqBOioAQHScddTsWAEA4lgqBOqowP8DbbeOboJSNmgAAAAASUVORK5CYII=";
 
-var prefixCls = 'ant-upload';
+var prefixCls = 'ant-uploader';
 var locale = {
   uploading: 'Uploading...',
   removeFile: 'Remove file',
@@ -4964,9 +4965,7 @@ var UploadList = /*#__PURE__*/function (_React$Component) {
           showDownloadIcon = _this$props.showDownloadIcon,
           progressAttr = _this$props.progressAttr;
       var progress;
-      var icon = /*#__PURE__*/createElement(Icon, {
-        type: file.status === 'uploading' ? 'loading' : 'paper-clip'
-      });
+      var icon = file.status === 'uploading' ? /*#__PURE__*/createElement(LoadingOutlined, null) : /*#__PURE__*/createElement(PaperClipOutlined, null);
 
       if (listType === 'picture' || listType === 'picture-card') {
         if (listType === 'picture-card' && file.status === 'uploading') {
@@ -4974,20 +4973,16 @@ var UploadList = /*#__PURE__*/function (_React$Component) {
             className: "".concat(prefixCls, "-list-item-uploading-text")
           }, locale.uploading);
         } else if (!file.thumbUrl && !file.url) {
-          icon = /*#__PURE__*/createElement(Icon, {
-            className: "".concat(prefixCls, "-list-item-thumbnail"),
-            type: "picture",
-            theme: "twoTone"
+          icon = /*#__PURE__*/createElement(PictureTwoTone, {
+            className: "".concat(prefixCls, "-list-item-thumbnail")
           });
         } else {
           var thumbnail = isImageUrl(file) ? /*#__PURE__*/createElement("img", {
             src: getFileTypeImg(file),
             alt: file.name,
             className: "".concat(prefixCls, "-list-item-image")
-          }) : /*#__PURE__*/createElement(Icon, {
-            type: "file",
-            className: "".concat(prefixCls, "-list-item-icon"),
-            theme: "twoTone"
+          }) : /*#__PURE__*/createElement(FileTwoTone, {
+            className: "".concat(prefixCls, "-list-item-icon")
           });
           icon = /*#__PURE__*/createElement("a", {
             className: "".concat(prefixCls, "-list-item-thumbnail"),
@@ -5016,15 +5011,13 @@ var UploadList = /*#__PURE__*/function (_React$Component) {
 
       var infoUploadingClass = classnames((_classNames = {}, _defineProperty(_classNames, "".concat(prefixCls, "-list-item"), true), _defineProperty(_classNames, "".concat(prefixCls, "-list-item-").concat(file.status), true), _defineProperty(_classNames, "".concat(prefixCls, "-list-item-list-type-").concat(listType), true), _classNames));
       var linkProps = typeof file.linkProps === 'string' ? JSON.parse(file.linkProps) : file.linkProps;
-      var removeIcon = showRemoveIcon ? /*#__PURE__*/createElement(Icon, {
-        type: "delete",
+      var removeIcon = showRemoveIcon ? /*#__PURE__*/createElement(DeleteOutlined, {
         title: locale.removeFile,
         onClick: function onClick() {
           return _this.handleClose(file);
         }
       }) : null;
-      var downloadIcon = showDownloadIcon && file.status === 'done' ? /*#__PURE__*/createElement(Icon, {
-        type: "download",
+      var downloadIcon = showDownloadIcon && file.status === 'done' ? /*#__PURE__*/createElement(DownloadOutlined, {
         title: locale.downloadFile,
         onClick: function onClick() {
           return _this.handleDownload(file);
@@ -5073,9 +5066,7 @@ var UploadList = /*#__PURE__*/function (_React$Component) {
           return _this.handlePreview(file, e);
         },
         title: locale.previewFile
-      }, /*#__PURE__*/createElement(Icon, {
-        type: "eye-o"
-      })) : null;
+      }, /*#__PURE__*/createElement(EyeOutlined, null)) : null;
       var actions = listType === 'picture-card' && file.status !== 'uploading' && /*#__PURE__*/createElement("span", {
         className: "".concat(prefixCls, "-list-item-actions")
       }, previewIcon, file.status === 'done' && downloadIcon, removeIcon);
@@ -5122,7 +5113,7 @@ var UploadList = /*#__PURE__*/function (_React$Component) {
           items = _this$props2$items === void 0 ? [] : _this$props2$items,
           listType = _this$props2.listType,
           dragSortable = _this$props2.dragSortable;
-      var prefixCls = 'ant-upload';
+      var prefixCls = 'ant-uploader';
       var list = items.map(function (file) {
         return _this.renderListItem(file);
       });
@@ -5226,7 +5217,7 @@ _defineProperty(UploadList, "defaultProps", {
   previewFile: previewImage
 });
 
-var prefixCls$1 = 'ant-upload';
+var prefixCls$1 = 'ant-uploader';
 
 var Upload = /*#__PURE__*/function (_React$Component) {
   _inherits(Upload, _React$Component);
@@ -6447,28 +6438,23 @@ var Uploader = /*#__PURE__*/function (_Component) {
 
       fileList.sort(sorter); //listType === "picture-card"时 默认上传按钮
 
-      var cardButton = /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Icon, {
-        type: "plus"
-      }), /*#__PURE__*/React.createElement("div", {
+      var cardButton = /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(PlusOutlined, null), /*#__PURE__*/React.createElement("div", {
         className: "uploadText"
       }, "\u4E0A\u4F20\u6587\u4EF6")); //listType === "text' 或 'picture"时默认上传按钮
 
-      var textButton = /*#__PURE__*/React.createElement(Button, null, /*#__PURE__*/React.createElement(Icon, {
-        type: "upload"
-      }), " \u4E0A\u4F20\u6587\u4EF6"); //拖动上传时默认上传按钮
+      var textButton = /*#__PURE__*/React.createElement(Button, null, /*#__PURE__*/React.createElement(PlusOutlined, null), " \u4E0A\u4F20\u6587\u4EF6"); //拖动上传时默认上传按钮
 
       var draggerBtn = /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
-        className: "ant-upload-drag-icon"
-      }, /*#__PURE__*/React.createElement(Icon, {
-        type: "inbox",
+        className: "ant-uploader-drag-icon"
+      }, /*#__PURE__*/React.createElement(InboxOutlined, {
         style: {
           color: '#3db389'
         }
       })), /*#__PURE__*/React.createElement("p", {
-        className: "ant-upload-text"
+        className: "ant-uploader-text"
       }, "\u70B9\u51FB\u83B7\u53D6\u62D6\u52A8 \u56FE\u7247\u6216\u6587\u6863 \u5230\u8FD9\u5757\u533A\u57DF\u5B8C\u6210\u6587\u4EF6\u4E0A\u4F20"));
       return /*#__PURE__*/React.createElement("div", {
-        className: "nsc-upload-container"
+        className: "nsc-uploader-container"
       }, customRadioButton ? customRadioButton : showRadioButton ? this.renderRadio(showRadioButton) : null, type === 'dragger' ? /*#__PURE__*/React.createElement(Dragger, props, showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : draggerBtn : null) : /*#__PURE__*/React.createElement(Upload, props, showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : listType === 'picture-card' ? cardButton : textButton : null), previewVisible && lightboxFiles.length > 0 && /*#__PURE__*/React.createElement(Lightbox, {
         visible: previewVisible,
         imgvImages: lightboxFiles,

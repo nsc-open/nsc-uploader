@@ -25,12 +25,12 @@ const defaultFiles = [{
 const OSS_ENDPOINT = ''
 const OSS_BUCKET = ''
 const ossParams = {
-  region: OSS_ENDPOINT,
-  bucket: OSS_BUCKET,
-  accessKeyId: " ",
-  accessKeySecret: "ddd",
+  region:'oss-cn-beijing',
+  bucket: 'nsc-channelmangement-dev',
+  accessKeyId: "STS.NTYDgQ3kL7ZEgUuDe9VfEXg9N",
+  accessKeySecret: "HEKPH3KDnUXZ2UQBWTWUnM2Ri1GurcEAqdvSZPbD1Uaz",
   Expiration: "2021-06-23T08:21:20Z",
-  stsToken: ""
+  stsToken: "CAISmgR1q6Ft5B2yfSjIr5fsD93l3rRtgJiuZXPEoGVsWulpt6KSrDz2IHpEf3NhAO8Yt/swn2pY5vwclq19UZpOHbNQ+GmpqcY5yxioRqackUHfj9Vd+nbMewW6Dxr8w7WMAYHQR8/cffGAck3NkjQJr5LxaTSlWS7TU/iOkoU1QdkLeQO6YDFaZrJRPRAwkNIGEnHTOP2xSDSI5FDdF011oAFxpHpi4KCkuK2m5wHZkUfxx51bxcj4KYP2aNJ3btUtEYWzx+czfarI1ihd7x1D8qh7iaFC5XLLs8/v7jAzjjyCN+3LiIMNSCZyeqk9HYNdsfH4jocWk+fPloPxuWAvWOZOSHbwSZyHysnJE//LU9EibuTDJmjq2NKCPYWPn2FCW38AMx5QcNcMM2J5DQdWKgvXMai64lvHEEfBBaGOy/MxyoEnjQeqr9yRLB2EQ7yf1yscP5Y6YE4tOhgKmGDsbOhEATYuHnpjA7GKN8URCDlVtaLvuyDLSyRk1Qs5lvbiZvTQyNh9D57jRcBvypEAYZl8tG8nNSOVLYijkUAJbmdobK9L2a32Q/+F5aSC3f+YbJytaJlFmC0DIG6K9XfcEygMcHOgvIZ4UzfCpZSNlp6r2oh7DQ4j6upYCQy4att3pzRkmfDov0/Joba8DCn1oTFiqomCoZM84E9lb+qihPSJojndsXqfbK80gs7LX3d1RhC6a4WJNVJUXKRsGoABSJEFru2VyLgAfE5qIz2NtvXiToU45bS2P+3wfbXW6puVIS8NOPzIxxeoZFF32VYlx5kbDo5ohFgZP+V6jAiJ9WzR0aMsA8ALrFgQivq8hRMpi+d/F4Z1vB9uO/lkzW0pePahQLkfamgw3GFYABqW7+EOi3UrvFU/R3EWU4kcPQk="
 }
 
 
@@ -60,7 +60,6 @@ class App extends Component {
     this.setState({ previewFileVisible: false })
   }
 
-
   onSortEnd = (oldList, newList) => {
     console.log(oldList, newList)
   }
@@ -78,7 +77,11 @@ class App extends Component {
       uploadType:'multipart',
       onDownload: this.onDownload,
       defaultFiles: defaultFiles,
-      showUploadList:true
+      showUploadList:{
+        showPreviewIcon: true,
+        showDownloadIcon: true,
+        showRemoveIcon: true
+      }
     }
 
     return (

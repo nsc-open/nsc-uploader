@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Icon, Button, message, Radio } from 'antd'
+import { Button, message, Radio } from 'antd'
+import { PlusOutlined, InboxOutlined } from '@ant-design/icons'
 import Upload from './Upload'
 import Dragger from './Dragger'
 import { getUploadClient, encodeFileName, arrayMove, toAttachment, isDoc, imgSize } from './utils'
@@ -10,6 +11,7 @@ import { Lightbox } from 'nsc-lightbox'
 import co from './Co'
 import Url from 'url-parse'
 
+import './style/antd.css'
 import './style/index.css'
 
 const sorter = (a, b) => a.sortNo - b.sortNo
@@ -302,7 +304,7 @@ class Uploader extends Component {
     //listType === "picture-card"时 默认上传按钮
     const cardButton = (
       <div>
-        <Icon type="plus" />
+        <PlusOutlined />
         <div className="uploadText">上传文件</div>
       </div>
     );
@@ -310,21 +312,21 @@ class Uploader extends Component {
     //listType === "text' 或 'picture"时默认上传按钮
     const textButton = (
       <Button>
-        <Icon type="upload" /> 上传文件
+        <PlusOutlined /> 上传文件
       </Button>
     );
 
     //拖动上传时默认上传按钮
     const draggerBtn = (
       <div>
-        <p className="ant-upload-drag-icon">
-          <Icon type="inbox" style={{ color: '#3db389' }} />
+        <p className="ant-uploader-drag-icon">
+          <InboxOutlined style={{ color: '#3db389' }} />
         </p>
-        <p className="ant-upload-text">点击获取拖动 图片或文档 到这块区域完成文件上传</p>
+        <p className="ant-uploader-text">点击获取拖动 图片或文档 到这块区域完成文件上传</p>
       </div>
     )
     return (
-      <div className='nsc-upload-container'>
+      <div className='nsc-uploader-container'>
         {customRadioButton ? customRadioButton : showRadioButton ? this.renderRadio(showRadioButton) : null}
         {type === 'dragger' ?
           <Dragger {...props} >

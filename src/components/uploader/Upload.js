@@ -5,7 +5,7 @@ import uniqBy from 'lodash/uniqBy'
 import findIndex from 'lodash/findIndex'
 import { T, fileToObject, getFileItem, removeFileItem } from './utils';
 import UploadList from './UploadList'
-const prefixCls = 'ant-upload'
+const prefixCls = 'ant-uploader'
 
 class Upload extends React.Component {
 
