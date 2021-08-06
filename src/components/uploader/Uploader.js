@@ -4,14 +4,12 @@ import { Icon, Button, message, Radio, Checkbox } from 'antd'
 import Upload from './Upload'
 import Dragger from './Dragger'
 import { getUploadClient, encodeFileName, arrayMove, toFile, toAttachment, isDoc, imgSize } from './utils'
-// import { DndProvider, useDrag, useDrop, createDndContext } from 'react-dnd'
-// import { HTML5Backend } from 'react-dnd-html5-backend'
-import isEqual from 'lodash/isEqual'
 import maxBy from 'lodash/maxBy'
 import { Lightbox } from 'nsc-lightbox'
 import co from './Co'
 import Url from 'url-parse'
 import './style/index.css'
+import './style/antd.css'
 
 const sorter = (a, b) => a.sortNo - b.sortNo
 

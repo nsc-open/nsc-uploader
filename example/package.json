@@ -5,7 +5,6 @@
   "private": true,
   "dependencies": {
     "ali-oss": "5.2.0",
-    "antd": "3",
     "classnames": "^2.2.6",
     "lodash": "^4.17.15",
     "nsc-uploader": "link:..",
