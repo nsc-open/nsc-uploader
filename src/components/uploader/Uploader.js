@@ -89,7 +89,7 @@ class Uploader extends Component {
     }
     return url
   }
-
+  
   onLightboxClose = () => {
     this.setState({ previewVisible: false })
   }

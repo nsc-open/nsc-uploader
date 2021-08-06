@@ -71,7 +71,7 @@ class App extends Component {
       dragSortable: true,
       onFileChange: this.onFileChange,
       accept,
-      ossParams: ossParams,
+      // ossParams: ossParams,
       uploadType:'multipart',
       onDownload: this.onDownload,
       defaultFiles: defaultFiles,

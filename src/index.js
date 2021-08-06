@@ -1,4 +1,4 @@
 import Uploader from './components/uploader'
 
-export { Uploader}
-export default  { Uploader}
+export { Uploader }
+export default { Uploader }
