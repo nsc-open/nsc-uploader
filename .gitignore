@@ -5,7 +5,8 @@ node_modules
 
 # production
 /dist
-
+/es
+/example
 # misc
 .DS_Store
 .idea

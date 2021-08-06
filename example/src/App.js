@@ -22,8 +22,6 @@ const defaultFiles = [{
 }
 ]
 
-const OSS_ENDPOINT = ''
-const OSS_BUCKET = ''
 const ossParams = {
   region:'',
   bucket: '',
