@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Icon, Button, message, Radio } from 'antd'
 import Upload from './Upload'
 import Dragger from './Dragger'
-import { getUploadClient, encodeFileName, arrayMove, toAttachment, isDoc, imgSize } from './utils'
+import { getUploadClient, encodeFileName, arrayMove, toAttachment, isDoc, isImageUrl, imgSize } from './utils'
 import isEqual from 'lodash/isEqual'
 import maxBy from 'lodash/maxBy'
 import { Lightbox } from 'nsc-lightbox'
@@ -67,7 +67,8 @@ class Uploader extends Component {
     const { fileList } = this.state
     const files = fileList.map(toAttachment)
     const lightboxFiles = files.map((a) => {
-      return { ...a, alt: a.name, uri: isDoc(a) ? `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(this.signatureUrl(a.uri))}` : this.signatureUrl(a.uri) }
+      const url = isImageUrl(a) ? this.signatureUrl(a.uri, true) : this.signatureUrl(a.uri, false)
+      return { ...a, alt: a.name, uri: isDoc(a) ? `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(url)}` : url }
     }
     )
     const lightboxIndex = (files.map(a => a.id).indexOf(file.id) || 0)
@@ -78,13 +79,13 @@ class Uploader extends Component {
     })
   }
 
-  signatureUrl = (url) => {
+  signatureUrl = (url, showmark) => {
     const { watermark } = this.props
     url = decodeURIComponent(url)
     const { pathname } = new Url(decodeURIComponent(url))
     const fileName = pathname.substr(1)
     if (this.uploadClient) {
-      return watermark
+      return watermark && showmark
         ? this.uploadClient.signatureUrl(fileName, { process: watermark })
         : this.uploadClient.signatureUrl(fileName)
     }

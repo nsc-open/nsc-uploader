@@ -6073,6 +6073,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
     });
 
     _defineProperty(_assertThisInitialized(_this2), "signatureUrl", function (url) {
+      var watermark = _this2.props.watermark;
       url = decodeURIComponent(url);
 
       var _Url = new Url(decodeURIComponent(url)),
@@ -6081,7 +6082,9 @@ var Uploader = /*#__PURE__*/function (_Component) {
       var fileName = pathname.substr(1);
 
       if (_this2.uploadClient) {
-        return _this2.uploadClient.signatureUrl(fileName);
+        return watermark ? _this2.uploadClient.signatureUrl(fileName, {
+          process: watermark
+        }) : _this2.uploadClient.signatureUrl(fileName);
       }
 
       return url;
