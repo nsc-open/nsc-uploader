@@ -4795,7 +4795,28 @@ function removeFileItem(file, fileList) {
   }
 
   return removed;
-} // ==================== Default Image Preview ====================
+}
+var isImageType = function isImageType(type) {
+  return !!type && type.indexOf('image') === 0;
+};
+var isImg = function isImg(file) {
+  if (isImageType(file.fileType)) {
+    return true;
+  }
+
+  var extension = file.fileExt ? file.fileExt : '';
+
+  if (/(webp|svg|png|gif|jpg|jpeg|jfif|bmp|dpg|ico)$/i.test(extension)) {
+    return true;
+  }
+
+  if (extension) {
+    // other file types which have extension
+    return false;
+  }
+
+  return true;
+}; // ==================== Default Image Preview ====================
 
 var extname = function extname(url) {
   var temp = url.split('/');
@@ -6026,9 +6047,10 @@ var Uploader = /*#__PURE__*/function (_Component) {
       var fileList = _this2.state.fileList;
       var files = fileList.map(toAttachment);
       var lightboxFiles = files.map(function (a) {
+        var url = isImg(a) ? _this2.signatureUrl(a.uri, true) : _this2.signatureUrl(a.uri, false);
         return _objectSpread2(_objectSpread2({}, a), {}, {
           alt: a.name,
-          uri: isDoc(a) ? "https://view.officeapps.live.com/op/view.aspx?src=".concat(encodeURIComponent(_this2.signatureUrl(a.uri))) : _this2.signatureUrl(a.uri)
+          uri: isDoc(a) ? "https://view.officeapps.live.com/op/view.aspx?src=".concat(encodeURIComponent(url)) : url
         });
       });
       var lightboxIndex = files.map(function (a) {
@@ -6042,7 +6064,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
       });
     });
 
-    _defineProperty(_assertThisInitialized(_this2), "signatureUrl", function (url) {
+    _defineProperty(_assertThisInitialized(_this2), "signatureUrl", function (url, showmark) {
       var watermark = _this2.props.watermark;
       url = decodeURIComponent(url);
 
@@ -6052,7 +6074,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
       var fileName = pathname.substr(1);
 
       if (_this2.uploadClient) {
-        return watermark ? _this2.uploadClient.signatureUrl(fileName, {
+        return watermark && showmark ? _this2.uploadClient.signatureUrl(fileName, {
           process: watermark
         }) : _this2.uploadClient.signatureUrl(fileName);
       }
@@ -6073,7 +6095,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
 
     _defineProperty(_assertThisInitialized(_this2), "handleDownload", function (file) {
       var onDownload = _this2.props.onDownload;
-      file.url = _this2.signatureUrl(file.url);
+      file.url = _this2.signatureUrl(file.url, false);
       onDownload && onDownload(toAttachment(file));
     });
 

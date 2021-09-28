@@ -173,6 +173,25 @@ export function removeFileItem(file, fileList) {
   return removed;
 }
 
+export const isImageType = (type) => !!type && type.indexOf('image') === 0;
+
+export const isImg = (file) => {
+  if (isImageType(file.fileType)) {
+    return true
+  }
+  const extension = file.fileExt ? file.fileExt : ''
+  if (
+    /(webp|svg|png|gif|jpg|jpeg|jfif|bmp|dpg|ico)$/i.test(extension)
+  ) {
+    return true
+  }
+  if (extension) {
+    // other file types which have extension
+    return false
+  }
+  return true
+}
+
 // ==================== Default Image Preview ====================
 const extname = (url) => {
   const temp = url.split('/');

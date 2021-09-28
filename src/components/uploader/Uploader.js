@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Icon, Button, message, Radio } from 'antd'
 import Upload from './Upload'
 import Dragger from './Dragger'
-import { getUploadClient, encodeFileName, arrayMove, toAttachment, isDoc, isImageUrl, imgSize } from './utils'
+import { getUploadClient, encodeFileName, arrayMove, toAttachment, isDoc, isImg, imgSize } from './utils'
 import isEqual from 'lodash/isEqual'
 import maxBy from 'lodash/maxBy'
 import { Lightbox } from 'nsc-lightbox'
@@ -67,7 +67,7 @@ class Uploader extends Component {
     const { fileList } = this.state
     const files = fileList.map(toAttachment)
     const lightboxFiles = files.map((a) => {
-      const url = isImageUrl(a) ? this.signatureUrl(a.uri, true) : this.signatureUrl(a.uri, false)
+      const url = isImg(a) ? this.signatureUrl(a.uri, true) : this.signatureUrl(a.uri, false)
       return { ...a, alt: a.name, uri: isDoc(a) ? `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(url)}` : url }
     }
     )
@@ -104,7 +104,7 @@ class Uploader extends Component {
 
   handleDownload = (file) => {
     const { onDownload } = this.props
-    file.url = this.signatureUrl(file.url)
+    file.url = this.signatureUrl(file.url, false)
     onDownload && onDownload(toAttachment(file))
   }
 
