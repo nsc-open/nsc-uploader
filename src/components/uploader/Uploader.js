@@ -79,11 +79,14 @@ class Uploader extends Component {
   }
 
   signatureUrl = (url) => {
+    const { watermark } = this.props
     url = decodeURIComponent(url)
     const { pathname } = new Url(decodeURIComponent(url))
     const fileName = pathname.substr(1)
     if (this.uploadClient) {
-      return this.uploadClient.signatureUrl(fileName)
+      return watermark
+        ? this.uploadClient.signatureUrl(fileName, { process: watermark })
+        : this.uploadClient.signatureUrl(fileName)
     }
     return url
   }
