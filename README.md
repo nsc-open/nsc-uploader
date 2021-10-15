@@ -44,7 +44,7 @@
  参数 | 说明 | 类型 | 默认值 
  -- | -- | -- | --
  type |上传组件类型，默认'select'，设置为‘dragger'时，可拖拽上传|string| 无
- getOssParams |Promise或Object,初始化OSS，详见 [getOssParams](#getOssParams)|Function| 无
+ getOssParams |Promise或Object,初始化OSS，详见 [getOssParams](#getOssParams)|Object & Promise | 无
  maxFileSize |最大文件大小(MB)|number| 
  maxFileNum |最多上传文件数量|number| 
  accept |接受上传的文件类型,详见 [input accept Attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#accept)|string|无
