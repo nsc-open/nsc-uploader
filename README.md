@@ -5,12 +5,11 @@
 ```
 
 # 文件上传
+    
 
-
-## 文件先上传至阿里云
+## 文件先上传支持阿里云或者Minio
   
   控制文件显示顺序与文件原始顺序一致
-
 
 ## 上传控制
 
@@ -24,14 +23,28 @@
 
   初始化时显示已上传的文件列表
   显示原始文件名，可以切换展示样式，grid或list
-
-
+  
+  
+  ## 获取OSS Client
+```js
+  import { createInstance,Uploader } "nsc-uploader";
+  const client = createInstance(getOssParams);
+```
+  ## url签名 (组件内部默认会对url自动签名所以这个api根据场景需要在用)
+  ```js
+    import { createInstance, Uploader } "nsc-uploader";
+    const client = createInstance(getOssParams);
+    //Minio
+    client.signatureUrl(File) --> Promise
+    //阿里云
+    client.signatureUrl(url) --> url
+  ```
 ## API
 
  参数 | 说明 | 类型 | 默认值 
  -- | -- | -- | --
  type |上传组件类型，默认'select'，设置为‘dragger'时，可拖拽上传|string| 无
- getOssParams |Promise,返回OSS实例参数，详见 [getOssParams](#getOssParams)|Function| 无
+ getOssParams |Promise或Object,初始化OSS，详见 [getOssParams](#getOssParams)|Object or Promise | 无
  maxFileSize |最大文件大小(MB)|number| 
  maxFileNum |最多上传文件数量|number| 
  accept |接受上传的文件类型,详见 [input accept Attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#accept)|string|无
@@ -62,10 +75,11 @@
       accessKeySecret: token.AccessKeySecret,
       stsToken: token.SecurityToken,
       region: OSS_ENDPOINT,
-      bucket: OSS_BUCKET
+      bucket: OSS_BUCKET,
     };
   }
 
+// 如果getOssParams是Promise
   getOssParams = () => {
     return new Promise((resolve, reject) => {
       if (!STS_TOKEN || (STS_TOKEN && (new Date(STS_TOKEN.Expiration) < Date.now()))) {
@@ -82,6 +96,21 @@
       }
     })
   }
+
+// 如果getOssParams是Object
+getOssParams = () => {
+    return {
+      bucket:'',
+      endPoint:'',
+      useSSL: false,
+      port:'',
+      region:'',
+      secretKey:'',
+      accessKey:'',
+      sessionToken:''    
+    }
+}
+
   ```
 
 ### fileErrorMsg
