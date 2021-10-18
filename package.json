@@ -6,6 +6,7 @@
   "license": "ISC",
   "repository": "https://github.com/nsc-open/nsc-uploader.git",
   "main": "es/index.js",
+  "module": "es/index.es.js",
   "jsnext:main": "es/index.es.js",
   "engines": {
     "node": ">=10"
@@ -20,15 +21,14 @@
     "predeploy": "cd example && yarn install && yarn run build"
   },
   "peerDependencies": {
-    "antd": "3",
+    "ali-oss": "^5.2.0",
     "classnames": "^2.2.6",
     "crypto": "^1.0.1",
+    "minio": "^7.0.19",
     "moment": "^2.27.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "ali-oss": "^5.2.0",
-    "minio": "^7.0.19"
+    "react-dom": "^16.13.1"
   },
   "devDependencies": {
     "@babel/core": "^7.10.2",
@@ -50,8 +50,6 @@
   ],
   "dependencies": {
     "nsc-lightbox": "^1.2.24",
-    "rc-animate": "^3.1.0",
-    "rc-upload": "^3.1.3",
     "react-beautiful-dnd": "^13.0.0"
   }
 }
