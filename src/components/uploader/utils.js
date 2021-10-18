@@ -47,7 +47,7 @@ export const toAttachment = file => ({
   fileExt: file.ext,
   uri: file.url,
   sortNo: file.sortNo,
-  status: file.status,
+  status: 'done',
 })
 
 export const isDoc = (img) => {

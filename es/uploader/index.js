@@ -4735,7 +4735,7 @@ var toAttachment = function toAttachment(file) {
     fileExt: file.ext,
     uri: file.url,
     sortNo: file.sortNo,
-    status: file.status
+    status: 'done'
   };
 };
 var isDoc = function isDoc(img) {

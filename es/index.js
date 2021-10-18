@@ -4735,7 +4735,7 @@ var toAttachment = function toAttachment(file) {
     fileExt: file.ext,
     uri: file.url,
     sortNo: file.sortNo,
-    status: file.status
+    status: 'done'
   };
 };
 var isDoc = function isDoc(img) {
@@ -6123,7 +6123,7 @@ function styleInject(css, ref) {
   }
 }
 
-var css_248z = ".nsc-uploader-picture-card-wrapper{\r\n    display: flex;\r\n    width: 100%;\r\n    z-index: 1;\r\n}\r\n\r\n.nsc-uploader-container .ant-upload.ant-upload-drag{\r\n    margin-bottom: 10px;\r\n}\r\n\r\n.nsc-uploader-dragger-hide{\r\n    display: none;\r\n}\r\n\r\n.nsc-uploader-dragger-show{\r\n    display: flex;\r\n}\r\n\r\n.nsc-uploader-radio{\r\n    margin: 15px 0px;\r\n}\r\n.nsc-uploader-radio-right{\r\n    text-align: right;\r\n    margin: 15px 0px;\r\n}\r\n.nsc-uploader-radio-left{\r\n    text-align: left;\r\n    margin: 15px 0px;\r\n}\r\n.nsc-uploader-radio-center{\r\n    text-align: center;\r\n    margin: 15px 0px;\r\n}\r\n\r\n.nsc-uploader-checkbox{\r\n    position: absolute;\r\n    z-index: 20;\r\n    left: 0;\r\n    top: 0;\r\n}\r\n\r\n.nsc-uploader-checkbox .ant-checkbox-inner{\r\n    width: 20px;\r\n    height: 20px;\r\n}\r\n\r\n.nsc-uploader-list-picture-card-container{\r\n    position: relative;\r\n    display: flex;\r\n    align-items: center;\r\n}\r\n\r\n.nsc-uploader-list-picture-card-checkbox{\r\n    position: absolute;\r\n    z-index: 20;\r\n    left: 2px;\r\n    top: 2px;\r\n}\r\n.nsc-uploader-list-picture-checkbox{\r\n    position: absolute;\r\n    z-index: 20;\r\n    left: 2px;\r\n    top: 10px;\r\n}\r\n.nsc-uploader-list-text-checkbox{\r\n    margin-top:8px;\r\n}\r\n\r\n";
+var css_248z = ".nsc-uploader-picture-card-wrapper{\r\n    display: flex;\r\n    width: 100%;\r\n    z-index: 1;\r\n}\r\n\r\n.nsc-uploader-container .ant-upload.ant-upload-drag{\r\n    margin-bottom: 10px;\r\n}\r\n\r\n.nsc-uploader-dragger-hide{\r\n    display: none;\r\n}\r\n\r\n.nsc-uploader-dragger-show{\r\n    display: flex;\r\n}\r\n\r\n.nsc-uploader-radio{\r\n    margin: 15px 0px;\r\n}\r\n.nsc-uploader-radio-right{\r\n    text-align: right;\r\n    margin: 15px 0px;\r\n}\r\n.nsc-uploader-radio-left{\r\n    text-align: left;\r\n    margin: 15px 0px;\r\n}\r\n.nsc-uploader-radio-center{\r\n    text-align: center;\r\n    margin: 15px 0px;\r\n}\r\n\r\n.nsc-uploader-checkbox{\r\n    position: absolute !important;\r\n    z-index: 20;\r\n    left: 0;\r\n    top: 0;\r\n}\r\n\r\n.nsc-uploader-checkbox .ant-checkbox-inner{\r\n    width: 20px;\r\n    height: 20px;\r\n}\r\n\r\n.nsc-uploader-list-picture-card-container{\r\n    position: relative;\r\n    display: flex;\r\n    align-items: center;\r\n}\r\n\r\n.nsc-uploader-list-picture-card-checkbox{\r\n    position: absolute !important;\r\n    z-index: 20;\r\n    left: 2px;\r\n    top: 2px;\r\n}\r\n.nsc-uploader-list-picture-checkbox{\r\n    position: absolute !important;\r\n    z-index: 20;\r\n    left: 2px;\r\n    top: 10px;\r\n}\r\n.nsc-uploader-list-text-checkbox{\r\n    margin-top:8px;\r\n}\r\n\r\n";
 styleInject(css_248z);
 
 /**
