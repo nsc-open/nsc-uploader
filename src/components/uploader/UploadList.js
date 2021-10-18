@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { previewImage, isImageUrl } from './utils';
 import { LoadingOutlined, PaperClipOutlined, PictureTwoTone, FileTwoTone, EyeOutlined, DeleteOutlined, DownloadOutlined } from '@ant-design/icons'
-import { Progress, Tooltip } from 'antd'
+import { Progress, Tooltip, Checkbox } from 'antd'
 import docPng from '../../assets/doc.png'
 import pdfPng from '../../assets/pdf.png'
 import xlsPng from '../../assets/xls.png'
@@ -107,6 +107,9 @@ export default class UploadList extends React.Component {
       showRemoveIcon,
       showDownloadIcon,
       progressAttr,
+      isBatch,
+      selectedIds,
+      onChecked,
     } = this.props;
     let progress;
     let icon = file.status === 'uploading' ? <LoadingOutlined /> : <PaperClipOutlined />
@@ -264,9 +267,17 @@ export default class UploadList extends React.Component {
     );
     const listContainerNameClass = classNames({
       [`${prefixCls}-list-picture-card-container`]: listType === 'picture-card',
+      ['nsc-uploader-list-picture-card-container']: true,
     });
+    const listCheckboxClass = classNames({
+      [`nsc-uploader-list-picture-card-checkbox`]: listType === 'picture-card',
+      [`nsc-uploader-list-picture-checkbox`]: listType === 'picture',
+      ['nsc-uploader-list-text-checkbox']: listType === 'text',
+    });
+
     return (
       <div key={file.uid} className={listContainerNameClass}>
+        {isBatch && <Checkbox key={file.uid} checked={selectedIds.includes(file.uid)} value={file.uid} className={listCheckboxClass} onChange={(e) => onChecked && onChecked(e, file)}></Checkbox>}
         {file.status === 'error' ? <Tooltip title={message}>{dom}</Tooltip> : <span>{dom}</span>}
       </div>
     )

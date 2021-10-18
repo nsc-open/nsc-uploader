@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, message, Radio } from 'antd';
+import { Button, Checkbox, message, Radio } from 'antd';
 import { InboxOutlined, PlusOutlined } from '@ant-design/icons';
 import Upload from './Upload';
 import Dragger from './Dragger';
@@ -16,6 +16,7 @@ import maxBy from 'lodash/maxBy';
 import { Lightbox } from 'nsc-lightbox';
 import { createInstance } from '../../oss';
 import './style/index.css';
+import uniq from 'lodash/uniq'
 
 const sorter = (a, b) => a.sortNo - b.sortNo;
 
@@ -25,12 +26,16 @@ class Uploader extends Component {
     this.state = {
       listType: 'picture-card',
       fileList: [], // [{ id, name, encodeFileName, size, type, ext, uid, url }]
+      isBatch: false,
+      selectedIds: [],
+      checkedAll: false,
+      indeterminate: true
     };
     this.uploadClient = null;
   }
 
   componentDidMount() {
-    const { defaultFiles,ossParams } = this.props;
+    const { defaultFiles, ossParams } = this.props;
     this.createOssInstance(ossParams);
     this.setState({ fileList: defaultFiles.map(this.toFile).sort(sorter) });
   }
@@ -38,15 +43,24 @@ class Uploader extends Component {
   componentWillReceiveProps(nextProps) {
     if (!isEqual(nextProps.defaultFiles, this.props.defaultFiles)) {
       this.setState(
-          { fileList: nextProps.defaultFiles.map(this.toFile).sort(sorter) });
+        { fileList: nextProps.defaultFiles.map(this.toFile).sort(sorter) });
     }
+  }
+  componentWillUnmount() {
+    this.setState({
+      fileList: [],
+      isBatch: false,
+      selectedIds: [],
+      checkedAll: false,
+      indeterminate: true
+    })
   }
 
   async createOssInstance(ossParams) {
-    let params={};
+    let params = {};
     if (typeof ossParams === 'object') {
       params = ossParams;
-    }else{
+    } else {
       params = await ossParams();
     }
     this.uploadClient = createInstance(params);
@@ -76,9 +90,9 @@ class Uploader extends Component {
         ...a,
         alt: a.name,
         uri: isDoc(a)
-            ? `https://view.officeapps.live.com/op/view.aspx?src=${ encodeURIComponent(
-                a.uri) }`
-            : a.uri,
+          ? `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(
+            a.uri)}`
+          : a.uri,
       };
     });
     this.setState({
@@ -86,6 +100,32 @@ class Uploader extends Component {
       previewVisible: true,
       lightboxIndex
     })
+  }
+
+  onCheckAllChange = e => {
+    const { fileList } = this.state
+    const plainOptions = fileList.map(i => i.uid)
+    this.setState({ selectedIds: e.target.checked ? plainOptions : [], indeterminate: false, checkedAll: e.target.checked })
+  }
+
+  onBatchClicked = () => {
+    const { isBatch } = this.state
+    this.setState({ isBatch: !isBatch, selectedIds: [], checkedAll: false, indeterminate: true })
+  }
+
+  onBatchDelete = () => {
+    const { selectedIds, fileList } = this.state
+    if (selectedIds.length > 0) {
+      const { onRemove } = this.props
+      const newFileList = fileList.filter(f => !selectedIds.includes(f.uid))
+      this.setState({ fileList: newFileList })
+      this.handleChange && this.handleChange({}, newFileList)
+
+      if (onRemove) {
+        onRemove(newFileList.map(toAttachment))
+      }
+    }
+
   }
 
   signatureUrl = (url) => {
@@ -135,7 +175,7 @@ class Uploader extends Component {
     return new RegExp(pattern, 'i').test(fileName);
   };
 
-  afterUploaded = async (files, file, uploadRes, uploadType,encodedFileName) => {
+  afterUploaded = async (files, file, uploadRes, uploadType, encodedFileName) => {
     const { onProgress, autoSave } = this.props;
     const { fileList } = this.state;
     const url = await this.uploadClient.getUploadedUrl(uploadRes, uploadType, file);
@@ -185,7 +225,7 @@ class Uploader extends Component {
     // Check for file scale
     if (fileScales) {
       let isScale = true
-       imgSize(file, fileScales).then(r => {
+      imgSize(file, fileScales).then(r => {
         if (!r) {
           message.error(fileErrorMsg && fileErrorMsg.fileNumerErrorMsg ? fileErrorMsg.fileScaleErrorMsg : `添加失败: ${file.name} - 错误的图片尺寸 (请使用${fileScales.join(':1 或')}:1的图片)`)
           isScale = false
@@ -213,20 +253,20 @@ class Uploader extends Component {
       let encodedFileName = encodeFileName(file.name);
       try {
         if (uploadType === 'multipart') {
-          uploadRes = await this.uploadClient.multipartUpload(encodedFileName,file, options);
+          uploadRes = await this.uploadClient.multipartUpload(encodedFileName, file, options);
         } else {
           uploadRes = await this.uploadClient.upload(encodedFileName, file);
         }
-        const newFile = await this.afterUploaded(files, file, uploadRes, uploadType,encodedFileName);
+        const newFile = await this.afterUploaded(files, file, uploadRes, uploadType, encodedFileName);
         fileList.push(newFile);
         fileList.sort(sorter);
         this.setState({ fileList });
         this.handleChange(newFile, fileList);
         hideLoading();
         message.success('上传成功');
-      } catch(e) {
+      } catch (e) {
         console.error('Uploader error', e)
-        message.error(`${ file.name }  `)
+        message.error(`${file.name}  `)
         hideLoading()
       }
       // not do the upload after image added
@@ -263,8 +303,19 @@ class Uploader extends Component {
     </div>
   }
 
+  onChecked = (e, file) => {
+    const { selectedIds } = this.state
+    let newSelectedIds = []
+    if (e.target.checked) {
+      newSelectedIds = uniq(selectedIds.concat([file.uid]))
+    } else {
+      newSelectedIds = selectedIds.filter(i => i !== file.uid)
+    }
+    this.setState({ selectedIds: newSelectedIds })
+  }
+
   render() {
-    const { fileList, previewVisible, lightboxFiles, lightboxIndex } = this.state
+    const { fileList, previewVisible, lightboxFiles, lightboxIndex, isBatch, selectedIds } = this.state
     const {
       dragSortable,
       beforeUpload,
@@ -276,6 +327,7 @@ class Uploader extends Component {
       showUploadButton,
       customRadioButton,
       displayTools,
+      showBatchButton,
       ...restProps
     } = this.props
 
@@ -284,6 +336,7 @@ class Uploader extends Component {
     const showRadioButton = this.props.listType ? false : this.props.showRadioButton
     const props = {/*  */
       ...restProps,
+      isBatch: this.state.isBatch,
       fileList: fileList,
       listType: listType,
       beforeUpload: beforeUpload ? beforeUpload : this.beforeUpload,
@@ -293,7 +346,10 @@ class Uploader extends Component {
       className: showUploadButton ? `${className}` : type === 'dragger' ? `${className} nsc-uploader-dragger-hide` : `${className}`,
       onPreview: 'onPreview' in this.props ? this.props.onPreview : this.handlePreview,
       onRemove: this.handleRemove,
+      onChecked: this.onChecked,
       onDownload: this.handleDownload,
+      selectedIds: selectedIds,
+
     }
     //文件列表按上传顺序排序
     fileList.sort(sorter)
@@ -324,23 +380,39 @@ class Uploader extends Component {
     )
     return (
       <div className='nsc-uploader-container'>
-        {customRadioButton ? customRadioButton : showRadioButton ? this.renderRadio(showRadioButton) : null}
-        {type === 'dragger' ?
-          <Dragger {...props} >
-            {showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : draggerBtn : null}
-          </Dragger>
-          : <Upload {...props}>
-            {showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : listType === 'picture-card' ? cardButton : textButton : null}
-          </Upload>}
-        {previewVisible && lightboxFiles.length > 0 && <Lightbox
-          visible={previewVisible}
-          imgvImages={lightboxFiles}
-          activeIndex={lightboxIndex}
-          displayTools={displayTools}
-          onCancel={this.onLightboxClose}
-        />
+        {this.props.showUploadList && <div style={{ marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>{customRadioButton ? customRadioButton : showRadioButton ? this.renderRadio(showRadioButton) : null}</div>
+          {showBatchButton &&
+            <div>
+              {isBatch && <Checkbox indeterminate={this.state.indeterminate} onChange={this.onCheckAllChange} checked={this.state.checkedAll}> 全选</Checkbox >}
+              <Button type="primary" onClick={this.onBatchClicked} style={{ marginRight: '10px' }}>
+                {isBatch
+                  ? `取消选择(${this.state.selectedIds.length})`
+                  : '批量选择'}
+              </Button>
+              {isBatch && <Button type="danger" onClick={this.onBatchDelete}>批量删除</Button>}
+            </div>
+          }
+        </div>}
+        {
+          type === 'dragger' ?
+            <Dragger {...props} >
+              {showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : draggerBtn : null}
+            </Dragger>
+            : <Upload {...props}>
+              {showUploadButton ? children ? children : maxFileNum in this.props && fileList.length >= maxFileNum ? null : listType === 'picture-card' ? cardButton : textButton : null}
+            </Upload>
         }
-      </div>
+        {
+          previewVisible && lightboxFiles.length > 0 && <Lightbox
+            visible={previewVisible}
+            imgvImages={lightboxFiles}
+            activeIndex={lightboxIndex}
+            displayTools={displayTools}
+            onCancel={this.onLightboxClose}
+          />
+        }
+      </div >
     );
   }
 }
@@ -356,6 +428,7 @@ Uploader.defaultProps = {
   type: 'select',
   showUploadButton: true,
   showRadioButton: true,
+  showBatchButton: false,
   displayTools: ['zoomIn', 'zoomOut', 'prev', 'next', 'download', 'close']
 }
 
