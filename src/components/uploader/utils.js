@@ -1,12 +1,6 @@
 import { createHash } from 'crypto'
 import moment from 'moment'
 
-const OSS = require('ali-oss')
-
-export const getUploadClient = (params) => {
-  return new OSS(params);
-}
-
 export const encodeFileName = (filename) => {
   const timeStr = moment().format('YYYYMMDDHHmmss')
   const hash = createHash('md5').update(filename + timeStr).digest('hex')
@@ -95,9 +89,9 @@ export const arrayMove = (array, from, to) => {
 	return array;
 }
 
-export const deepCopy=(target)=>{ 
-  let copyed_objs = [];//此数组解决了循环引用和相同引用的问题，它存放已经递归到的目标对象 
-      function _deepCopy(target){ 
+export const deepCopy=(target)=>{
+  let copyed_objs = [];//此数组解决了循环引用和相同引用的问题，它存放已经递归到的目标对象
+      function _deepCopy(target){
           if((typeof target !== 'object')||!target){return target;}
           for(let i= 0 ;i<copyed_objs.length;i++){
               if(copyed_objs[i].target === target){
@@ -106,15 +100,15 @@ export const deepCopy=(target)=>{
           }
           let obj = {};
           if(Array.isArray(target)){
-              obj = [];//处理target是数组的情况 
+              obj = [];//处理target是数组的情况
           }
-          copyed_objs.push({target:target,copyTarget:obj}) 
-          Object.keys(target).forEach(key=>{ 
-              if(obj[key]){ return;} 
+          copyed_objs.push({target:target,copyTarget:obj})
+          Object.keys(target).forEach(key=>{
+              if(obj[key]){ return;}
               obj[key] = _deepCopy(target[key]);
-          }); 
+          });
           return obj;
-      } 
+      }
       return _deepCopy(target);
   }
 

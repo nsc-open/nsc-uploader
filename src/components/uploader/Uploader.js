@@ -1,46 +1,55 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { Icon, Button, message, Radio } from 'antd'
-import Upload from './Upload'
-import Dragger from './Dragger'
-import { getUploadClient, encodeFileName, arrayMove, toAttachment, isDoc, isImg, imgSize } from './utils'
-import isEqual from 'lodash/isEqual'
-import maxBy from 'lodash/maxBy'
-import { Lightbox } from 'nsc-lightbox'
-import co from './Co'
-import Url from 'url-parse'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { Button, message, Radio } from 'antd';
+import { InboxOutlined, PlusOutlined } from '@ant-design/icons';
+import Upload from './Upload';
+import Dragger from './Dragger';
+import {
+  arrayMove,
+  encodeFileName,
+  imgSize,
+  isDoc,
+  toAttachment,
+} from './utils';
+import isEqual from 'lodash/isEqual';
+import maxBy from 'lodash/maxBy';
+import { Lightbox } from 'nsc-lightbox';
+import { createInstance } from '../../oss';
+import './style/index.css';
 
-import './style/index.css'
-
-const sorter = (a, b) => a.sortNo - b.sortNo
+const sorter = (a, b) => a.sortNo - b.sortNo;
 
 class Uploader extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       listType: 'picture-card',
       fileList: [], // [{ id, name, encodeFileName, size, type, ext, uid, url }]
-    }
-    this.uploadClient = null
+    };
+    this.uploadClient = null;
   }
 
   componentDidMount() {
-    const { defaultFiles, getOssParams, ossParams } = this.props
-    if (getOssParams || (getOssParams && ossParams && (new Date(ossParams.Expiration) < Date.now()))) {
-      getOssParams().then(r => {
-        this.uploadClient = getUploadClient(r)
-        this.setState({ fileList: defaultFiles.map(this.toFile).sort(sorter) })
-      })
-    } else if (ossParams) {
-      this.uploadClient = getUploadClient(ossParams)
-      this.setState({ fileList: defaultFiles.map(this.toFile).sort(sorter) })
-    }
+    const { defaultFiles,ossParams } = this.props;
+    this.createOssInstance(ossParams);
+    this.setState({ fileList: defaultFiles.map(this.toFile).sort(sorter) });
   }
 
   componentWillReceiveProps(nextProps) {
     if (!isEqual(nextProps.defaultFiles, this.props.defaultFiles)) {
-      this.setState({ fileList: nextProps.defaultFiles.map(this.toFile).sort(sorter) })
+      this.setState(
+          { fileList: nextProps.defaultFiles.map(this.toFile).sort(sorter) });
     }
+  }
+
+  async createOssInstance(ossParams) {
+    let params={};
+    if (typeof ossParams === 'object') {
+      params = ossParams;
+    }else{
+      params = await ossParams();
+    }
+    this.uploadClient = createInstance(params);
   }
 
   toFile = attachment => ({
@@ -48,7 +57,7 @@ class Uploader extends Component {
     id: attachment.id,
     name: attachment.fileName,
     encodedFileName: attachment.encodedFileName,
-    url: this.signatureUrl(attachment.uri),
+    url: attachment.uri ? attachment.uri : attachment.url,
     size: attachment.fileSize,
     ext: attachment.fileExt,
     type: attachment.fileType,
@@ -58,20 +67,20 @@ class Uploader extends Component {
 
   handleCancel = () => this.setState({ previewVisible: false })
 
-  onPreview = (file) => {
-    const { onPreview } = this.props
-    onPreview && onPreview(toAttachment(file))
-  }
-
   handlePreview = (file) => {
-    const { fileList } = this.state
-    const files = fileList.map(toAttachment)
+    const { fileList } = this.state;
+    const files = fileList.map(toAttachment);
+    const lightboxIndex = (files.map(a => a.id).indexOf(file.id) || 0);
     const lightboxFiles = files.map((a) => {
-      const url = isImg(a) ? this.signatureUrl(a.uri, true) : this.signatureUrl(a.uri, false)
-      return { ...a, alt: a.name, uri: isDoc(a) ? `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(url)}` : url }
-    }
-    )
-    const lightboxIndex = (files.map(a => a.id).indexOf(file.id) || 0)
+      return {
+        ...a,
+        alt: a.name,
+        uri: isDoc(a)
+            ? `https://view.officeapps.live.com/op/view.aspx?src=${ encodeURIComponent(
+                a.uri) }`
+            : a.uri,
+      };
+    });
     this.setState({
       lightboxFiles,
       previewVisible: true,
@@ -79,23 +88,13 @@ class Uploader extends Component {
     })
   }
 
-  signatureUrl = (url, showmark) => {
-    const { watermark } = this.props
-    url = decodeURIComponent(url)
-    const { pathname } = new Url(decodeURIComponent(url))
-    const fileName = pathname.substr(1)
-    if (this.uploadClient) {
-      return watermark && showmark
-        ? this.uploadClient.signatureUrl(fileName, { process: watermark })
-        : this.uploadClient.signatureUrl(fileName)
-    }
-    return url
+  signatureUrl = (url) => {
+    return this.uploadClient.signatureUrl(url)
   }
 
   onLightboxClose = () => {
     this.setState({ previewVisible: false })
   }
-
 
   handleChange = (file, fileList) => {
     const { onFileChange } = this.props
@@ -103,8 +102,7 @@ class Uploader extends Component {
   }
 
   handleDownload = (file) => {
-    const { onDownload } = this.props
-    file.url = this.signatureUrl(file.url, false)
+    const { onDownload } = this.props;
     onDownload && onDownload(toAttachment(file))
   }
 
@@ -112,10 +110,8 @@ class Uploader extends Component {
     const { autoSave, onRemove } = this.props
     const { fileList } = this.state
     const newFileList = fileList.filter(f => f.id !== file.id)
-
     this.setState({ fileList: newFileList })
     this.handleChange(file, newFileList)
-
     if (onRemove) {
       onRemove(toAttachment(file))
     }
@@ -133,15 +129,43 @@ class Uploader extends Component {
   }
 
   hasExtension = (fileName) => {
-    const { fileExtension } = this.props
-    const extensions = fileExtension ? fileExtension : []
+    const { fileExtension } = this.props;
+    const extensions = fileExtension ? fileExtension : [];
     const pattern = '(' + extensions.join('|').replace(/\./g, '\\.') + ')$';
     return new RegExp(pattern, 'i').test(fileName);
+  };
+
+  afterUploaded = async (files, file, uploadRes, uploadType,encodedFileName) => {
+    const { onProgress, autoSave } = this.props;
+    const { fileList } = this.state;
+    const url = await this.uploadClient.getUploadedUrl(uploadRes, uploadType, file);
+    // const progress = this.uploadClient.getUploadProgress(uploadRes)
+    // onProgress && onProgress(progress) // TODO
+    const maxItem = maxBy(fileList, i => i.sortNo);
+    const maxSortNo = maxItem ? maxItem.sortNo : 0;
+    const indexNo = files.findIndex(i => i.uid === file.uid);
+    const newFile = {
+      uid: file.uid,
+      id: file.uid,
+      encodedFileName,
+      name: file.name,
+      url: url,
+      status: 'done',
+      size: file.size,
+      ext: file.name.split('.').pop(),
+      type: file.type,
+      sortNo: maxSortNo + 1 + indexNo,
+    }
+    if (autoSave) {
+      return this.save(newFile)
+    } else {
+      return newFile
+    }
   }
 
   //文件先上传至阿里云
   beforeUpload = async (file, files) => {
-    const { autoSave, maxFileSize, maxFileNum, fileExtension, uploadType, fileErrorMsg, onProgress, fileScales } = this.props
+    const { maxFileSize, maxFileNum, fileExtension, uploadType, fileErrorMsg, onProgress, fileScales } = this.props
     const { fileList } = this.state
     //Check for file extension
     if (fileExtension && !this.hasExtension(file.name)) {
@@ -161,7 +185,7 @@ class Uploader extends Component {
     // Check for file scale
     if (fileScales) {
       let isScale = true
-      await imgSize(file, fileScales).then(r => {
+       imgSize(file, fileScales).then(r => {
         if (!r) {
           message.error(fileErrorMsg && fileErrorMsg.fileNumerErrorMsg ? fileErrorMsg.fileScaleErrorMsg : `添加失败: ${file.name} - 错误的图片尺寸 (请使用${fileScales.join(':1 或')}:1的图片)`)
           isScale = false
@@ -172,11 +196,7 @@ class Uploader extends Component {
       }
     }
 
-    const maxItem = maxBy(fileList, i => i.sortNo)
-    const maxSortNo = maxItem ? maxItem.sortNo : 0
-
     const hideLoading = message.loading('文件正在预处理', 0)
-    let encodedFileName = encodeFileName(file.name)
 
     const progress = function* generatorProgress(p, cpt, res) {
       onProgress && onProgress(p, cpt, res)
@@ -189,55 +209,30 @@ class Uploader extends Component {
     }
 
     if (this.uploadClient) {
-      const _this = this
-      co(function* () {
-        return uploadType === 'multipart' ?
-          yield _this.uploadClient.multipartUpload(encodedFileName, file, options)
-          : yield _this.uploadClient.put(encodedFileName, file)
-      }).then(aliRes => {
-        let url = ''
+      let uploadRes = null;
+      let encodedFileName = encodeFileName(file.name);
+      try {
         if (uploadType === 'multipart') {
-          const requestUrl = aliRes && aliRes.res && aliRes.res.requestUrls ? aliRes.res.requestUrls[0] : ''
-          const { origin } = new Url(decodeURIComponent(requestUrl))
-          url = origin + "/" + aliRes.name
+          uploadRes = await this.uploadClient.multipartUpload(encodedFileName,file, options);
         } else {
-          url = aliRes.url
-          onProgress && onProgress(aliRes)
+          uploadRes = await this.uploadClient.upload(encodedFileName, file);
         }
-        const indexNo = files.findIndex(i => i.uid === file.uid)
-        const newFile = {
-          uid: file.uid,
-          id: file.uid,
-          encodedFileName,
-          name: file.name,
-          url: this.signatureUrl(url),
-          status: 'done',
-          size: file.size,
-          ext: file.name.split('.').pop(),
-          type: file.type,
-          sortNo: maxSortNo + 1 + indexNo
-        }
-        if (autoSave) {
-          return this.save(newFile)
-        } else {
-          return newFile
-        }
-      }).then(newFile => {
-        fileList.push(newFile)
-        fileList.sort(sorter)
-        this.setState({ fileList })
-        this.handleChange(newFile, fileList)
-        hideLoading()
-      }).catch(e => {
+        const newFile = await this.afterUploaded(files, file, uploadRes, uploadType,encodedFileName);
+        fileList.push(newFile);
+        fileList.sort(sorter);
+        this.setState({ fileList });
+        this.handleChange(newFile, fileList);
+        hideLoading();
+        message.success('上传成功');
+      } catch(e) {
         console.error('Uploader error', e)
-        message.error(`${file.name} 预处理失败`)
+        message.error(`${ file.name }  `)
         hideLoading()
-      })
+      }
       // not do the upload after image added
       return false
     }
   }
-
 
   onSortEnd = (result) => {
     const { onSortEnd } = this.props
@@ -306,7 +301,7 @@ class Uploader extends Component {
     //listType === "picture-card"时 默认上传按钮
     const cardButton = (
       <div>
-        <Icon type="plus" />
+        <PlusOutlined />
         <div className="uploadText">上传文件</div>
       </div>
     );
@@ -314,7 +309,7 @@ class Uploader extends Component {
     //listType === "text' 或 'picture"时默认上传按钮
     const textButton = (
       <Button>
-        <Icon type="upload" /> 上传文件
+        <PlusOutlined /> 上传文件
       </Button>
     );
 
@@ -322,13 +317,13 @@ class Uploader extends Component {
     const draggerBtn = (
       <div>
         <p className="ant-upload-drag-icon">
-          <Icon type="inbox" style={{ color: '#3db389' }} />
+          <InboxOutlined style={{ color: '#3db389' }} />
         </p>
         <p className="ant-upload-text">点击获取拖动 图片或文档 到这块区域完成文件上传</p>
       </div>
     )
     return (
-      <div className='nsc-upload-container'>
+      <div className='nsc-uploader-container'>
         {customRadioButton ? customRadioButton : showRadioButton ? this.renderRadio(showRadioButton) : null}
         {type === 'dragger' ?
           <Dragger {...props} >
