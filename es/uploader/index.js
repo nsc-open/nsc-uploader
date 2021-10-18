@@ -4735,7 +4735,7 @@ var toAttachment = function toAttachment(file) {
     fileExt: file.ext,
     uri: file.url,
     sortNo: file.sortNo,
-    status: 'done'
+    status: file.status
   };
 };
 var isDoc = function isDoc(img) {
@@ -4808,7 +4808,7 @@ function removeFileItem(file, fileList) {
   }
 
   return removed;
-}
+} // ==================== Default Image Preview ====================
 
 var extname = function extname(url) {
   var temp = url.split('/');
@@ -6696,7 +6696,8 @@ var Uploader = /*#__PURE__*/function (_Component) {
         onRemove: this.handleRemove,
         onChecked: this.onChecked,
         onDownload: this.handleDownload,
-        selectedIds: selectedIds
+        selectedIds: selectedIds,
+        onchange: this.handleChange
       }); //文件列表按上传顺序排序
 
 
@@ -6721,7 +6722,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
         className: "nsc-uploader-container"
       }, this.props.showUploadList && /*#__PURE__*/React.createElement("div", {
         style: {
-          marginBottom: '10px',
+          marginBottom: customRadioButton || showRadioButton || showBatchButton ? '10px' : '0',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center'

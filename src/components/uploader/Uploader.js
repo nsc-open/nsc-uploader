@@ -349,7 +349,7 @@ class Uploader extends Component {
       onChecked: this.onChecked,
       onDownload: this.handleDownload,
       selectedIds: selectedIds,
-
+      onchange:this.handleChange
     }
     //文件列表按上传顺序排序
     fileList.sort(sorter)
@@ -380,7 +380,7 @@ class Uploader extends Component {
     )
     return (
       <div className='nsc-uploader-container'>
-        {this.props.showUploadList && <div style={{ marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        {this.props.showUploadList && <div style={{ marginBottom: (customRadioButton || showRadioButton || showBatchButton) ? '10px' : '0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>{customRadioButton ? customRadioButton : showRadioButton ? this.renderRadio(showRadioButton) : null}</div>
           {showBatchButton &&
             <div>
