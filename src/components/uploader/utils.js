@@ -47,7 +47,7 @@ export const toAttachment = file => ({
   fileExt: file.ext,
   uri: file.url,
   sortNo: file.sortNo,
-  status: 'done',
+  status: file.status,
 })
 
 export const isDoc = (img) => {
@@ -165,25 +165,6 @@ export function removeFileItem(file, fileList) {
     return null;
   }
   return removed;
-}
-
-export const isImageType = (type) => !!type && type.indexOf('image') === 0;
-
-export const isImg = (file) => {
-  if (isImageType(file.fileType)) {
-    return true
-  }
-  const extension = file.fileExt ? file.fileExt : ''
-  if (
-    /(webp|svg|png|gif|jpg|jpeg|jfif|bmp|dpg|ico)$/i.test(extension)
-  ) {
-    return true
-  }
-  if (extension) {
-    // other file types which have extension
-    return false
-  }
-  return true
 }
 
 // ==================== Default Image Preview ====================

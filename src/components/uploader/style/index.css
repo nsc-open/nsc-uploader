@@ -32,20 +32,8 @@
     margin: 15px 0px;
 }
 
-.nsc-uploader-checkbox{
-    position: absolute !important;
-    z-index: 20;
-    left: 0;
-    top: 0;
-}
-
-.nsc-uploader-checkbox .ant-checkbox-inner{
-    width: 20px;
-    height: 20px;
-}
-
 .nsc-uploader-list-picture-card-container{
-    position: relative;
+    position: relative ;
     display: flex;
     align-items: center;
 }
