@@ -22,11 +22,13 @@ const defaultFiles = [{
 }
 ]
 
+const OSS_ENDPOINT = ''
+const OSS_BUCKET = ''
 const ossParams = {
-  region: "",
-  bucket: "",
-  accessKeyId: "",
-  accessKeySecret: "",
+  region: OSS_ENDPOINT,
+  bucket: OSS_BUCKET,
+  accessKeyId: " ",
+  accessKeySecret: "ddd",
   Expiration: "2021-06-23T08:21:20Z",
   stsToken: ""
 }
@@ -75,7 +77,7 @@ class App extends Component {
       ossParams: ossParams,
       uploadType:'multipart',
       onDownload: this.onDownload,
-      defaultFiles: fileList,
+      defaultFiles: defaultFiles,
       showUploadList:true
     }
 
