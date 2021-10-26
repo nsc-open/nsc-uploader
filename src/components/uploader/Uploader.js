@@ -78,7 +78,7 @@ class Uploader extends Component {
     ext: attachment.fileExt,
     type: attachment.fileType,
     sortNo: attachment.sortNo,
-    status: 'done',
+    status: attachment.status ? attachment.status : 'done',
   })
 
   handleCancel = () => this.setState({ previewVisible: false })
@@ -151,7 +151,7 @@ class Uploader extends Component {
   }
 
   handleRemove = (file) => {
-    const { autoSave, onRemove } = this.props
+    const { onRemove } = this.props
     const { fileList } = this.state
     const newFileList = fileList.filter(f => f.uid !== file.uid)
     this.setState({ fileList: newFileList })
@@ -161,38 +161,12 @@ class Uploader extends Component {
     }
   }
 
-  save(file) {
-    const { onSave } = this.props
-    return onSave(toAttachment(file)).then(r => {
-      message.success('上传成功')
-      return this.toFile(r)
-    }).catch(e => {
-      console.error(e)
-      message.error('上传失败')
-    })
-  }
-
   hasExtension = (fileName) => {
     const { fileExtension } = this.props;
     const extensions = fileExtension ? fileExtension : [];
     const pattern = '(' + extensions.join('|').replace(/\./g, '\\.') + ')$';
     return new RegExp(pattern, 'i').test(fileName);
   };
-
-  afterUploaded = async (files, file, uploadRes, uploadType, encodedFileName) => {
-    const { autoSave } = this.props;
-    const url = await this.uploadClient.getUploadedUrl(uploadRes, uploadType, file);
-    const indexNo = files.findIndex(i => i.uid === file.uid);
-    const newFile = { ...files[indexNo] }
-    newFile.percent = 1
-    newFile.status = 'done'
-    newFile.url = url
-    if (autoSave) {
-      return this.save(newFile)
-    } else {
-      return newFile
-    }
-  }
 
   //文件先上传至阿里云活minio
   beforeUpload = async (file, files) => {
@@ -261,7 +235,7 @@ class Uploader extends Component {
           const progress = function* generatorProgress(p, cpt, res) {
             if (cpt) {
               const index = fileList.findIndex(i => i.uid === cpt.file.uid)
-              const targetFile = { ..._this.state.fileList[index] }
+              const targetFile = { ...fileList[index] }
               targetFile.percent = p * 100
               fileList.splice(index, 1, targetFile)
               _this.setState({ fileList: fileList })
@@ -278,14 +252,14 @@ class Uploader extends Component {
         }
         const newFile = await this.afterUploaded(fileList, file, uploadRes, uploadType, encodedFileName);
         const index = fileList.findIndex(i => i.uid === newFile.uid)
-        fileList.splice(index, 1, newFile)
-        this.setState({ fileList: fileList })
-        this.handleChange(newFile, fileList);
-        // hideLoading();
+        const newFiles = [...fileList]
+        newFiles.splice(index, 1, newFile)
+        this.setState({ fileList: newFiles })
+        this.handleChange(newFile, newFiles);        // hideLoading();
         // message.success('上传成功');
       } catch (err) {
         const index = fileList.findIndex(i => i.uid === file.uid)
-        const newFile = fileList[index]
+        const newFile = { ...fileList[index] }
         newFile.status = 'error'
         fileList.splice(index, 1, newFile)
         this.setState({ fileList: fileList });
@@ -295,6 +269,15 @@ class Uploader extends Component {
       // not do the upload after image added
       return false
     }
+  }
+
+  afterUploaded = async (files, file, uploadRes, uploadType, encodedFileName) => {
+    const url = await this.uploadClient.getUploadedUrl(uploadRes, uploadType, file);
+    const newFile = files.find(i => i.uid === file.uid)
+    newFile.percent = 1
+    newFile.status = 'done'
+    newFile.url = url
+    return newFile
   }
 
   onSortEnd = (result) => {
@@ -362,7 +345,7 @@ class Uploader extends Component {
       fileList: fileList,
       listType: listType,
       beforeUpload: beforeUpload ? beforeUpload : this.beforeUpload,
-      dragSortable: dragSortable && fileList.every(i => i.status === 'done'),
+      dragSortable: dragSortable && !fileList.some(i => i.status === 'uploading'),
       disabled: disabled,
       onSortEnd: this.onSortEnd,
       className: showUploadButton ? `${className}` : type === 'dragger' ? `${className} nsc-uploader-dragger-hide` : `${className}`,

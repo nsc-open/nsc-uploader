@@ -3762,11 +3762,11 @@ var xlsPng = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6e
 
 var prefixCls = 'ant-upload';
 var locale = {
-  uploading: 'Uploading...',
-  removeFile: 'Remove file',
-  uploadError: 'Upload error',
-  previewFile: 'Preview file',
-  downloadFile: 'Download file'
+  uploading: '上传中...',
+  removeFile: '删除',
+  uploadError: '上传失败',
+  previewFile: '预览',
+  downloadFile: '下载'
 };
 
 var getFileTypeImg = function getFileTypeImg(file) {
@@ -3845,7 +3845,8 @@ var UploadList = /*#__PURE__*/function (_React$Component) {
           progressAttr = _this$props.progressAttr,
           isBatch = _this$props.isBatch,
           selectedIds = _this$props.selectedIds,
-          onChecked = _this$props.onChecked;
+          onChecked = _this$props.onChecked,
+          items = _this$props.items;
       var progress;
       var icon = file.status === 'uploading' ? /*#__PURE__*/React.createElement(icons.LoadingOutlined, null) : /*#__PURE__*/React.createElement(icons.PaperClipOutlined, null);
 
@@ -3893,7 +3894,9 @@ var UploadList = /*#__PURE__*/function (_React$Component) {
 
       var infoUploadingClass = classNames__default['default']((_classNames = {}, _defineProperty(_classNames, "".concat(prefixCls, "-list-item"), true), _defineProperty(_classNames, "".concat(prefixCls, "-list-item-").concat(file.status), true), _defineProperty(_classNames, "".concat(prefixCls, "-list-item-list-type-").concat(listType), true), _classNames));
       var linkProps = typeof file.linkProps === 'string' ? JSON.parse(file.linkProps) : file.linkProps;
-      var removeIcon = showRemoveIcon ? /*#__PURE__*/React.createElement(icons.DeleteOutlined, {
+      var removeIcon = showRemoveIcon && items.every(function (i) {
+        return i.status === 'done';
+      }) ? /*#__PURE__*/React.createElement(icons.DeleteOutlined, {
         title: locale.removeFile,
         onClick: function onClick() {
           return _this.handleClose(file);
@@ -5027,13 +5030,13 @@ var Uploader = /*#__PURE__*/function (_Component) {
   var _super = _createSuper(Uploader);
 
   function Uploader(props) {
-    var _this;
+    var _this2;
 
     _classCallCheck(this, Uploader);
 
-    _this = _super.call(this, props);
+    _this2 = _super.call(this, props);
 
-    _defineProperty(_assertThisInitialized(_this), "toFile", function (attachment) {
+    _defineProperty(_assertThisInitialized(_this2), "toFile", function (attachment) {
       return {
         uid: attachment.id,
         id: attachment.id,
@@ -5048,14 +5051,14 @@ var Uploader = /*#__PURE__*/function (_Component) {
       };
     });
 
-    _defineProperty(_assertThisInitialized(_this), "handleCancel", function () {
-      return _this.setState({
+    _defineProperty(_assertThisInitialized(_this2), "handleCancel", function () {
+      return _this2.setState({
         previewVisible: false
       });
     });
 
-    _defineProperty(_assertThisInitialized(_this), "handlePreview", function (file) {
-      var fileList = _this.state.fileList;
+    _defineProperty(_assertThisInitialized(_this2), "handlePreview", function (file) {
+      var fileList = _this2.state.fileList;
       var files = fileList.map(toAttachment);
       var lightboxIndex = files.map(function (a) {
         return a.id;
@@ -5067,30 +5070,30 @@ var Uploader = /*#__PURE__*/function (_Component) {
         });
       });
 
-      _this.setState({
+      _this2.setState({
         lightboxFiles: lightboxFiles,
         previewVisible: true,
         lightboxIndex: lightboxIndex
       });
     });
 
-    _defineProperty(_assertThisInitialized(_this), "onCheckAllChange", function (e) {
-      var fileList = _this.state.fileList;
+    _defineProperty(_assertThisInitialized(_this2), "onCheckAllChange", function (e) {
+      var fileList = _this2.state.fileList;
       var plainOptions = fileList.map(function (i) {
         return i.uid;
       });
 
-      _this.setState({
+      _this2.setState({
         selectedIds: e.target.checked ? plainOptions : [],
         indeterminate: false,
         checkedAll: e.target.checked
       });
     });
 
-    _defineProperty(_assertThisInitialized(_this), "onBatchClicked", function () {
-      var isBatch = _this.state.isBatch;
+    _defineProperty(_assertThisInitialized(_this2), "onBatchClicked", function () {
+      var isBatch = _this2.state.isBatch;
 
-      _this.setState({
+      _this2.setState({
         isBatch: !isBatch,
         selectedIds: [],
         checkedAll: false,
@@ -5098,22 +5101,22 @@ var Uploader = /*#__PURE__*/function (_Component) {
       });
     });
 
-    _defineProperty(_assertThisInitialized(_this), "onBatchDelete", function () {
-      var _this$state = _this.state,
-          selectedIds = _this$state.selectedIds,
-          fileList = _this$state.fileList;
+    _defineProperty(_assertThisInitialized(_this2), "onBatchDelete", function () {
+      var _this2$state = _this2.state,
+          selectedIds = _this2$state.selectedIds,
+          fileList = _this2$state.fileList;
 
       if (selectedIds.length > 0) {
-        var onRemove = _this.props.onRemove;
+        var onRemove = _this2.props.onRemove;
         var newFileList = fileList.filter(function (f) {
           return !selectedIds.includes(f.uid);
         });
 
-        _this.setState({
+        _this2.setState({
           fileList: newFileList
         });
 
-        _this.handleChange && _this.handleChange({}, newFileList);
+        _this2.handleChange && _this2.handleChange({}, newFileList);
 
         if (onRemove) {
           onRemove(newFileList.map(toAttachment));
@@ -5121,96 +5124,84 @@ var Uploader = /*#__PURE__*/function (_Component) {
       }
     });
 
-    _defineProperty(_assertThisInitialized(_this), "signatureUrl", function (url) {
-      return _this.uploadClient.signatureUrl(url);
+    _defineProperty(_assertThisInitialized(_this2), "getFiles", function () {
+      return _this2.state.fileList;
     });
 
-    _defineProperty(_assertThisInitialized(_this), "onLightboxClose", function () {
-      _this.setState({
+    _defineProperty(_assertThisInitialized(_this2), "signatureUrl", function (url) {
+      return _this2.uploadClient.signatureUrl(url);
+    });
+
+    _defineProperty(_assertThisInitialized(_this2), "onLightboxClose", function () {
+      _this2.setState({
         previewVisible: false
       });
     });
 
-    _defineProperty(_assertThisInitialized(_this), "handleChange", function (file, fileList) {
-      var onFileChange = _this.props.onFileChange;
+    _defineProperty(_assertThisInitialized(_this2), "handleChange", function (file, fileList) {
+      var onFileChange = _this2.props.onFileChange;
       onFileChange && onFileChange(toAttachment(file), fileList.map(toAttachment));
     });
 
-    _defineProperty(_assertThisInitialized(_this), "handleDownload", function (file) {
-      var onDownload = _this.props.onDownload;
+    _defineProperty(_assertThisInitialized(_this2), "handleDownload", function (file) {
+      var onDownload = _this2.props.onDownload;
       onDownload && onDownload(toAttachment(file));
     });
 
-    _defineProperty(_assertThisInitialized(_this), "handleRemove", function (file) {
-      var _this$props = _this.props,
-          autoSave = _this$props.autoSave,
-          onRemove = _this$props.onRemove;
-      var fileList = _this.state.fileList;
+    _defineProperty(_assertThisInitialized(_this2), "handleRemove", function (file) {
+      var _this2$props = _this2.props,
+          autoSave = _this2$props.autoSave,
+          onRemove = _this2$props.onRemove;
+      var fileList = _this2.state.fileList;
       var newFileList = fileList.filter(function (f) {
-        return f.id !== file.id;
+        return f.uid !== file.uid;
       });
 
-      _this.setState({
+      _this2.setState({
         fileList: newFileList
       });
 
-      _this.handleChange(file, newFileList);
+      _this2.handleChange(file, newFileList);
 
       if (onRemove) {
         onRemove(toAttachment(file));
       }
     });
 
-    _defineProperty(_assertThisInitialized(_this), "hasExtension", function (fileName) {
-      var fileExtension = _this.props.fileExtension;
+    _defineProperty(_assertThisInitialized(_this2), "hasExtension", function (fileName) {
+      var fileExtension = _this2.props.fileExtension;
       var extensions = fileExtension ? fileExtension : [];
       var pattern = '(' + extensions.join('|').replace(/\./g, '\\.') + ')$';
       return new RegExp(pattern, 'i').test(fileName);
     });
 
-    _defineProperty(_assertThisInitialized(_this), "afterUploaded", /*#__PURE__*/function () {
+    _defineProperty(_assertThisInitialized(_this2), "afterUploaded", /*#__PURE__*/function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(files, file, uploadRes, uploadType, encodedFileName) {
-        var _this$props2, onProgress, autoSave, fileList, url, maxItem, maxSortNo, indexNo, newFile;
-
+        var autoSave, url, indexNo, newFile;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _this$props2 = _this.props, onProgress = _this$props2.onProgress, autoSave = _this$props2.autoSave;
-                fileList = _this.state.fileList;
-                _context.next = 4;
-                return _this.uploadClient.getUploadedUrl(uploadRes, uploadType, file);
+                autoSave = _this2.props.autoSave;
+                _context.next = 3;
+                return _this2.uploadClient.getUploadedUrl(uploadRes, uploadType, file);
 
-              case 4:
+              case 3:
                 url = _context.sent;
-                // const progress = this.uploadClient.getUploadProgress(uploadRes)
-                // onProgress && onProgress(progress) // TODO
-                maxItem = maxBy_1(fileList, function (i) {
-                  return i.sortNo;
-                });
-                maxSortNo = maxItem ? maxItem.sortNo : 0;
                 indexNo = files.findIndex(function (i) {
                   return i.uid === file.uid;
                 });
-                newFile = {
-                  uid: file.uid,
-                  id: file.uid,
-                  encodedFileName: encodedFileName,
-                  name: file.name,
-                  url: url,
-                  status: 'done',
-                  size: file.size,
-                  ext: file.name.split('.').pop(),
-                  type: file.type,
-                  sortNo: maxSortNo + 1 + indexNo
-                };
+                newFile = _objectSpread2({}, files[indexNo]);
+                newFile.percent = 1;
+                newFile.status = 'done';
+                newFile.url = url;
 
                 if (!autoSave) {
                   _context.next = 13;
                   break;
                 }
 
-                return _context.abrupt("return", _this.save(newFile));
+                return _context.abrupt("return", _this2.save(newFile));
 
               case 13:
                 return _context.abrupt("return", newFile);
@@ -5228,46 +5219,46 @@ var Uploader = /*#__PURE__*/function (_Component) {
       };
     }());
 
-    _defineProperty(_assertThisInitialized(_this), "beforeUpload", /*#__PURE__*/function () {
+    _defineProperty(_assertThisInitialized(_this2), "beforeUpload", /*#__PURE__*/function () {
       var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(file, files) {
-        var _this$props3, maxFileSize, maxFileNum, fileExtension, uploadType, fileErrorMsg, onProgress, fileScales, fileList, isScale, hideLoading, progress, options, uploadRes, encodedFileName, newFile;
+        var _this2$props2, maxFileSize, maxFileNum, fileExtension, uploadType, fileErrorMsg, onProgress, fileScales, fileList, isScale, maxItem, maxSortNo, indexNo, encodedFileName, newFile;
 
-        return regeneratorRuntime.wrap(function _callee2$(_context3) {
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
-                _this$props3 = _this.props, maxFileSize = _this$props3.maxFileSize, maxFileNum = _this$props3.maxFileNum, fileExtension = _this$props3.fileExtension, uploadType = _this$props3.uploadType, fileErrorMsg = _this$props3.fileErrorMsg, onProgress = _this$props3.onProgress, fileScales = _this$props3.fileScales;
-                fileList = _this.state.fileList; //Check for file extension
+                _this2$props2 = _this2.props, maxFileSize = _this2$props2.maxFileSize, maxFileNum = _this2$props2.maxFileNum, fileExtension = _this2$props2.fileExtension, uploadType = _this2$props2.uploadType, fileErrorMsg = _this2$props2.fileErrorMsg, onProgress = _this2$props2.onProgress, fileScales = _this2$props2.fileScales;
+                fileList = _this2.state.fileList; //Check for file extension
 
-                if (!(fileExtension && !_this.hasExtension(file.name))) {
-                  _context3.next = 5;
+                if (!(fileExtension && !_this2.hasExtension(file.name))) {
+                  _context2.next = 5;
                   break;
                 }
 
                 antd.message.error(fileErrorMsg && fileErrorMsg.fileExtensionErrorMsg ? fileErrorMsg.fileExtensionErrorMsg : "\u4E0D\u652F\u6301\u7684\u6587\u4EF6\u683C\u5F0F\uFF0C\u8BF7\u4E0A\u4F20\u683C\u5F0F\u4E3A".concat(fileExtension.join(','), "\u7684\u6587\u4EF6"));
-                return _context3.abrupt("return", false);
+                return _context2.abrupt("return", false);
 
               case 5:
                 if (!(file.size / 1024 / 1024 > maxFileSize)) {
-                  _context3.next = 8;
+                  _context2.next = 8;
                   break;
                 }
 
                 antd.message.error(fileErrorMsg && fileErrorMsg.fileSizeErrorMsg ? fileErrorMsg.fileSizeErrorMsg : "\u6587\u4EF6\u8FC7\u5927\uFF0C\u6700\u5927\u53EF\u4E0A\u4F20".concat(maxFileSize, "M"));
-                return _context3.abrupt("return", false);
+                return _context2.abrupt("return", false);
 
               case 8:
                 if (!(files.length + fileList.length > maxFileNum)) {
-                  _context3.next = 11;
+                  _context2.next = 11;
                   break;
                 }
 
                 antd.message.error(fileErrorMsg && fileErrorMsg.fileNumerErrorMsg ? fileErrorMsg.fileNumerErrorMsg : "\u6587\u4EF6\u6570\u91CF\u8FC7\u591A\uFF0C\u6700\u591A\u53EF\u4E0A\u4F20".concat(maxFileNum, "\u4EFD"));
-                return _context3.abrupt("return", false);
+                return _context2.abrupt("return", false);
 
               case 11:
                 if (!fileScales) {
-                  _context3.next = 16;
+                  _context2.next = 16;
                   break;
                 }
 
@@ -5280,101 +5271,47 @@ var Uploader = /*#__PURE__*/function (_Component) {
                 });
 
                 if (isScale) {
-                  _context3.next = 16;
+                  _context2.next = 16;
                   break;
                 }
 
-                return _context3.abrupt("return", false);
+                return _context2.abrupt("return", false);
 
               case 16:
-                hideLoading = antd.message.loading('文件正在预处理', 0);
-                progress = /*#__PURE__*/regeneratorRuntime.mark(function generatorProgress(p, cpt, res) {
-                  return regeneratorRuntime.wrap(function generatorProgress$(_context2) {
-                    while (1) {
-                      switch (_context2.prev = _context2.next) {
-                        case 0:
-                          onProgress && onProgress(p, cpt, res);
-
-                        case 1:
-                        case "end":
-                          return _context2.stop();
-                      }
-                    }
-                  }, generatorProgress);
+                maxItem = maxBy_1(fileList, function (i) {
+                  return i.sortNo;
                 });
-                options = {
-                  progress: progress,
-                  partSize: 1000 * 1024,
-                  //设置分片大小
-                  timeout: 120000000 //设置超时时间
-
-                };
-
-                if (!_this.uploadClient) {
-                  _context3.next = 49;
-                  break;
-                }
-
-                uploadRes = null;
+                maxSortNo = maxItem ? maxItem.sortNo : 0;
+                indexNo = files.findIndex(function (i) {
+                  return i.uid === file.uid;
+                });
                 encodedFileName = encodeFileName(file.name);
-                _context3.prev = 22;
-
-                if (!(uploadType === 'multipart')) {
-                  _context3.next = 29;
-                  break;
-                }
-
-                _context3.next = 26;
-                return _this.uploadClient.multipartUpload(encodedFileName, file, options);
-
-              case 26:
-                uploadRes = _context3.sent;
-                _context3.next = 32;
-                break;
-
-              case 29:
-                _context3.next = 31;
-                return _this.uploadClient.upload(encodedFileName, file);
-
-              case 31:
-                uploadRes = _context3.sent;
-
-              case 32:
-                _context3.next = 34;
-                return _this.afterUploaded(files, file, uploadRes, uploadType, encodedFileName);
-
-              case 34:
-                newFile = _context3.sent;
+                newFile = {
+                  uid: file.uid,
+                  id: file.uid,
+                  name: file.name,
+                  encodedFileName: encodedFileName,
+                  url: '',
+                  status: 'uploading',
+                  percent: 0,
+                  size: file.size,
+                  ext: file.name.split('.').pop(),
+                  type: file.type,
+                  sortNo: maxSortNo + 1 + indexNo
+                };
                 fileList.push(newFile);
                 fileList.sort(sorter);
 
-                _this.setState({
+                _this2.setState({
                   fileList: fileList
                 });
 
-                _this.handleChange(newFile, fileList);
-
-                hideLoading();
-                antd.message.success('上传成功');
-                _context3.next = 48;
-                break;
-
-              case 43:
-                _context3.prev = 43;
-                _context3.t0 = _context3["catch"](22);
-                console.error('Uploader error', _context3.t0);
-                antd.message.error("".concat(file.name, "  "));
-                hideLoading();
-
-              case 48:
-                return _context3.abrupt("return", false);
-
-              case 49:
+              case 24:
               case "end":
-                return _context3.stop();
+                return _context2.stop();
             }
           }
-        }, _callee2, null, [[22, 43]]);
+        }, _callee2);
       }));
 
       return function (_x6, _x7) {
@@ -5382,27 +5319,158 @@ var Uploader = /*#__PURE__*/function (_Component) {
       };
     }());
 
-    _defineProperty(_assertThisInitialized(_this), "onSortEnd", function (result) {
-      var onSortEnd = _this.props.onSortEnd;
+    _defineProperty(_assertThisInitialized(_this2), "uploadFile", /*#__PURE__*/function () {
+      var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(_ref3) {
+        var file, _this2$state2, fileList, currentFiles, uploadType, uploadRes, encodedFileName, _this, progress, options, newFile, index, _index2, _newFile;
+
+        return regeneratorRuntime.wrap(function _callee3$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                file = _ref3.file;
+                _this2$state2 = _this2.state, fileList = _this2$state2.fileList, currentFiles = _this2$state2.currentFiles; // const hideLoading = message.loading('文件正在预处理', 0)
+
+                uploadType = file.size > 100 * 1024 ? 'multipart' : '';
+
+                if (!_this2.uploadClient) {
+                  _context4.next = 37;
+                  break;
+                }
+
+                uploadRes = null;
+                encodedFileName = encodeFileName(file.name);
+                _context4.prev = 6;
+
+                if (!(uploadType === 'multipart')) {
+                  _context4.next = 16;
+                  break;
+                }
+
+                _this = _assertThisInitialized(_this2);
+                progress = /*#__PURE__*/regeneratorRuntime.mark(function generatorProgress(p, cpt, res) {
+                  var _index, targetFile;
+
+                  return regeneratorRuntime.wrap(function generatorProgress$(_context3) {
+                    while (1) {
+                      switch (_context3.prev = _context3.next) {
+                        case 0:
+                          if (cpt) {
+                            _index = fileList.findIndex(function (i) {
+                              return i.uid === cpt.file.uid;
+                            });
+                            targetFile = _objectSpread2({}, _this.state.fileList[_index]);
+                            targetFile.percent = p * 100;
+                            fileList.splice(_index, 1, targetFile);
+
+                            _this.setState({
+                              fileList: fileList
+                            });
+                          }
+
+                        case 1:
+                        case "end":
+                          return _context3.stop();
+                      }
+                    }
+                  }, generatorProgress);
+                });
+                options = {
+                  progress: progress,
+                  partSize: 100 * 1024,
+                  //设置分片大小
+                  timeout: 120000000 //设置超时时间
+
+                };
+                _context4.next = 13;
+                return _this2.uploadClient.multipartUpload(encodedFileName, file, options);
+
+              case 13:
+                uploadRes = _context4.sent;
+                _context4.next = 19;
+                break;
+
+              case 16:
+                _context4.next = 18;
+                return _this2.uploadClient.upload(encodedFileName, file);
+
+              case 18:
+                uploadRes = _context4.sent;
+
+              case 19:
+                _context4.next = 21;
+                return _this2.afterUploaded(fileList, file, uploadRes, uploadType, encodedFileName);
+
+              case 21:
+                newFile = _context4.sent;
+                index = fileList.findIndex(function (i) {
+                  return i.uid === newFile.uid;
+                });
+                fileList.splice(index, 1, newFile);
+
+                _this2.setState({
+                  fileList: fileList
+                });
+
+                _this2.handleChange(newFile, fileList); // hideLoading();
+                // message.success('上传成功');
+
+
+                _context4.next = 36;
+                break;
+
+              case 28:
+                _context4.prev = 28;
+                _context4.t0 = _context4["catch"](6);
+                _index2 = fileList.findIndex(function (i) {
+                  return i.uid === file.uid;
+                });
+                _newFile = fileList[_index2];
+                _newFile.status = 'error';
+                fileList.splice(_index2, 1, _newFile);
+
+                _this2.setState({
+                  fileList: fileList
+                });
+
+                antd.message.error("".concat(file.name)); // hideLoading()
+
+              case 36:
+                return _context4.abrupt("return", false);
+
+              case 37:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee3, null, [[6, 28]]);
+      }));
+
+      return function (_x8) {
+        return _ref4.apply(this, arguments);
+      };
+    }());
+
+    _defineProperty(_assertThisInitialized(_this2), "onSortEnd", function (result) {
+      var onSortEnd = _this2.props.onSortEnd;
 
       if (result && result.source && result.destination) {
-        var newFileList = arrayMove(_this.state.fileList, result.source.index, result.destination.index);
+        var newFileList = arrayMove(_this2.state.fileList, result.source.index, result.destination.index);
 
-        _this.setState({
+        _this2.setState({
           fileList: newFileList
         });
 
-        onSortEnd && onSortEnd(_this.state.fileList.map(toAttachment), newFileList.map(toAttachment));
+        onSortEnd && onSortEnd(_this2.state.fileList.map(toAttachment), newFileList.map(toAttachment));
       }
     });
 
-    _defineProperty(_assertThisInitialized(_this), "onListTypeChange", function (e) {
-      _this.setState({
+    _defineProperty(_assertThisInitialized(_this2), "onListTypeChange", function (e) {
+      _this2.setState({
         listType: e.target.value
       });
     });
 
-    _defineProperty(_assertThisInitialized(_this), "renderRadio", function (showRadioButton) {
+    _defineProperty(_assertThisInitialized(_this2), "renderRadio", function (showRadioButton) {
       var defaultRadioItems = [{
         key: 'picture-card',
         value: '网格'
@@ -5422,8 +5490,8 @@ var Uploader = /*#__PURE__*/function (_Component) {
       return /*#__PURE__*/React__default['default'].createElement("div", {
         className: "nsc-uploader-radio nsc-uploader-radio-".concat(placement)
       }, showRadioTitle && /*#__PURE__*/React__default['default'].createElement("span", null, "\u6587\u4EF6\u5C55\u793A\u6837\u5F0F\uFF1A"), /*#__PURE__*/React__default['default'].createElement(antd.Radio.Group, {
-        onChange: _this.onListTypeChange,
-        value: _this.state.listType
+        onChange: _this2.onListTypeChange,
+        value: _this2.state.listType
       }, radioItems && radioItems.map(function (item) {
         return /*#__PURE__*/React__default['default'].createElement(antd.Radio, {
           key: item.key,
@@ -5432,8 +5500,8 @@ var Uploader = /*#__PURE__*/function (_Component) {
       })));
     });
 
-    _defineProperty(_assertThisInitialized(_this), "onChecked", function (e, file) {
-      var selectedIds = _this.state.selectedIds;
+    _defineProperty(_assertThisInitialized(_this2), "onChecked", function (e, file) {
+      var selectedIds = _this2.state.selectedIds;
       var newSelectedIds = [];
 
       if (e.target.checked) {
@@ -5444,41 +5512,42 @@ var Uploader = /*#__PURE__*/function (_Component) {
         });
       }
 
-      _this.setState({
+      _this2.setState({
         selectedIds: newSelectedIds
       });
     });
 
-    _this.state = {
+    _this2.state = {
       listType: 'picture-card',
       fileList: [],
       // [{ id, name, encodeFileName, size, type, ext, uid, url }]
       isBatch: false,
       selectedIds: [],
+      currentFiles: [],
       checkedAll: false,
       indeterminate: true
     };
-    _this.uploadClient = null;
-    return _this;
+    _this2.uploadClient = null;
+    return _this2;
   }
 
   _createClass(Uploader, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      var _this$props4 = this.props,
-          defaultFiles = _this$props4.defaultFiles,
-          ossParams = _this$props4.ossParams;
+      var _this$props = this.props,
+          defaultFiles = _this$props.defaultFiles,
+          ossParams = _this$props.ossParams;
       this.createOssInstance(ossParams);
       this.setState({
         fileList: defaultFiles.map(this.toFile).sort(sorter)
       });
     }
   }, {
-    key: "componentWillReceiveProps",
-    value: function componentWillReceiveProps(nextProps) {
-      if (!isEqual_1(nextProps.defaultFiles, this.props.defaultFiles)) {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevprops) {
+      if (!isEqual_1(prevprops.defaultFiles, this.props.defaultFiles)) {
         this.setState({
-          fileList: nextProps.defaultFiles.map(this.toFile).sort(sorter)
+          fileList: this.props.defaultFiles.map(this.toFile).sort(sorter)
         });
       }
     }
@@ -5496,42 +5565,43 @@ var Uploader = /*#__PURE__*/function (_Component) {
   }, {
     key: "createOssInstance",
     value: function () {
-      var _createOssInstance = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(ossParams) {
+      var _createOssInstance = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(ossParams) {
         var params;
-        return regeneratorRuntime.wrap(function _callee3$(_context4) {
+        return regeneratorRuntime.wrap(function _callee4$(_context5) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
                 params = {};
 
                 if (!(_typeof(ossParams) === 'object')) {
-                  _context4.next = 5;
+                  _context5.next = 5;
                   break;
                 }
 
                 params = ossParams;
-                _context4.next = 8;
+                _context5.next = 8;
                 break;
 
               case 5:
-                _context4.next = 7;
+                _context5.next = 7;
                 return ossParams();
 
               case 7:
-                params = _context4.sent;
+                params = _context5.sent;
 
               case 8:
+                this.params = params;
                 this.uploadClient = createInstance(params);
 
-              case 9:
+              case 10:
               case "end":
-                return _context4.stop();
+                return _context5.stop();
             }
           }
-        }, _callee3, this);
+        }, _callee4, this);
       }));
 
-      function createOssInstance(_x8) {
+      function createOssInstance(_x9) {
         return _createOssInstance.apply(this, arguments);
       }
 
@@ -5540,12 +5610,12 @@ var Uploader = /*#__PURE__*/function (_Component) {
   }, {
     key: "save",
     value: function save(file) {
-      var _this2 = this;
+      var _this3 = this;
 
       var onSave = this.props.onSave;
       return onSave(toAttachment(file)).then(function (r) {
         antd.message.success('上传成功');
-        return _this2.toFile(r);
+        return _this3.toFile(r);
       })["catch"](function (e) {
         console.error(e);
         antd.message.error('上传失败');
@@ -5554,28 +5624,28 @@ var Uploader = /*#__PURE__*/function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this$state2 = this.state,
-          fileList = _this$state2.fileList,
-          previewVisible = _this$state2.previewVisible,
-          lightboxFiles = _this$state2.lightboxFiles,
-          lightboxIndex = _this$state2.lightboxIndex,
-          isBatch = _this$state2.isBatch,
-          selectedIds = _this$state2.selectedIds;
+      var _this$state = this.state,
+          fileList = _this$state.fileList,
+          previewVisible = _this$state.previewVisible,
+          lightboxFiles = _this$state.lightboxFiles,
+          lightboxIndex = _this$state.lightboxIndex,
+          isBatch = _this$state.isBatch,
+          selectedIds = _this$state.selectedIds;
 
-      var _this$props5 = this.props,
-          dragSortable = _this$props5.dragSortable,
-          beforeUpload = _this$props5.beforeUpload,
-          type = _this$props5.type,
-          maxFileNum = _this$props5.maxFileNum,
-          disabled = _this$props5.disabled,
-          children = _this$props5.children,
-          _this$props5$classNam = _this$props5.className,
-          className = _this$props5$classNam === void 0 ? '' : _this$props5$classNam,
-          showUploadButton = _this$props5.showUploadButton,
-          customRadioButton = _this$props5.customRadioButton,
-          displayTools = _this$props5.displayTools,
-          showBatchButton = _this$props5.showBatchButton,
-          restProps = _objectWithoutProperties(_this$props5, ["dragSortable", "beforeUpload", "type", "maxFileNum", "disabled", "children", "className", "showUploadButton", "customRadioButton", "displayTools", "showBatchButton"]);
+      var _this$props2 = this.props,
+          dragSortable = _this$props2.dragSortable,
+          beforeUpload = _this$props2.beforeUpload,
+          type = _this$props2.type,
+          maxFileNum = _this$props2.maxFileNum,
+          disabled = _this$props2.disabled,
+          children = _this$props2.children,
+          _this$props2$classNam = _this$props2.className,
+          className = _this$props2$classNam === void 0 ? '' : _this$props2$classNam,
+          showUploadButton = _this$props2.showUploadButton,
+          customRadioButton = _this$props2.customRadioButton,
+          displayTools = _this$props2.displayTools,
+          showBatchButton = _this$props2.showBatchButton,
+          restProps = _objectWithoutProperties(_this$props2, ["dragSortable", "beforeUpload", "type", "maxFileNum", "disabled", "children", "className", "showUploadButton", "customRadioButton", "displayTools", "showBatchButton"]);
 
       var listType = this.props.listType ? this.props.listType : this.state.listType;
       var showRadioButton = this.props.listType ? false : this.props.showRadioButton;
@@ -5585,7 +5655,9 @@ var Uploader = /*#__PURE__*/function (_Component) {
         fileList: fileList,
         listType: listType,
         beforeUpload: beforeUpload ? beforeUpload : this.beforeUpload,
-        dragSortable: dragSortable,
+        dragSortable: dragSortable && fileList.every(function (i) {
+          return i.status === 'done';
+        }),
         disabled: disabled,
         onSortEnd: this.onSortEnd,
         className: showUploadButton ? "".concat(className) : type === 'dragger' ? "".concat(className, " nsc-uploader-dragger-hide") : "".concat(className),
@@ -5594,7 +5666,8 @@ var Uploader = /*#__PURE__*/function (_Component) {
         onChecked: this.onChecked,
         onDownload: this.handleDownload,
         selectedIds: selectedIds,
-        onchange: this.handleChange
+        onchange: this.handleChange,
+        customRequest: this.uploadFile
       }); //文件列表按上传顺序排序
 
 
@@ -5661,6 +5734,7 @@ Uploader.defaultProps = {
   showUploadButton: true,
   showRadioButton: true,
   showBatchButton: false,
+  uploadType: 'multipart',
   displayTools: ['zoomIn', 'zoomOut', 'prev', 'next', 'download', 'close']
 };
 
