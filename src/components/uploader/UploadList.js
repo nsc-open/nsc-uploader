@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import * as React from 'react';
 import Animate from 'rc-animate';
 import classNames from 'classnames';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { previewImage, isImageUrl } from './utils';
-import { Tooltip, Progress, Icon, Checkbox } from 'antd'
-// import { DndProvider, useDrag, useDrop, createDndContext } from 'react-dnd'
+import { LoadingOutlined, PaperClipOutlined, PictureTwoTone, FileTwoTone, EyeOutlined, DeleteOutlined, DownloadOutlined } from '@ant-design/icons'
+import { Progress, Tooltip, Checkbox } from 'antd'
 import docPng from '../../assets/doc.png'
 import pdfPng from '../../assets/pdf.png'
 import xlsPng from '../../assets/xls.png'
@@ -13,18 +13,16 @@ const prefixCls = 'ant-upload'
 const locale = {
   uploading: '上传中...',
   removeFile: '删除',
-  uploadError: '上传出错',
+  uploadError: '上传失败',
   previewFile: '预览',
   downloadFile: '下载',
 }
 
-const CheckboxGroup = Checkbox.Group
-
-const getFileTypeImg = (file, signatureUrl) => {
+const getFileTypeImg = (file) => {
   const fileType = file.type
   if (fileType) {
     if (fileType.indexOf('image') !== -1) {
-      return file.thumbnail || signatureUrl(file.url)
+      return file.thumbnail || file.url
     }
     if (fileType.indexOf('pdf') !== -1) {
       return pdfPng
@@ -37,56 +35,21 @@ const getFileTypeImg = (file, signatureUrl) => {
   return ''
 }
 
-// const RenderDragableUploadListItem = ({ originNode, file, fileList, onSortEnd }) => {
-//   const type = 'DragableUploadList'
-//   const ref = React.useRef();
-//   const index = fileList.indexOf(file);
-//   const [{ isOver, dropClassName }, drop] = useDrop({
-//     accept: type,
-//     collect: monitor => {
-//       const { index: dragIndex } = monitor.getItem() || {};
-//       if (dragIndex === index) {
-//         return {};
-//       }
-//       return {
-//         isOver: monitor.isOver(),
-//         dropClassName: dragIndex < index ? ' drop-over-downward' : ' drop-over-upward',
-//       };
-//     },
-//     drop: item => {
-//       moveRow(fileList.index, index);
-//     },
-//   });
-//   const [, drag] = useDrag({
-//     item: { type, index },
-//     collect: monitor => ({
-//       isDragging: monitor.isDragging(),
-//     }),
-//   });
-//   drop(drag(ref))
+export default class UploadList extends React.Component {
+  static defaultProps = {
+    listType: 'text', // or picture
+    progressAttr: {
+      strokeWidth: 2,
+      showInfo: false,
+    },
+    showRemoveIcon: true,
+    showDownloadIcon: false,
+    showPreviewIcon: true,
+    previewFile: previewImage,
+  };
 
-//   const moveRow = (dragIndex, hoverIndex) => {
-//     const { onSortEnd } = props
-//     onSortEnd && onSortEnd(dragIndex, hoverIndex)
-//   }
-
-//   return (
-//     <div
-//       ref={ref}
-//       className={`ant-upload-draggable-list-item ${isOver ? dropClassName : ''}`}
-//       style={{ cursor: 'move' }}
-//     >
-//       {originNode}
-//     </div>
-//   )
-// }
-
-const UploadList = (props) => {
-
-  const { listType, items = [], previewFile } = props;
-
-
-  useEffect(() => {
+  componentDidUpdate() {
+    const { listType, items, previewFile } = this.props;
     if (listType !== 'picture' && listType !== 'picture-card') {
       return;
     }
@@ -106,13 +69,14 @@ const UploadList = (props) => {
         previewFile(file.originFileObj).then((previewDataUrl) => {
           // Need append '' to avoid dead loop
           file.thumbUrl = previewDataUrl || '';
+          this.forceUpdate();
         });
       }
     });
-  }, [])
+  }
 
-  const handlePreview = (file, e) => {
-    const { onPreview } = props
+  handlePreview = (file, e) => {
+    const { onPreview } = this.props;
     if (!onPreview) {
       return;
     }
@@ -120,8 +84,8 @@ const UploadList = (props) => {
     return onPreview(file);
   };
 
-  const handleDownload = (file) => {
-    const { onDownload } = props
+  handleDownload = (file) => {
+    const { onDownload } = this.props;
     if (typeof onDownload === 'function') {
       onDownload(file);
     } else if (file.url) {
@@ -129,46 +93,48 @@ const UploadList = (props) => {
     }
   };
 
-  const handleClose = (file) => {
-    const { onRemove } = props
+  handleClose = (file) => {
+    const { onRemove } = this.props;
     if (onRemove) {
       onRemove(file);
     }
-  }
+  };
 
-  const renderListItem = (file) => {
+  renderListItem = (file) => {
     const {
       listType,
       showPreviewIcon,
       showRemoveIcon,
       showDownloadIcon,
       progressAttr,
-      signatureUrl,
-      isBatch
-    } = props
+      isBatch,
+      selectedIds,
+      onChecked,
+      items,
+    } = this.props;
     let progress;
-    let icon = <Icon type={file.status === 'uploading' ? 'loading' : 'paper-clip'} />
+    let icon = file.status === 'uploading' ? <LoadingOutlined /> : <PaperClipOutlined />
     if (listType === 'picture' || listType === 'picture-card') {
       if (listType === 'picture-card' && file.status === 'uploading') {
         icon = <div className={`${prefixCls}-list-item-uploading-text`}>{locale.uploading}</div>;
       } else if (!file.thumbUrl && !file.url) {
         icon = (
-          <Icon className={`${prefixCls}-list-item-thumbnail`} type="picture" theme="twoTone" />
+          <PictureTwoTone className={`${prefixCls}-list-item-thumbnail`} />
         );
       } else {
         const thumbnail = isImageUrl(file) ? (
           <img
-            src={getFileTypeImg(file, signatureUrl)}
+            src={getFileTypeImg(file)}
             alt={file.name}
             className={`${prefixCls}-list-item-image`}
           />
         ) : (
-          <Icon type="file" className={`${prefixCls}-list-item-icon`} theme="twoTone" />
+          <FileTwoTone className={`${prefixCls}-list-item-icon`} />
         );
         icon = (
           <a
             className={`${prefixCls}-list-item-thumbnail`}
-            onClick={e => handlePreview(file, e)}
+            onClick={e => this.handlePreview(file, e)}
             href={file.url || file.thumbUrl}
             target="_blank"
             rel="noopener noreferrer"
@@ -200,15 +166,14 @@ const UploadList = (props) => {
     });
     const linkProps =
       typeof file.linkProps === 'string' ? JSON.parse(file.linkProps) : file.linkProps;
-    const removeIcon = showRemoveIcon ? (
-      <Icon type="delete" title={locale.removeFile} onClick={() => handleClose(file)} />
+    const removeIcon = showRemoveIcon && items.every(i => i.status === 'done') ? (
+      <DeleteOutlined title={locale.removeFile} onClick={() => this.handleClose(file)} />
     ) : null;
     const downloadIcon =
       showDownloadIcon && file.status === 'done' ? (
-        <Icon
-          type="download"
+        <DownloadOutlined
           title={locale.downloadFile}
-          onClick={() => handleDownload(file)}
+          onClick={() => this.handleDownload(file)}
         />
       ) : null;
     const downloadOrDelete = listType !== 'picture-card' && (
@@ -236,7 +201,7 @@ const UploadList = (props) => {
           title={file.name}
           {...linkProps}
           href={file.url}
-          onClick={e => handlePreview(file, e)}
+          onClick={e => this.handlePreview(file, e)}
         >
           {file.name}
         </a>,
@@ -246,7 +211,7 @@ const UploadList = (props) => {
         <span
           key="view"
           className={listItemNameClass}
-          onClick={e => handlePreview(file, e)}
+          onClick={e => this.handlePreview(file, e)}
           title={file.name}
         >
           {file.name}
@@ -263,10 +228,10 @@ const UploadList = (props) => {
         target="_blank"
         rel="noopener noreferrer"
         style={file.url || file.thumbUrl ? undefined : style}
-        onClick={e => handlePreview(file, e)}
+        onClick={e => this.handlePreview(file, e)}
         title={locale.previewFile}
       >
-        <Icon type="eye-o" />
+        <EyeOutlined />
       </a>
     ) : null;
 
@@ -303,34 +268,36 @@ const UploadList = (props) => {
     );
     const listContainerNameClass = classNames({
       [`${prefixCls}-list-picture-card-container`]: listType === 'picture-card',
+      ['nsc-uploader-list-picture-card-container']: true,
     });
+    const listCheckboxClass = classNames({
+      [`nsc-uploader-list-picture-card-checkbox`]: listType === 'picture-card',
+      [`nsc-uploader-list-picture-checkbox`]: listType === 'picture',
+      ['nsc-uploader-list-text-checkbox']: listType === 'text',
+    });
+
     return (
-      <div key={file.uid} className={listContainerNameClass} style={{ position: 'relative' }}>
-        {isBatch && <Checkbox key={file.uid} value={file.uid} className={'nsc-uploader-checkbox'}></Checkbox>}
+      <div key={file.uid} className={listContainerNameClass}>
+        {isBatch && <Checkbox key={file.uid} checked={selectedIds.includes(file.uid)} value={file.uid} className={listCheckboxClass} onChange={(e) => onChecked && onChecked(e, file)}></Checkbox>}
         {file.status === 'error' ? <Tooltip title={message}>{dom}</Tooltip> : <span>{dom}</span>}
       </div>
     )
   }
 
-  const onSortEnd = (result) => {
-    props.onSortEnd && props.onSortEnd(result)
+  onSortEnd = (result) => {
+    this.props.onSortEnd && this.props.onSortEnd(result)
   };
 
-  const renderUploadList = () => {
+  renderUploadList = () => {
     const {
       items = [],
       listType,
       dragSortable,
-      selectedIds,
-      onSelected,
-    } = props
+    } = this.props;
     const prefixCls = 'ant-upload';
     const list = items.map(file => {
-      return renderListItem(file)
+      return this.renderListItem(file)
     });
-    // const dragableList = items.map(file => {
-    //   return <RenderDragableUploadListItem file={file} fileList={items} key={file.id} onSortEnd={onSortEnd} originNode={renderListItem(file)} />
-    // });
     const listClassNames = classNames({
       [`${prefixCls}-list`]: true,
       [`${prefixCls}-list-${listType}`]: true,
@@ -340,34 +307,31 @@ const UploadList = (props) => {
     if (dragSortable) {
       const dragDirection = listType === 'picture-card' ? "horizontal" : "vertical"
       const horizontalStyle = listType === 'picture-card' ? { display: 'flex', flexWrap: 'wrap' } : {}
-      return <DragDropContext onDragEnd={onSortEnd} >
+      return <DragDropContext onDragEnd={this.onSortEnd} >
         <Droppable droppableId="droppable" direction={dragDirection}>
           {(provided, snapshot) => (
-
-            <CheckboxGroup style={{ width: '100%', display: 'flex' }} value={selectedIds} onChange={(selectedIds) => onSelected(selectedIds)}>
-              <div
-                ref={provided.innerRef}
-                className={listClassNames}
-                style={horizontalStyle}
-                {...provided.droppableProps}
-              >
-                {items.map((file, index) => (
-                  <Draggable key={file.id} draggableId={file.id} index={index}>
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        key={file.id}
-                      >
-                        {renderListItem(file)}
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </div>
-            </CheckboxGroup>
+            <div
+              ref={provided.innerRef}
+              className={listClassNames}
+              style={horizontalStyle}
+              {...provided.droppableProps}
+            >
+              {items.map((file, index) => (
+                <Draggable key={file.id} draggableId={file.id} index={index}>
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      key={file.id}
+                    >
+                      {this.renderListItem(file)}
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
           )
           }
         </Droppable>
@@ -379,27 +343,14 @@ const UploadList = (props) => {
           component="div"
           className={listClassNames}
         >
-          <CheckboxGroup style={{ width: '100%', display: 'flex' }} value={selectedIds} onChange={(selectedIds) => onSelected(selectedIds)}>
-            {list}
-          </CheckboxGroup>
+          {list}
         </Animate>
       );
     }
   };
 
-  return <div>{renderUploadList()}</div>;
+  render() {
+    const { items } = this.props
+    return <div>{this.renderUploadList()}</div>;
+  }
 }
-
-UploadList.defaultProps = {
-  listType: 'text', // or picture
-  progressAttr: {
-    strokeWidth: 2,
-    showInfo: false,
-  },
-  showRemoveIcon: true,
-  showDownloadIcon: false,
-  showPreviewIcon: true,
-  previewFile: previewImage,
-}
-
-export default UploadList

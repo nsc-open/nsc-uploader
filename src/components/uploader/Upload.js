@@ -9,6 +9,21 @@ const prefixCls = 'ant-upload'
 
 class Upload extends React.Component {
 
+  static defaultProps = {
+    type: 'select',
+    multiple: true,
+    action: '',
+    data: {},
+    accept: '',
+    beforeUpload: T,
+    showUploadList: true,
+    listType: 'text', // or picture
+    className: '',
+    disabled: false,
+    supportServerRender: true,
+    dragSortable: false
+  }
+
   static getDerivedStateFromProps(nextProps) {
     if ('fileList' in nextProps) {
       return {
@@ -217,16 +232,15 @@ class Upload extends React.Component {
       dragSortable,
       onSortEnd,
       disabled,
-      signatureUrl,
       isBatch,
-      onSelected,
-      selectedIds
+      ...restProps
     } = this.props;
     const { showRemoveIcon, showPreviewIcon, showDownloadIcon } = showUploadList;
     const { fileList } = this.state
     return (
       <UploadList
         listType={listType}
+        isBatch={isBatch}
         items={fileList}
         previewFile={previewFile}
         onPreview={onPreview}
@@ -237,10 +251,7 @@ class Upload extends React.Component {
         showDownloadIcon={showDownloadIcon}
         dragSortable={dragSortable}
         onSortEnd={onSortEnd}
-        signatureUrl={signatureUrl}
-        isBatch={isBatch}
-        selectedIds={selectedIds}
-        onSelected={onSelected}
+        {...restProps}
       />
     );
   }
