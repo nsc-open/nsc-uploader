@@ -283,6 +283,39 @@ function _createSuper(Derived) {
   };
 }
 
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+}
+
+function _iterableToArray(iter) {
+  if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+}
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+
+  return arr2;
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
 /**
  * Removes all key-value entries from the list cache.
  *
@@ -5047,7 +5080,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
         ext: attachment.fileExt,
         type: attachment.fileType,
         sortNo: attachment.sortNo,
-        status: 'done'
+        status: attachment.status ? attachment.status : 'done'
       };
     });
 
@@ -5149,9 +5182,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
     });
 
     _defineProperty(_assertThisInitialized(_this2), "handleRemove", function (file) {
-      var _this2$props = _this2.props,
-          autoSave = _this2$props.autoSave,
-          onRemove = _this2$props.onRemove;
+      var onRemove = _this2.props.onRemove;
       var fileList = _this2.state.fileList;
       var newFileList = fileList.filter(function (f) {
         return f.uid !== file.uid;
@@ -5175,90 +5206,46 @@ var Uploader = /*#__PURE__*/function (_Component) {
       return new RegExp(pattern, 'i').test(fileName);
     });
 
-    _defineProperty(_assertThisInitialized(_this2), "afterUploaded", /*#__PURE__*/function () {
-      var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(files, file, uploadRes, uploadType, encodedFileName) {
-        var autoSave, url, indexNo, newFile;
+    _defineProperty(_assertThisInitialized(_this2), "beforeUpload", /*#__PURE__*/function () {
+      var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(file, files) {
+        var _this2$props, maxFileSize, maxFileNum, fileExtension, uploadType, fileErrorMsg, onProgress, fileScales, fileList, isScale, maxItem, maxSortNo, indexNo, encodedFileName, newFile;
+
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                autoSave = _this2.props.autoSave;
-                _context.next = 3;
-                return _this2.uploadClient.getUploadedUrl(uploadRes, uploadType, file);
-
-              case 3:
-                url = _context.sent;
-                indexNo = files.findIndex(function (i) {
-                  return i.uid === file.uid;
-                });
-                newFile = _objectSpread2({}, files[indexNo]);
-                newFile.percent = 1;
-                newFile.status = 'done';
-                newFile.url = url;
-
-                if (!autoSave) {
-                  _context.next = 13;
-                  break;
-                }
-
-                return _context.abrupt("return", _this2.save(newFile));
-
-              case 13:
-                return _context.abrupt("return", newFile);
-
-              case 14:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee);
-      }));
-
-      return function (_x, _x2, _x3, _x4, _x5) {
-        return _ref.apply(this, arguments);
-      };
-    }());
-
-    _defineProperty(_assertThisInitialized(_this2), "beforeUpload", /*#__PURE__*/function () {
-      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(file, files) {
-        var _this2$props2, maxFileSize, maxFileNum, fileExtension, uploadType, fileErrorMsg, onProgress, fileScales, fileList, isScale, maxItem, maxSortNo, indexNo, encodedFileName, newFile;
-
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                _this2$props2 = _this2.props, maxFileSize = _this2$props2.maxFileSize, maxFileNum = _this2$props2.maxFileNum, fileExtension = _this2$props2.fileExtension, uploadType = _this2$props2.uploadType, fileErrorMsg = _this2$props2.fileErrorMsg, onProgress = _this2$props2.onProgress, fileScales = _this2$props2.fileScales;
+                _this2$props = _this2.props, maxFileSize = _this2$props.maxFileSize, maxFileNum = _this2$props.maxFileNum, fileExtension = _this2$props.fileExtension, uploadType = _this2$props.uploadType, fileErrorMsg = _this2$props.fileErrorMsg, onProgress = _this2$props.onProgress, fileScales = _this2$props.fileScales;
                 fileList = _this2.state.fileList; //Check for file extension
 
                 if (!(fileExtension && !_this2.hasExtension(file.name))) {
-                  _context2.next = 5;
+                  _context.next = 5;
                   break;
                 }
 
                 antd.message.error(fileErrorMsg && fileErrorMsg.fileExtensionErrorMsg ? fileErrorMsg.fileExtensionErrorMsg : "\u4E0D\u652F\u6301\u7684\u6587\u4EF6\u683C\u5F0F\uFF0C\u8BF7\u4E0A\u4F20\u683C\u5F0F\u4E3A".concat(fileExtension.join(','), "\u7684\u6587\u4EF6"));
-                return _context2.abrupt("return", false);
+                return _context.abrupt("return", false);
 
               case 5:
                 if (!(file.size / 1024 / 1024 > maxFileSize)) {
-                  _context2.next = 8;
+                  _context.next = 8;
                   break;
                 }
 
                 antd.message.error(fileErrorMsg && fileErrorMsg.fileSizeErrorMsg ? fileErrorMsg.fileSizeErrorMsg : "\u6587\u4EF6\u8FC7\u5927\uFF0C\u6700\u5927\u53EF\u4E0A\u4F20".concat(maxFileSize, "M"));
-                return _context2.abrupt("return", false);
+                return _context.abrupt("return", false);
 
               case 8:
                 if (!(files.length + fileList.length > maxFileNum)) {
-                  _context2.next = 11;
+                  _context.next = 11;
                   break;
                 }
 
                 antd.message.error(fileErrorMsg && fileErrorMsg.fileNumerErrorMsg ? fileErrorMsg.fileNumerErrorMsg : "\u6587\u4EF6\u6570\u91CF\u8FC7\u591A\uFF0C\u6700\u591A\u53EF\u4E0A\u4F20".concat(maxFileNum, "\u4EFD"));
-                return _context2.abrupt("return", false);
+                return _context.abrupt("return", false);
 
               case 11:
                 if (!fileScales) {
-                  _context2.next = 16;
+                  _context.next = 16;
                   break;
                 }
 
@@ -5271,11 +5258,11 @@ var Uploader = /*#__PURE__*/function (_Component) {
                 });
 
                 if (isScale) {
-                  _context2.next = 16;
+                  _context.next = 16;
                   break;
                 }
 
-                return _context2.abrupt("return", false);
+                return _context.abrupt("return", false);
 
               case 16:
                 maxItem = maxBy_1(fileList, function (i) {
@@ -5308,41 +5295,41 @@ var Uploader = /*#__PURE__*/function (_Component) {
 
               case 24:
               case "end":
-                return _context2.stop();
+                return _context.stop();
             }
           }
-        }, _callee2);
+        }, _callee);
       }));
 
-      return function (_x6, _x7) {
-        return _ref2.apply(this, arguments);
+      return function (_x, _x2) {
+        return _ref.apply(this, arguments);
       };
     }());
 
     _defineProperty(_assertThisInitialized(_this2), "uploadFile", /*#__PURE__*/function () {
-      var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(_ref3) {
-        var file, _this2$state2, fileList, currentFiles, uploadType, uploadRes, encodedFileName, _this, progress, options, newFile, index, _index2, _newFile;
+      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(_ref2) {
+        var file, _this2$state2, fileList, currentFiles, uploadType, uploadRes, encodedFileName, _this, progress, options, newFile, index, newFiles, _index2, _newFile;
 
-        return regeneratorRuntime.wrap(function _callee3$(_context4) {
+        return regeneratorRuntime.wrap(function _callee2$(_context3) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
-                file = _ref3.file;
+                file = _ref2.file;
                 _this2$state2 = _this2.state, fileList = _this2$state2.fileList, currentFiles = _this2$state2.currentFiles; // const hideLoading = message.loading('文件正在预处理', 0)
 
                 uploadType = file.size > 100 * 1024 ? 'multipart' : '';
 
                 if (!_this2.uploadClient) {
-                  _context4.next = 37;
+                  _context3.next = 38;
                   break;
                 }
 
                 uploadRes = null;
                 encodedFileName = encodeFileName(file.name);
-                _context4.prev = 6;
+                _context3.prev = 6;
 
                 if (!(uploadType === 'multipart')) {
-                  _context4.next = 16;
+                  _context3.next = 16;
                   break;
                 }
 
@@ -5350,15 +5337,15 @@ var Uploader = /*#__PURE__*/function (_Component) {
                 progress = /*#__PURE__*/regeneratorRuntime.mark(function generatorProgress(p, cpt, res) {
                   var _index, targetFile;
 
-                  return regeneratorRuntime.wrap(function generatorProgress$(_context3) {
+                  return regeneratorRuntime.wrap(function generatorProgress$(_context2) {
                     while (1) {
-                      switch (_context3.prev = _context3.next) {
+                      switch (_context2.prev = _context2.next) {
                         case 0:
                           if (cpt) {
                             _index = fileList.findIndex(function (i) {
                               return i.uid === cpt.file.uid;
                             });
-                            targetFile = _objectSpread2({}, _this.state.fileList[_index]);
+                            targetFile = _objectSpread2({}, fileList[_index]);
                             targetFile.percent = p * 100;
                             fileList.splice(_index, 1, targetFile);
 
@@ -5369,7 +5356,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
 
                         case 1:
                         case "end":
-                          return _context3.stop();
+                          return _context2.stop();
                       }
                     }
                   }, generatorProgress);
@@ -5381,50 +5368,51 @@ var Uploader = /*#__PURE__*/function (_Component) {
                   timeout: 120000000 //设置超时时间
 
                 };
-                _context4.next = 13;
+                _context3.next = 13;
                 return _this2.uploadClient.multipartUpload(encodedFileName, file, options);
 
               case 13:
-                uploadRes = _context4.sent;
-                _context4.next = 19;
+                uploadRes = _context3.sent;
+                _context3.next = 19;
                 break;
 
               case 16:
-                _context4.next = 18;
+                _context3.next = 18;
                 return _this2.uploadClient.upload(encodedFileName, file);
 
               case 18:
-                uploadRes = _context4.sent;
+                uploadRes = _context3.sent;
 
               case 19:
-                _context4.next = 21;
+                _context3.next = 21;
                 return _this2.afterUploaded(fileList, file, uploadRes, uploadType, encodedFileName);
 
               case 21:
-                newFile = _context4.sent;
+                newFile = _context3.sent;
                 index = fileList.findIndex(function (i) {
                   return i.uid === newFile.uid;
                 });
-                fileList.splice(index, 1, newFile);
+                newFiles = _toConsumableArray(fileList);
+                newFiles.splice(index, 1, newFile);
 
                 _this2.setState({
-                  fileList: fileList
+                  fileList: newFiles
                 });
 
-                _this2.handleChange(newFile, fileList); // hideLoading();
+                _this2.handleChange(newFile, newFiles); // hideLoading();
                 // message.success('上传成功');
 
 
-                _context4.next = 36;
+                _context3.next = 37;
                 break;
 
-              case 28:
-                _context4.prev = 28;
-                _context4.t0 = _context4["catch"](6);
+              case 29:
+                _context3.prev = 29;
+                _context3.t0 = _context3["catch"](6);
                 _index2 = fileList.findIndex(function (i) {
                   return i.uid === file.uid;
                 });
-                _newFile = fileList[_index2];
+                _newFile = _objectSpread2({}, fileList[_index2]);
                 _newFile.status = 'error';
                 fileList.splice(_index2, 1, _newFile);
 
@@ -5434,18 +5422,51 @@ var Uploader = /*#__PURE__*/function (_Component) {
 
                 antd.message.error("".concat(file.name)); // hideLoading()
 
-              case 36:
-                return _context4.abrupt("return", false);
-
               case 37:
+                return _context3.abrupt("return", false);
+
+              case 38:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee2, null, [[6, 29]]);
+      }));
+
+      return function (_x3) {
+        return _ref3.apply(this, arguments);
+      };
+    }());
+
+    _defineProperty(_assertThisInitialized(_this2), "afterUploaded", /*#__PURE__*/function () {
+      var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(files, file, uploadRes, uploadType, encodedFileName) {
+        var url, newFile;
+        return regeneratorRuntime.wrap(function _callee3$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return _this2.uploadClient.getUploadedUrl(uploadRes, uploadType, file);
+
+              case 2:
+                url = _context4.sent;
+                newFile = files.find(function (i) {
+                  return i.uid === file.uid;
+                });
+                newFile.percent = 1;
+                newFile.status = 'done';
+                newFile.url = url;
+                return _context4.abrupt("return", newFile);
+
+              case 8:
               case "end":
                 return _context4.stop();
             }
           }
-        }, _callee3, null, [[6, 28]]);
+        }, _callee3);
       }));
 
-      return function (_x8) {
+      return function (_x4, _x5, _x6, _x7, _x8) {
         return _ref4.apply(this, arguments);
       };
     }());
@@ -5608,20 +5629,6 @@ var Uploader = /*#__PURE__*/function (_Component) {
       return createOssInstance;
     }()
   }, {
-    key: "save",
-    value: function save(file) {
-      var _this3 = this;
-
-      var onSave = this.props.onSave;
-      return onSave(toAttachment(file)).then(function (r) {
-        antd.message.success('上传成功');
-        return _this3.toFile(r);
-      })["catch"](function (e) {
-        console.error(e);
-        antd.message.error('上传失败');
-      });
-    }
-  }, {
     key: "render",
     value: function render() {
       var _this$state = this.state,
@@ -5655,8 +5662,8 @@ var Uploader = /*#__PURE__*/function (_Component) {
         fileList: fileList,
         listType: listType,
         beforeUpload: beforeUpload ? beforeUpload : this.beforeUpload,
-        dragSortable: dragSortable && fileList.every(function (i) {
-          return i.status === 'done';
+        dragSortable: dragSortable && !fileList.some(function (i) {
+          return i.status === 'uploading';
         }),
         disabled: disabled,
         onSortEnd: this.onSortEnd,
