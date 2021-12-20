@@ -4867,8 +4867,8 @@ var AliOss = /*#__PURE__*/function (_InterfaceOss) {
 
   _createClass(AliOss, [{
     key: "signatureUrl",
-    value: function signatureUrl(url) {
-      url = decodeURIComponent(url);
+    value: function signatureUrl(file) {
+      var url = decodeURIComponent(file.uri);
 
       var _Url = new Url__default['default'](url),
           pathname = _Url.pathname;
