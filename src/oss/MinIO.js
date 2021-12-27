@@ -1,6 +1,5 @@
 import InterfaceOss from './InterfaceOss';
 import SingletonOss from './SingletonOss';
-
 class MinIO extends InterfaceOss {
 
   constructor(args) {
@@ -9,56 +8,51 @@ class MinIO extends InterfaceOss {
     this.ossType = args.source;
     this.client = new SingletonOss({
       ...args,
-      bucket:`${args.image}`,
+      bucket: `${args.image}`,
       endPoint: args.endPoint,
       useSSL: false,
       port: args.port,
-      region:args.region,
-      secretKey:args.secretKey,
-      accessKey:args.accessKey,
-      sessionToken:args.SessionToken
+      region: args.region,
+      secretKey: args.secretKey,
+      accessKey: args.accessKey,
+      sessionToken: args.SessionToken
     }).getInstance();
     this.exepTime = 24 * 60 * 60;
   }
 
-  signatureUrl(file) {
+  signatureUrl = (file) => {
     return new Promise(((resolve, reject) => {
       this.client.presignedUrl('GET', this.params.bucket, file.name, this.exepTime, (err, presignedUrl) => {
-            if (err) return reject(err);
-            resolve(presignedUrl);
-          });
+        if (err) return reject(err);
+        resolve(presignedUrl);
+      });
     }));
   }
 
-  upload(encodedFileName, file) {
+  upload = (encodedFileName, file, options) => {
     return new Promise((resolve, rej) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = (readers) => {
-        const base64 = readers.target.result.split(',').pop();
-        const buffer = Buffer.from(base64, 'base64');
-        this.client.putObject(this.params.bucket, encodedFileName, buffer, { 'Content-Type': file.type }, (err, etag) => {
-              if (err) {
-               return rej(err);
-              }
-          this.client.presignedUrl('GET', this.params.bucket, encodedFileName, this.exepTime, (err, presignedUrl) => {
-            if (err) return rej(err);
-            resolve(presignedUrl);
-          });
+      this.client.putObject(this.client, this.params.bucket, encodedFileName, file, options, { 'Content-Type': file.type }, (err, etag) => {
+        if (err) {
+          return rej(err);
+        }
+        this.client.presignedUrl('GET', this.params.bucket, encodedFileName, this.exepTime, (err, presignedUrl) => {
+          if (err) return rej(err);
+          console.log(presignedUrl)
+          resolve(presignedUrl);
         });
-      };
-    });
+      });
+    })
   }
 
-  multipartUpload(encodedFileName, file) {
-    return this.upload(encodedFileName, file);
+  async multipartUpload(name, file, options) {
+    return this.upload(name, file, options)
   }
 
-  getUploadedUrl(uploadRes,uploadType,file) {
+  getUploadedUrl = (uploadRes, uploadType, file) => {
     return uploadRes
   }
 
-  getUploadProgress() {
+  getUploadProgress = () => {
     // To be developed
   }
 }
