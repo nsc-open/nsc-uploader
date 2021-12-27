@@ -223,9 +223,11 @@ class Uploader extends Component {
   }
 
   uploadFile = async ({ file }) => {
+    const { partSize } = this.props
     const { fileList, currentFiles } = this.state
+    const defaultPartSize = partSize ? partSize : 6 * 1024 * 1024
     // const hideLoading = message.loading('文件正在预处理', 0)
-    const uploadType = file.size > (100 * 1024) ? 'multipart' : ''
+    const uploadType = file.size > defaultPartSize ? 'multipart' : ''
     if (this.uploadClient) {
       let uploadRes = null;
       let encodedFileName = encodeFileName(file.name)
@@ -233,6 +235,7 @@ class Uploader extends Component {
         if (uploadType === 'multipart') {
           const _this = this
           const progress = function* generatorProgress(p, cpt, res) {
+            console.log(cpt)
             if (cpt) {
               const index = fileList.findIndex(i => i.uid === cpt.file.uid)
               const targetFile = { ...fileList[index] }
@@ -243,12 +246,16 @@ class Uploader extends Component {
           }
           const options = {
             progress,
-            partSize: 100 * 1024,//设置分片大小
+            partSize: defaultPartSize,//设置分片大小
             timeout: 120000000,//设置超时时间
           }
           uploadRes = await this.uploadClient.multipartUpload(encodedFileName, file, options);
         } else {
-          uploadRes = await this.uploadClient.upload(encodedFileName, file);
+          const options = {
+            partSize:defaultPartSize,//设置分片大小
+            timeout: 120000000,//设置超时时间
+          }
+          uploadRes = await this.uploadClient.upload(encodedFileName, file, options);
         }
         const newFile = await this.afterUploaded(fileList, file, uploadRes, uploadType, encodedFileName);
         const index = fileList.findIndex(i => i.uid === newFile.uid)
