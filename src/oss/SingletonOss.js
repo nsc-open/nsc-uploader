@@ -47,16 +47,14 @@ const putObject = async (client, bucketName, objectName, file, options, metaData
         var md5sum = data.md5sum
         var sha256sum = data.sha256sum
         var stream = readableStream(buffer)
-        uploader(stream, file.size, sha256sum, md5sum, async (err, objInfo) => {
-          if (options && options.progress) {
-            await options.progress(1);
-          }
+        uploader(stream, file.size, sha256sum, md5sum, (err, objInfo) => {
           callback(err, objInfo)
         })
       })
       .on('error', e => callback(e))
     return
   }
+
   var doneParts = []
   let internalDoneParts = [];
   let uploadedSize = 0
@@ -106,7 +104,7 @@ const putObject = async (client, bucketName, objectName, file, options, metaData
         if (!multipartFinish) {
           var stream = readableStream(buffer)
           uploader(uploadId, partNo, stream, partSize,
-            data.sha256sum, data.md5sum, async (e, objInfo) => {
+            data.sha256sum, data.md5sum, (e, objInfo) => {
               if (e) return reject(e)
               resolve({ partNo, objInfo, length })
             })
