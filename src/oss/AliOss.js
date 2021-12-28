@@ -28,11 +28,8 @@ class AliOss extends InterfaceOss {
     }).getInstance();
   }
 
-  signatureUrl(file) {
-    const url = decodeURIComponent(file.uri)
-    const { pathname } = new Url(url)
-    const fileName = pathname.substr(1)
-    return this.client.signatureUrl(fileName)
+  signatureUrl(url) {
+    return this.client.signatureUrl(url)
   }
 
   async upload(encodedFileName, file) {

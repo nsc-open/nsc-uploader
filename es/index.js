@@ -22050,14 +22050,14 @@ var ali_Oss = require('ali-oss');
 var minio_Oss = require('minio');
 
 var putObject = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(client, bucketName, objectName, file, options, metaData, callback) {
+  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(client, bucketName, objectName, file, options, metaData, callback) {
     var maxObjectSize, partSize, uploader, hash, fileContent, buffer, stream, doneParts, internalDoneParts, uploadedSize, partOffs, numParts, all, multipartFinish, done, todo, defaultParallel, getUploadId, uploadId, uploadPartJob, checkpoint, jobErr, abortEvent;
-    return regeneratorRuntime.wrap(function _callee5$(_context5) {
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
       while (1) {
-        switch (_context5.prev = _context5.next) {
+        switch (_context3.prev = _context3.next) {
           case 0:
             if (isValidBucketName(bucketName)) {
-              _context5.next = 2;
+              _context3.next = 2;
               break;
             }
 
@@ -22065,7 +22065,7 @@ var putObject = /*#__PURE__*/function () {
 
           case 2:
             if (isValidObjectName(objectName)) {
-              _context5.next = 4;
+              _context3.next = 4;
               break;
             }
 
@@ -22073,7 +22073,7 @@ var putObject = /*#__PURE__*/function () {
 
           case 4:
             if (isBlob(file)) {
-              _context5.next = 6;
+              _context3.next = 6;
               break;
             }
 
@@ -22081,7 +22081,7 @@ var putObject = /*#__PURE__*/function () {
 
           case 6:
             if (isFunction$1(callback)) {
-              _context5.next = 8;
+              _context3.next = 8;
               break;
             }
 
@@ -22091,11 +22091,11 @@ var putObject = /*#__PURE__*/function () {
             maxObjectSize = 5 * 1024 * 1024 * 1024 * 1024;
 
             if (!(file.size > maxObjectSize)) {
-              _context5.next = 11;
+              _context3.next = 11;
               break;
             }
 
-            return _context5.abrupt("return", callback(new Error(" size : ".concat(file.size, ", max allowed size : 5TB"))));
+            return _context3.abrupt("return", callback(new Error(" size : ".concat(file.size, ", max allowed size : 5TB"))));
 
           case 11:
             // Ensures Metadata has appropriate prefix for A3 API
@@ -22105,56 +22105,30 @@ var putObject = /*#__PURE__*/function () {
             partSize = options.partSize ? options.partSize : 6 * 1024 * 1024;
 
             if (!(file.size < partSize)) {
-              _context5.next = 24;
+              _context3.next = 24;
               break;
             }
 
             uploader = client.getUploader(bucketName, objectName, metaData, false);
             hash = getHashSummer(true);
-            _context5.next = 19;
+            _context3.next = 19;
             return getBuffer(file);
 
           case 19:
-            fileContent = _context5.sent;
+            fileContent = _context3.sent;
             buffer = Buffer.from(fileContent);
             stream = readableStream(buffer);
             pipesetup(stream, hash).on('data', function (data) {
               var md5sum = data.md5sum;
               var sha256sum = data.sha256sum;
               var stream = readableStream(buffer);
-              uploader(stream, file.size, sha256sum, md5sum, /*#__PURE__*/function () {
-                var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(err, objInfo) {
-                  return regeneratorRuntime.wrap(function _callee$(_context) {
-                    while (1) {
-                      switch (_context.prev = _context.next) {
-                        case 0:
-                          if (!(options && options.progress)) {
-                            _context.next = 3;
-                            break;
-                          }
-
-                          _context.next = 3;
-                          return options.progress(1);
-
-                        case 3:
-                          callback(err, objInfo);
-
-                        case 4:
-                        case "end":
-                          return _context.stop();
-                      }
-                    }
-                  }, _callee);
-                }));
-
-                return function (_x8, _x9) {
-                  return _ref2.apply(this, arguments);
-                };
-              }());
+              uploader(stream, file.size, sha256sum, md5sum, function (err, objInfo) {
+                callback(err, objInfo);
+              });
             }).on('error', function (e) {
               return callback(e);
             });
-            return _context5.abrupt("return");
+            return _context3.abrupt("return");
 
           case 24:
             doneParts = [];
@@ -22196,27 +22170,27 @@ var putObject = /*#__PURE__*/function () {
               });
             };
 
-            _context5.next = 38;
+            _context3.next = 38;
             return getUploadId(bucketName, objectName, metaData);
 
           case 38:
-            uploadId = _context5.sent;
+            uploadId = _context3.sent;
 
             uploadPartJob = /*#__PURE__*/function () {
-              var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(file, partNo, uploadId) {
+              var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(file, partNo, uploadId) {
                 var pi, _file, fileContent, buffer, stream, dst, length;
 
-                return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                return regeneratorRuntime.wrap(function _callee$(_context) {
                   while (1) {
-                    switch (_context3.prev = _context3.next) {
+                    switch (_context.prev = _context.next) {
                       case 0:
                         pi = partOffs[partNo - 1];
                         _file = file.slice(pi.start, pi.end);
-                        _context3.next = 4;
+                        _context.next = 4;
                         return getBuffer(_file);
 
                       case 4:
-                        fileContent = _context3.sent;
+                        fileContent = _context.sent;
                         buffer = Buffer.from(fileContent);
                         stream = readableStream(buffer);
                         dst = getHashSummer(true);
@@ -22226,58 +22200,34 @@ var putObject = /*#__PURE__*/function () {
                           length = file.size - uploadedSize;
                         }
 
-                        return _context3.abrupt("return", new Promise(function (resolve, reject) {
+                        return _context.abrupt("return", new Promise(function (resolve, reject) {
                           pipesetup(stream, dst).on('data', function (data) {
                             var uploader = client.getUploader(bucketName, objectName, metaData, true);
 
                             if (!multipartFinish) {
                               var stream = readableStream(buffer);
-                              uploader(uploadId, partNo, stream, partSize, data.sha256sum, data.md5sum, /*#__PURE__*/function () {
-                                var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e, objInfo) {
-                                  return regeneratorRuntime.wrap(function _callee2$(_context2) {
-                                    while (1) {
-                                      switch (_context2.prev = _context2.next) {
-                                        case 0:
-                                          if (!e) {
-                                            _context2.next = 2;
-                                            break;
-                                          }
-
-                                          return _context2.abrupt("return", reject(e));
-
-                                        case 2:
-                                          resolve({
-                                            partNo: partNo,
-                                            objInfo: objInfo,
-                                            length: length
-                                          });
-
-                                        case 3:
-                                        case "end":
-                                          return _context2.stop();
-                                      }
-                                    }
-                                  }, _callee2);
-                                }));
-
-                                return function (_x13, _x14) {
-                                  return _ref4.apply(this, arguments);
-                                };
-                              }());
+                              uploader(uploadId, partNo, stream, partSize, data.sha256sum, data.md5sum, function (e, objInfo) {
+                                if (e) return reject(e);
+                                resolve({
+                                  partNo: partNo,
+                                  objInfo: objInfo,
+                                  length: length
+                                });
+                              });
                             }
                           });
                         }));
 
                       case 11:
                       case "end":
-                        return _context3.stop();
+                        return _context.stop();
                     }
                   }
-                }, _callee3);
+                }, _callee);
               }));
 
-              return function uploadPartJob(_x10, _x11, _x12) {
-                return _ref3.apply(this, arguments);
+              return function uploadPartJob(_x8, _x9, _x10) {
+                return _ref2.apply(this, arguments);
               };
             }();
 
@@ -22290,23 +22240,23 @@ var putObject = /*#__PURE__*/function () {
             };
 
             if (!(options && options.progress)) {
-              _context5.next = 44;
+              _context3.next = 44;
               break;
             }
 
-            _context5.next = 44;
+            _context3.next = 44;
             return options.progress(0, checkpoint);
 
           case 44:
-            _context5.next = 46;
+            _context3.next = 46;
             return parallel(todo, defaultParallel, function (value) {
               return new Promise(function (resolve, reject) {
                 uploadPartJob(file, value, uploadId).then( /*#__PURE__*/function () {
-                  var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(r) {
+                  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(r) {
                     var partNo, objInfo, length;
-                    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+                    return regeneratorRuntime.wrap(function _callee2$(_context2) {
                       while (1) {
-                        switch (_context4.prev = _context4.next) {
+                        switch (_context2.prev = _context2.next) {
                           case 0:
                             partNo = r.partNo, objInfo = r.objInfo, length = r.length;
                             uploadedSize += length;
@@ -22320,11 +22270,11 @@ var putObject = /*#__PURE__*/function () {
                             });
 
                             if (!options.progress) {
-                              _context4.next = 7;
+                              _context2.next = 7;
                               break;
                             }
 
-                            _context4.next = 7;
+                            _context2.next = 7;
                             return options.progress(doneParts.length / numParts, checkpoint, objInfo);
 
                           case 7:
@@ -22332,14 +22282,14 @@ var putObject = /*#__PURE__*/function () {
 
                           case 8:
                           case "end":
-                            return _context4.stop();
+                            return _context2.stop();
                         }
                       }
-                    }, _callee4);
+                    }, _callee2);
                   }));
 
-                  return function (_x15) {
-                    return _ref5.apply(this, arguments);
+                  return function (_x11) {
+                    return _ref3.apply(this, arguments);
                   };
                 }())["catch"](function (err) {
                   reject(err);
@@ -22348,14 +22298,14 @@ var putObject = /*#__PURE__*/function () {
             });
 
           case 46:
-            jobErr = _context5.sent;
+            jobErr = _context3.sent;
             multipartFinish = true;
             abortEvent = jobErr.find(function (err) {
               return err.name === 'abort';
             });
 
             if (!abortEvent) {
-              _context5.next = 51;
+              _context3.next = 51;
               break;
             }
 
@@ -22363,7 +22313,7 @@ var putObject = /*#__PURE__*/function () {
 
           case 51:
             if (!(jobErr && jobErr.length > 0)) {
-              _context5.next = 54;
+              _context3.next = 54;
               break;
             }
 
@@ -22374,18 +22324,18 @@ var putObject = /*#__PURE__*/function () {
             internalDoneParts.sort(function (a, b) {
               return a.part - b.part;
             });
-            _context5.next = 57;
+            _context3.next = 57;
             return client.completeMultipartUpload(bucketName, objectName, uploadId, internalDoneParts, callback);
 
           case 57:
-            return _context5.abrupt("return", _context5.sent);
+            return _context3.abrupt("return", _context3.sent);
 
           case 58:
           case "end":
-            return _context5.stop();
+            return _context3.stop();
         }
       }
-    }, _callee5);
+    }, _callee3);
   }));
 
   return function putObject(_x, _x2, _x3, _x4, _x5, _x6, _x7) {
@@ -23097,28 +23047,30 @@ var Uploader = /*#__PURE__*/function (_Component) {
 
     _defineProperty(_assertThisInitialized(_this2), "uploadFile", /*#__PURE__*/function () {
       var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(_ref2) {
-        var file, _this2$state2, fileList, currentFiles, uploadType, uploadRes, encodedFileName, _this, progress, options, newFile, index, newFiles, _index2, _newFile;
+        var file, partSize, _this2$state2, fileList, currentFiles, defaultPartSize, uploadType, uploadRes, encodedFileName, _this, progress, options, _options, newFile, index, newFiles, _index2, _newFile;
 
         return regeneratorRuntime.wrap(function _callee2$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
                 file = _ref2.file;
-                _this2$state2 = _this2.state, fileList = _this2$state2.fileList, currentFiles = _this2$state2.currentFiles; // const hideLoading = message.loading('文件正在预处理', 0)
+                partSize = _this2.props.partSize;
+                _this2$state2 = _this2.state, fileList = _this2$state2.fileList, currentFiles = _this2$state2.currentFiles;
+                defaultPartSize = partSize ? partSize : 6 * 1024 * 1024; // const hideLoading = message.loading('文件正在预处理', 0)
 
-                uploadType = file.size > 100 * 1024 ? 'multipart' : '';
+                uploadType = file.size > defaultPartSize ? 'multipart' : '';
 
                 if (!_this2.uploadClient) {
-                  _context3.next = 38;
+                  _context3.next = 41;
                   break;
                 }
 
                 uploadRes = null;
                 encodedFileName = encodeFileName(file.name);
-                _context3.prev = 6;
+                _context3.prev = 8;
 
                 if (!(uploadType === 'multipart')) {
-                  _context3.next = 16;
+                  _context3.next = 18;
                   break;
                 }
 
@@ -23130,6 +23082,8 @@ var Uploader = /*#__PURE__*/function (_Component) {
                     while (1) {
                       switch (_context2.prev = _context2.next) {
                         case 0:
+                          console.log(cpt);
+
                           if (cpt) {
                             _index = fileList.findIndex(function (i) {
                               return i.uid === cpt.file.uid;
@@ -23143,7 +23097,7 @@ var Uploader = /*#__PURE__*/function (_Component) {
                             });
                           }
 
-                        case 1:
+                        case 2:
                         case "end":
                           return _context2.stop();
                       }
@@ -23152,31 +23106,37 @@ var Uploader = /*#__PURE__*/function (_Component) {
                 });
                 options = {
                   progress: progress,
-                  partSize: 100 * 1024,
+                  partSize: defaultPartSize,
                   //设置分片大小
                   timeout: 120000000 //设置超时时间
 
                 };
-                _context3.next = 13;
+                _context3.next = 15;
                 return _this2.uploadClient.multipartUpload(encodedFileName, file, options);
 
-              case 13:
+              case 15:
                 uploadRes = _context3.sent;
-                _context3.next = 19;
+                _context3.next = 22;
                 break;
 
-              case 16:
-                _context3.next = 18;
-                return _this2.uploadClient.upload(encodedFileName, file);
-
               case 18:
-                uploadRes = _context3.sent;
+                _options = {
+                  partSize: defaultPartSize,
+                  //设置分片大小
+                  timeout: 120000000 //设置超时时间
 
-              case 19:
+                };
                 _context3.next = 21;
-                return _this2.afterUploaded(fileList, file, uploadRes, uploadType, encodedFileName);
+                return _this2.uploadClient.upload(encodedFileName, file, _options);
 
               case 21:
+                uploadRes = _context3.sent;
+
+              case 22:
+                _context3.next = 24;
+                return _this2.afterUploaded(fileList, file, uploadRes, uploadType, encodedFileName);
+
+              case 24:
                 newFile = _context3.sent;
                 index = fileList.findIndex(function (i) {
                   return i.uid === newFile.uid;
@@ -23192,12 +23152,12 @@ var Uploader = /*#__PURE__*/function (_Component) {
                 // message.success('上传成功');
 
 
-                _context3.next = 37;
+                _context3.next = 40;
                 break;
 
-              case 29:
-                _context3.prev = 29;
-                _context3.t0 = _context3["catch"](6);
+              case 32:
+                _context3.prev = 32;
+                _context3.t0 = _context3["catch"](8);
                 _index2 = fileList.findIndex(function (i) {
                   return i.uid === file.uid;
                 });
@@ -23211,15 +23171,15 @@ var Uploader = /*#__PURE__*/function (_Component) {
 
                 antd.message.error("".concat(file.name)); // hideLoading()
 
-              case 37:
+              case 40:
                 return _context3.abrupt("return", false);
 
-              case 38:
+              case 41:
               case "end":
                 return _context3.stop();
             }
           }
-        }, _callee2, null, [[6, 29]]);
+        }, _callee2, null, [[8, 32]]);
       }));
 
       return function (_x3) {
