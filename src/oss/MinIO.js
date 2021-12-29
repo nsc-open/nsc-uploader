@@ -20,9 +20,9 @@ class MinIO extends InterfaceOss {
     this.exepTime = 24 * 60 * 60;
   }
 
-  signatureUrl = (file) => {
+  signatureUrl = (name) => {
     return new Promise(((resolve, reject) => {
-      this.client.presignedUrl('GET', this.params.bucket, file.name, this.exepTime, (err, presignedUrl) => {
+      this.client.presignedUrl('GET', this.params.bucket, name, this.exepTime, (err, presignedUrl) => {
         if (err) return reject(err);
         resolve(presignedUrl);
       });

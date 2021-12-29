@@ -35,9 +35,9 @@ class Uploader extends Component {
     this.uploadClient = null;
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { defaultFiles, ossParams } = this.props;
-    this.createOssInstance(ossParams);
+    await this.createOssInstance(ossParams);
     this.setState({ fileList: defaultFiles.map(this.toFile).sort(sorter) });
   }
 
@@ -88,13 +88,14 @@ class Uploader extends Component {
     const files = fileList.map(toAttachment);
     const lightboxIndex = (files.map(a => a.id).indexOf(file.id) || 0);
     const lightboxFiles = files.map((a) => {
+      const uri = a.uri ? this.signatureUrl(a.uri) : ''
       return {
         ...a,
         alt: a.name,
         uri: isDoc(a)
           ? `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(
-            a.uri)}`
-          : a.uri,
+            uri)}`
+          : uri,
       };
     });
     this.setState({
@@ -252,7 +253,7 @@ class Uploader extends Component {
           uploadRes = await this.uploadClient.multipartUpload(encodedFileName, file, options);
         } else {
           const options = {
-            partSize:defaultPartSize,//设置分片大小
+            partSize: defaultPartSize,//设置分片大小
             timeout: 120000000,//设置超时时间
           }
           uploadRes = await this.uploadClient.upload(encodedFileName, file, options);
