@@ -1,6 +1,6 @@
 {
   "name": "nsc-uploader",
-  "version": "3.1.15",
+  "version": "3.1.16",
   "description": "upload based on antd + React",
   "author": "aaxuyun",
   "license": "ISC",
@@ -29,7 +29,8 @@
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dnd": "^11.1.3",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "crypto-browserify": "^3.12.0"
   },
   "devDependencies": {
     "@babel/core": "^7.10.2",
@@ -50,7 +51,6 @@
     "es"
   ],
   "dependencies": {
-    "crypto-browserify": "^3.12.0",
     "nsc-lightbox": "^1.2.24",
     "react-beautiful-dnd": "^13.0.0"
   }
