@@ -88,14 +88,13 @@ class Uploader extends Component {
     const files = fileList.map(toAttachment);
     const lightboxIndex = (files.map(a => a.id).indexOf(file.id) || 0);
     const lightboxFiles = files.map((a) => {
-      const uri = a.uri ? this.signatureUrl(a.uri) : ''
       return {
         ...a,
         alt: a.name,
         uri: isDoc(a)
           ? `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(
-            uri)}`
-          : uri,
+            a.uri)}`
+          : a.uri,
       };
     });
     this.setState({
@@ -236,7 +235,6 @@ class Uploader extends Component {
         if (uploadType === 'multipart') {
           const _this = this
           const progress = function* generatorProgress(p, cpt, res) {
-            console.log(cpt)
             if (cpt) {
               const index = fileList.findIndex(i => i.uid === cpt.file.uid)
               const targetFile = { ...fileList[index] }
