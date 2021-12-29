@@ -1,26 +1,21 @@
-
-// Returns a wrapper function that will promisify a given callback function.
-// It will preserve 'this'.
 import stream from 'stream'
-import * as _ from 'lodash'
 import Through2 from 'through2'
-import Crypto2 from 'crypto'
-var Crypto = require('crypto-browserify')
-
+import Crypto from 'crypto'
+const Crypto2 = require('crypto-browserify')
 // A through stream that calculates md5sum and sha256sum
 export function getHashSummer(enableSHA256) {
   var md5 = Crypto2.createHash('md5')
   var sha256 = Crypto2.createHash('sha256')
 
-  return Through2.obj(function(chunk, enc, cb) {
-    
+  return Through2.obj(function (chunk, enc, cb) {
+
     if (enableSHA256) {
       sha256.update(chunk)
     } else {
       md5.update(chunk)
     }
     cb()
-  }, function(cb) {
+  }, function (cb) {
     var md5sum = ''
     var sha256sum = ''
     if (enableSHA256) {
@@ -28,7 +23,7 @@ export function getHashSummer(enableSHA256) {
     } else {
       md5sum = md5.digest('base64')
     }
-    var hashData = {md5sum, sha256sum}
+    var hashData = { md5sum, sha256sum }
     this.push(hashData)
     this.push(null)
     cb()

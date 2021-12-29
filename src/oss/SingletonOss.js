@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import {
   prependXAMZMeta, isValidBucketName,
   isValidObjectName, isFunction, insertContentType,
@@ -6,7 +5,7 @@ import {
   isBlob, getHashSummer
 } from './utils'
 
-const ali_Oss = require('ali-oss');
+import ali_Oss from 'ali-oss'
 const minio_Oss = require('minio');
 
 const putObject = async (client, bucketName, objectName, file, options, metaData, callback) => {
