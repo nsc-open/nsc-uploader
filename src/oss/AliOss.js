@@ -1,5 +1,4 @@
 import InterfaceOss from './InterfaceOss';
-import Url from 'url-parse';
 import co from 'co';
 import SingletonOss from './SingletonOss';
 
@@ -50,11 +49,9 @@ class AliOss extends InterfaceOss {
 
   getUploadedUrl(res, uploadType) {
     if (uploadType === 'multipart') {
-      const requestUrl = (res && res.res && res.res.requestUrls) ? res.res.requestUrls[0] : ''
-      const { origin } = new Url(decodeURIComponent(requestUrl))
-      return this.signatureUrl(origin + "/" + res.name);
+      return this.signatureUrl(res.name);
     } else {
-      return this.signatureUrl(res.url);
+      return this.signatureUrl(res.name);
     }
   }
 }
