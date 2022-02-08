@@ -31,16 +31,44 @@ class MinIO extends InterfaceOss {
 
   upload = (encodedFileName, file, options) => {
     return new Promise((resolve, rej) => {
-      this.client.putObject(this.client, this.params.bucket, encodedFileName, file, options, { 'Content-Type': file.type }, (err, etag) => {
-        if (err) {
-          return rej(err);
-        }
-        this.client.presignedUrl('GET', this.params.bucket, encodedFileName, this.exepTime, (err, presignedUrl) => {
-          if (err) return rej(err);
-          console.log(presignedUrl)
-          resolve(presignedUrl);
-        });
-      });
+      const policy = this.client.newPostPolicy()
+        const expires = new Date()
+        expires.setSeconds(60)
+
+        policy.setBucket(this.params.bucket)
+        policy.setKey(encodedFileName)
+        policy.setExpires(expires)
+        policy.setContentType(file.type)
+
+        this.client.presignedPostPolicy(policy, (err, data) => {
+          if (err) return rej(err)
+          
+          const formData = new FormData()
+          formData.append('file', file)
+          Object.keys(data.formData).forEach(name => {
+            formData.append(name, data.formData[name])
+          })
+
+          fetch(data.postURL, {
+            method: 'post',
+            body: formData
+          }).then(() => {
+            this.client.presignedUrl('GET', this.params.bucket, encodedFileName, this.exepTime, (err, presignedUrl) => {
+              if (err) return rej(err)
+              resolve(presignedUrl)
+            })
+          })
+        })
+      // this.client.putObject(this.client, this.params.bucket, encodedFileName, file, options, { 'Content-Type': file.type }, (err, etag) => {
+      //   if (err) {
+      //     return rej(err);
+      //   }
+      //   this.client.presignedUrl('GET', this.params.bucket, encodedFileName, this.exepTime, (err, presignedUrl) => {
+      //     if (err) return rej(err);
+      //     console.log(presignedUrl)
+      //     resolve(presignedUrl);
+      //   });
+      // });
     })
   }
 
