@@ -203,7 +203,8 @@ class Uploader extends Component {
     const maxItem = maxBy(fileList, i => i.sortNo)
     const maxSortNo = maxItem ? maxItem.sortNo : 0;
     const indexNo = files.findIndex(i => i.uid === file.uid);
-    let encodedFileName = encodeFileName(file.name)
+    const fileExt = file.fileExt ? file.fileExt : file.name.split('.')[1]
+    let encodedFileName = encodeFileName(file.name) + '.' + fileExt
     const newFile = {
       uid: file.uid,
       id: file.uid,
@@ -230,7 +231,8 @@ class Uploader extends Component {
     const uploadType = file.size > defaultPartSize ? 'multipart' : ''
     if (this.uploadClient) {
       let uploadRes = null;
-      let encodedFileName = encodeFileName(file.name)
+      const fileExt = file.fileExt ? file.fileExt : file.name.split('.')[1]
+      let encodedFileName = encodeFileName(file.name) + '.' + fileExt
       try {
         if (uploadType === 'multipart') {
           const _this = this
