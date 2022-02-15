@@ -38,7 +38,7 @@ class MinIO extends InterfaceOss {
         policy.setBucket(this.params.bucket)
         policy.setKey(encodedFileName)
         policy.setExpires(expires)
-        policy.setContentType(file.type)
+        file.type && policy.setContentType(file.type)
 
         this.client.presignedPostPolicy(policy, (err, data) => {
           if (err) return rej(err)
