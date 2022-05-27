@@ -14,7 +14,7 @@ class ObvOss extends InterfaceOss {
 
   signatureUrl(name) {
     const bucket_key = this.params.bucket_key
-    return ajaxObv.get(`/bim/bimserver/storage/v3/buckets/${bucket_key}/objects/${name}/directpresignedurl?expiration=6000`)
+    return ajaxObv.get(`${this.url}/${bucket_key}/objects/${name}/directpresignedurl?expiration=6000`)
       .then(r => {
         return r.url
       }).catch(e => {
@@ -23,14 +23,14 @@ class ObvOss extends InterfaceOss {
   }
 
   async upload(encodedFileName, file) {
-    const bucketsRes = await ajaxObv.get('/bim/bimserver/storage/v3/buckets')
+    const bucketsRes = await ajaxObv.get(`${this.url}/buckets`)
     const buckets = bucketsRes ? bucketsRes.buckets : []
     const bucket_key = this.params.bucket_key
     const object_key = encodedFileName
     if (!buckets.find(i => i.bucket_key === bucket_key)) {
-      await ajaxObv.post(`/bim/bimserver/storage/v3/buckets/${bucket_key}`)
+      await ajaxObv.post(`${this.url}/buckets/${bucket_key}`)
     }
-    const uploadData = await ajaxObv.get(`/bim/bimserver/storage/v3/uploadUrl`, {
+    const uploadData = await ajaxObv.get(`${this.url}/uploadUrl`, {
       params: {
         type: 7,
         expire: 60000,
