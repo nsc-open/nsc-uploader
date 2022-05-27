@@ -1,20 +1,17 @@
 import InterfaceOss from './InterfaceOss';
 import co from 'co';
-import ajaxObv from '@/utils/ajaxObv'
-import { reject } from 'async-es';
-import { message } from 'antd';
-
 class ObvOss extends InterfaceOss {
 
   constructor(args) {
     super(args);
     this.params = args
     this.url = args.url
+    this.request = args.request
   }
 
   signatureUrl(name) {
     const bucket_key = this.params.bucket_key
-    return ajaxObv.get(`${this.url}/${bucket_key}/objects/${name}/directpresignedurl?expiration=6000`)
+    return this.request.get(`${this.url}/${bucket_key}/objects/${name}/directpresignedurl?expiration=6000`)
       .then(r => {
         return r.url
       }).catch(e => {
@@ -23,14 +20,14 @@ class ObvOss extends InterfaceOss {
   }
 
   async upload(encodedFileName, file) {
-    const bucketsRes = await ajaxObv.get(`${this.url}/buckets`)
+    const bucketsRes = await this.request.get(`${this.url}/buckets`)
     const buckets = bucketsRes ? bucketsRes.buckets : []
     const bucket_key = this.params.bucket_key
     const object_key = encodedFileName
     if (!buckets.find(i => i.bucket_key === bucket_key)) {
-      await ajaxObv.post(`${this.url}/buckets/${bucket_key}`)
+      await this.request.post(`${this.url}/buckets/${bucket_key}`)
     }
-    const uploadData = await ajaxObv.get(`${this.url}/uploadUrl`, {
+    const uploadData = await this.request.get(`${this.url}/uploadUrl`, {
       params: {
         type: 7,
         expire: 60000,
@@ -41,7 +38,7 @@ class ObvOss extends InterfaceOss {
     const res = await co(function* () {
       const formData = new FormData()
       formData.append('file', file)
-      return yield ajaxObv.post(uploadData.uploadUrl, formData, { headers: { 'x-bimserver-upload-url': uploadData.signature } })
+      return yield this.request.post(uploadData.uploadUrl, formData, { headers: { 'x-bimserver-upload-url': uploadData.signature } })
     })
     const data = {
       filename: res.object_key
