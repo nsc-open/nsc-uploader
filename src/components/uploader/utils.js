@@ -7,9 +7,13 @@ export const encodeFileName = (filename) => {
   return hash
 }
 
-export const blobToDataURL =(blob,cb)=>{
+export const getFileExtension = (filename) => {
+  return filename ? filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2) : ''
+}
+
+export const blobToDataURL = (blob, cb) => {
   let reader = new FileReader()
-  reader.onload = (evt)=>{
+  reader.onload = (evt) => {
     let base64 = evt.target.result
     cb(base64)
   }
@@ -63,11 +67,11 @@ export const isDoc = (img) => {
   return img.fileExt.indexOf('doc') !== -1 || img.fileExt.indexOf('xls') !== -1
 }
 
-export const imgSize = (file,scales) => {
+export const imgSize = (file, scales) => {
   return new Promise((resolve, reject) => {
     let img = new Image()
     let URL = window.URL || window.webkitURL
-    img.onload = () =>{
+    img.onload = () => {
       // 图片比例校验
       let scale = img.width / img.height
       let valid = scales.includes(scale)
@@ -77,55 +81,55 @@ export const imgSize = (file,scales) => {
   }).then(() => {
     return file
   },
-  () => {
-    return false
-  })
+    () => {
+      return false
+    })
 }
 
 const arrayMoveMutate = (array, from, to) => {
-	const startIndex = to < 0 ? array.length + to : to;
-	const item = array.splice(from, 1)[0];
-	array.splice(startIndex, 0, item);
+  const startIndex = to < 0 ? array.length + to : to;
+  const item = array.splice(from, 1)[0];
+  array.splice(startIndex, 0, item);
 };
 
 export const arrayMove = (array, from, to) => {
   array = array.slice();
   const fromItem = array[from]
   arrayMoveMutate(array, from, to);
-  array.forEach((item,index)=>{
+  array.forEach((item, index) => {
     item.sortNo = index
   })
-	return array;
+  return array;
 }
 
-export const deepCopy=(target)=>{
+export const deepCopy = (target) => {
   let copyed_objs = [];//此数组解决了循环引用和相同引用的问题，它存放已经递归到的目标对象
-      function _deepCopy(target){
-          if((typeof target !== 'object')||!target){return target;}
-          for(let i= 0 ;i<copyed_objs.length;i++){
-              if(copyed_objs[i].target === target){
-                  return copyed_objs[i].copyTarget;
-              }
-          }
-          let obj = {};
-          if(Array.isArray(target)){
-              obj = [];//处理target是数组的情况
-          }
-          copyed_objs.push({target:target,copyTarget:obj})
-          Object.keys(target).forEach(key=>{
-              if(obj[key]){ return;}
-              obj[key] = _deepCopy(target[key]);
-          });
-          return obj;
+  function _deepCopy(target) {
+    if ((typeof target !== 'object') || !target) { return target; }
+    for (let i = 0; i < copyed_objs.length; i++) {
+      if (copyed_objs[i].target === target) {
+        return copyed_objs[i].copyTarget;
       }
-      return _deepCopy(target);
+    }
+    let obj = {};
+    if (Array.isArray(target)) {
+      obj = [];//处理target是数组的情况
+    }
+    copyed_objs.push({ target: target, copyTarget: obj })
+    Object.keys(target).forEach(key => {
+      if (obj[key]) { return; }
+      obj[key] = _deepCopy(target[key]);
+    });
+    return obj;
   }
+  return _deepCopy(target);
+}
 
 export function T() {
   return true;
 }
 
-export function fileToObject(file){
+export function fileToObject(file) {
   return {
     ...file,
     lastModified: file.lastModified,
@@ -190,7 +194,7 @@ export const isImageUrl = (file) => {
   if (isImageFileType(file.type)) {
     return true;
   }
-  const url= (file.thumbUrl || file.url);
+  const url = (file.thumbUrl || file.url);
   const extension = extname(url);
   if (
     /^data:image\//.test(url) ||
@@ -210,7 +214,7 @@ export const isImageUrl = (file) => {
 };
 
 const MEASURE_SIZE = 200;
-export function previewImage(file){
+export function previewImage(file) {
   return new Promise(resolve => {
     if (!isImageFileType(file.type)) {
       resolve('');
